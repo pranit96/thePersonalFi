@@ -125,7 +125,7 @@ export default function Insights() {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-light/95 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-2 text-text">
+        <div className="bg-background-light border border-white/10 shadow-lg rounded-lg p-2 text-text">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-sm">{formatCurrency(payload[0].value)}</p>
           <p className="text-xs">{payload[0].payload.percentage}% of total</p>
@@ -138,7 +138,7 @@ export default function Insights() {
   const MonthlyTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-dark/95 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-3 text-text">
+        <div className="bg-background-dark backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-3 text-text">
           <p className="font-medium mb-1">{label}</p>
           {payload.map((entry: any, index: number) => (
             <p key={index} className="text-sm my-1" style={{ color: entry.color }}>
