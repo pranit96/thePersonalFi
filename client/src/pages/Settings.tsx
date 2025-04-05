@@ -53,6 +53,16 @@ export default function Settings() {
   const [reducedMotion, setReducedMotion] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
   const [groqApiKey, setGroqApiKey] = useState("");
+  
+  const form = useForm({
+    defaultValues: {
+      fontScale: 100,
+      highContrast: false,
+      reducedMotion: false,
+      darkMode: true,
+      groqApiKey: ""
+    }
+  });
 
   // Mutation for deleting all user data
   const deleteDataMutation = useMutation({
@@ -167,6 +177,7 @@ export default function Settings() {
   }, [fontScale, highContrast, reducedMotion, darkMode]);
 
   return (
+    <Form {...form}>
     <div className="container mx-auto py-6">
       <h1 className="text-3xl font-bold mb-6">Settings</h1>
 
@@ -544,5 +555,6 @@ export default function Settings() {
         </TabsContent>
       </Tabs>
     </div>
+    </Form>
   );
 }
