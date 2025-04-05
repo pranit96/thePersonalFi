@@ -1,3 +1,4 @@
+
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -16,8 +17,6 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Sidebar from "./components/Sidebar";
 import MobileNav from "./components/layout/MobileNav";
-import { useAuth } from './hooks/use-auth';
-
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -96,30 +95,34 @@ function Router() {
   );
 }
 
-function App() {
-  const { user, loading } = useAuth();
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background text-text">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-t-primary border-primary/30 rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4">Loading...</p>
-        </div>
+function LoadingScreen() {
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-background text-text">
+      <div className="text-center">
+        <div className="w-12 h-12 border-4 border-t-primary border-primary/30 rounded-full animate-spin mx-auto"></div>
+        <p className="mt-4">Loading...</p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
+function AppContent() {
+  return (
+    <AuthProvider>
+      <WebSocketProvider>
+        <FinanceProvider>
+          <Router />
+          <Toaster />
+        </FinanceProvider>
+      </WebSocketProvider>
+    </AuthProvider>
+  );
+}
+
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <WebSocketProvider>
-          <FinanceProvider>
-            <Router />
-            <Toaster />
-          </FinanceProvider>
-        </WebSocketProvider>
-      </AuthProvider>
+      <AppContent />
     </QueryClientProvider>
   );
 }
