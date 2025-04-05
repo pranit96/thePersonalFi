@@ -5,6 +5,25 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Format a date to a human-readable string
+ */
+export function formatDate(date: Date | string | number, options?: Intl.DateTimeFormatOptions): string {
+  if (!date) return 'N/A';
+
+  const dateObj = typeof date === 'string' || typeof date === 'number' 
+    ? new Date(date) 
+    : date;
+
+  const defaultOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  };
+
+  return new Intl.DateTimeFormat('en-US', options || defaultOptions).format(dateObj);
+}
+
 export function formatCurrency(amount: number, showCents: boolean = true): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -36,11 +55,11 @@ export function getChangeDirection(value: number): 'increase' | 'decrease' | 'no
 export function getChangeColor(value: number, inverted: boolean = false): string {
   const isPositive = value > 0;
   const isNegative = value < 0;
-  
+
   if (inverted) {
     return isPositive ? 'text-red-400' : isNegative ? 'text-secondary' : 'text-text/70';
   }
-  
+
   return isPositive ? 'text-secondary' : isNegative ? 'text-red-400' : 'text-text/70';
 }
 

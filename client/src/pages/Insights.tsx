@@ -162,13 +162,16 @@ export default function Insights() {
   }
   
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 pb-16">
       <Header title="Financial Insights" subtitle="Smart analysis of your spending and saving habits" />
       
       {/* AI Insights Section */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="font-display text-xl font-bold">AI Financial Insights</h3>
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-8 mb-8">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h3 className="font-display text-2xl font-bold">AI Financial Insights</h3>
+            <p className="text-text/70 mt-1">Personalized analysis of your financial behavior</p>
+          </div>
           <div className="flex items-center gap-3">
             <button 
               onClick={handleGenerateInsights}
@@ -195,7 +198,7 @@ export default function Insights() {
         
         {/* API Key Status Banner */}
         {aiServiceMeta.apiKeyMissing && (
-          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-3">
+          <div className="mb-8 p-5 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
               <path d="M12 9v4"></path>
@@ -207,7 +210,7 @@ export default function Insights() {
         
         {/* Error Message */}
         {aiServiceMeta.error && (
-          <div className="mb-6 p-4 bg-destructive/20 border border-destructive/30 text-destructive-foreground rounded-lg flex items-center gap-3">
+          <div className="mb-8 p-5 bg-destructive/20 border border-destructive/30 text-destructive-foreground rounded-lg flex items-center gap-3">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
               <path d="m9 9 6 6"></path>
@@ -218,16 +221,16 @@ export default function Insights() {
         )}
         
         {aiInsights.length === 0 ? (
-          <div className="text-center py-12 bg-background-dark/30 rounded-xl">
-            <div className="w-16 h-16 bg-background-light/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
+          <div className="text-center py-16 bg-background-dark/30 rounded-xl">
+            <div className="w-20 h-20 bg-background-light/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
                 <circle cx="12" cy="12" r="10"></circle>
                 <line x1="12" y1="8" x2="12" y2="12"></line>
                 <line x1="12" y1="16" x2="12.01" y2="16"></line>
               </svg>
             </div>
-            <p className="text-text/80 text-lg font-medium">No insights available yet</p>
-            <p className="text-sm mt-2 text-text/60 max-w-md mx-auto">
+            <p className="text-text/80 text-xl font-medium">No insights available yet</p>
+            <p className="text-base mt-3 text-text/60 max-w-md mx-auto">
               {aiServiceMeta.apiKeyMissing 
                 ? "AI features require a Groq API key to function properly." 
                 : "Add more financial data to get personalized AI insights!"}
@@ -244,10 +247,6 @@ export default function Insights() {
                   <div className="h-9 bg-white/10 rounded w-full mt-4"></div>
                 </div>
               ))
-            ) : aiInsights.length === 0 ? (
-              <div className="col-span-3 text-center py-10">
-                <p className="text-text/60">No insights available yet. Try generating some!</p>
-              </div>
             ) : (
               aiInsights.map(insight => (
                 <AiInsightCard key={insight.id} insight={insight} />
@@ -258,10 +257,10 @@ export default function Insights() {
       </div>
       
       {/* Monthly Trends Chart */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
-        <h3 className="font-display text-xl font-bold mb-6">Monthly Financial Trends</h3>
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-8 mb-8">
+        <h3 className="font-display text-2xl font-bold mb-8">Monthly Financial Trends</h3>
         
-        <div className="h-[400px]">
+        <div className="h-[450px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={monthlySpendingData}
@@ -297,13 +296,13 @@ export default function Insights() {
       </div>
       
       {/* Spending Distribution */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
-        <h3 className="font-display text-xl font-bold mb-6">Spending Distribution</h3>
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-8 mb-8">
+        <h3 className="font-display text-2xl font-bold mb-8">Spending Distribution</h3>
         
         {categorySpending.length === 0 ? (
-          <div className="text-center py-12 bg-background-dark/30 rounded-xl">
-            <div className="w-16 h-16 bg-background-light/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
+          <div className="text-center py-16 bg-background-dark/30 rounded-xl">
+            <div className="w-20 h-20 bg-background-light/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
                 <circle cx="12" cy="12" r="5"></circle>
                 <path d="M12 1v2"></path>
                 <path d="M12 21v2"></path>
@@ -315,20 +314,20 @@ export default function Insights() {
                 <path d="M18.36 5.64l1.42-1.42"></path>
               </svg>
             </div>
-            <p className="text-text/80 text-lg font-medium">No spending data available yet</p>
-            <p className="text-sm mt-2 text-text/60">Add transactions to see your spending distribution!</p>
+            <p className="text-text/80 text-xl font-medium">No spending data available yet</p>
+            <p className="text-base mt-3 text-text/60">Add transactions to see your spending distribution!</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="h-[350px] flex items-center justify-center">
+            <div className="h-[400px] flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={70}
-                    outerRadius={130}
+                    innerRadius={80}
+                    outerRadius={140}
                     fill="#8884d8"
                     paddingAngle={3}
                     dataKey="value"
@@ -348,8 +347,8 @@ export default function Insights() {
             </div>
             
             <div className="flex flex-col">
-              <h4 className="font-medium text-lg mb-4">Top Spending Categories</h4>
-              <div className="space-y-5 mb-6">
+              <h4 className="font-medium text-xl mb-6">Top Spending Categories</h4>
+              <div className="space-y-6 mb-6">
                 {categorySpending.slice(0, 4).map((category, index) => (
                   <div key={category.id} className="flex items-center">
                     <div 
@@ -376,11 +375,11 @@ export default function Insights() {
                 ))}
               </div>
               
-              <div className="mt-auto p-5 bg-background-dark/50 backdrop-blur-sm rounded-lg border border-white/5">
-                <h4 className="font-medium text-lg mb-3">Spending Insights</h4>
-                <ul className="space-y-3 text-text/90">
-                  <li className="flex">
-                    <span className="mr-2 text-primary">•</span>
+              <div className="mt-auto p-6 bg-background-dark/40 backdrop-blur-sm rounded-lg border border-white/5">
+                <h4 className="font-medium text-lg mb-4">Spending Insights</h4>
+                <ul className="space-y-4 text-text/90">
+                  <li className="flex items-start">
+                    <span className="mr-2 text-primary mt-1">•</span>
                     <span>
                       {categorySpending[0]?.name} is your largest spending category at {formatCurrency(categorySpending[0]?.amount)}.
                     </span>
@@ -388,8 +387,8 @@ export default function Insights() {
                   {(() => {
                     const increasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage > 0);
                     return increasedCategory && (
-                      <li className="flex">
-                        <span className="mr-2 text-destructive">•</span>
+                      <li className="flex items-start">
+                        <span className="mr-2 text-destructive mt-1">•</span>
                         <span>
                           {increasedCategory.name} spending increased by {increasedCategory.changePercentage || 0}% this month.
                         </span>
@@ -400,8 +399,8 @@ export default function Insights() {
                   {(() => {
                     const decreasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage < 0);
                     return decreasedCategory && (
-                      <li className="flex">
-                        <span className="mr-2 text-secondary">•</span>
+                      <li className="flex items-start">
+                        <span className="mr-2 text-secondary mt-1">•</span>
                         <span>
                           Great job! You reduced {decreasedCategory.name} spending by {Math.abs(decreasedCategory.changePercentage || 0)}%.
                         </span>
