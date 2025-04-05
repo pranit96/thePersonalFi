@@ -105,10 +105,10 @@ export default function Insights() {
   const MonthlyTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-light/95 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-2 text-text">
-          <p className="font-medium">{label}</p>
+        <div className="bg-background-dark/95 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-3 text-text">
+          <p className="font-medium mb-1">{label}</p>
           {payload.map((entry: any, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
+            <p key={index} className="text-sm my-1" style={{ color: entry.color }}>
               {entry.name}: {formatCurrency(entry.value)}
             </p>
           ))}
@@ -154,25 +154,15 @@ export default function Insights() {
           </div>
         )}
         
-        {/* Rate Limit Information */}
-        {!aiServiceMeta.apiKeyMissing && aiServiceMeta.remaining !== undefined && (
-          <div className="mb-4 p-3 bg-primary/10 border border-primary/20 text-primary-foreground rounded-lg">
-            <div className="flex justify-between items-center">
-              <div className="flex items-center gap-2">
-                <span className="text-sm">AI Quota</span>
-                <span className="text-xs px-1.5 py-0.5 bg-primary/20 rounded-full">DeepSeek-R1-Distill-LLama-70B</span>
-              </div>
-              <span className="text-sm font-medium">{aiServiceMeta.remaining} / {aiServiceMeta.total} remaining</span>
-            </div>
-            <div className="mt-1 w-full bg-background-dark/50 rounded-full h-2">
-              <div 
-                className="bg-primary h-2 rounded-full" 
-                style={{ width: `${(aiServiceMeta.remaining / (aiServiceMeta.total || 1)) * 100}%` }}
-              ></div>
-            </div>
-            {aiServiceMeta.resetsIn && (
-              <div className="text-xs mt-1 text-primary-foreground/70">Resets in {aiServiceMeta.resetsIn}</div>
-            )}
+        {/* AI Status Info - Simplified */}
+        {aiServiceMeta.apiKeyMissing && (
+          <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+            <span>AI features are limited. Contact your administrator to set up the AI API key.</span>
           </div>
         )}
         

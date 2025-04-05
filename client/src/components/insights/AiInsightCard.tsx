@@ -32,13 +32,13 @@ export default function AiInsightCard({ insight }: AiInsightCardProps) {
       "bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-4 border-l-2",
       colors.border
     )}>
-      <h4 className="text-sm font-medium mb-2">{insight.title}</h4>
-      <p className="text-xs text-text/70 mb-3">{insight.description}</p>
+      <h4 className="text-sm font-medium mb-2 line-clamp-1">{insight.title}</h4>
+      <p className="text-xs text-text/70 mb-3 overflow-auto max-h-24">{insight.description}</p>
       <Button 
         variant="ghost"
         size="sm"
         className={cn(
-          "text-xs px-3 py-1 rounded-full h-auto",
+          "text-xs px-3 py-1 rounded-full h-auto truncate max-w-full",
           colors.button,
           colors.textButton
         )}

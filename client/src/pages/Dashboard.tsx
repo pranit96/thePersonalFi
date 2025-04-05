@@ -155,7 +155,7 @@ export default function Dashboard() {
               <p className="text-sm mt-2">Add more transactions to get personalized insights!</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-4 max-w-full">
               {aiInsights.map(insight => (
                 <AiInsightCard key={insight.id} insight={insight} />
               ))}
