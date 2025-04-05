@@ -9,12 +9,17 @@ export const transactions = pgTable("transactions", {
   merchant: text("merchant").notNull(),
   amount: real("amount").notNull(),
   category: text("category").notNull(),
+  description: text("description"),
+  encryptedData: text("encrypted_data"), // For encrypted version of sensitive data
+  userId: integer("user_id").notNull().default(1), // Default to 1 for demo purposes
 });
 
 export const insertTransactionSchema = createInsertSchema(transactions).pick({
   merchant: true,
   amount: true,
   category: true,
+  description: true,
+  userId: true,
 });
 
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
@@ -26,11 +31,14 @@ export const salaryRecords = pgTable("salary_records", {
   date: timestamp("date").defaultNow().notNull(),
   amount: real("amount").notNull(),
   source: text("source").default("Primary Job"),
+  encryptedData: text("encrypted_data"), // For encrypted salary data
+  userId: integer("user_id").notNull().default(1), // Default to 1 for demo purposes
 });
 
 export const insertSalaryRecordSchema = createInsertSchema(salaryRecords).pick({
   amount: true,
   source: true,
+  userId: true,
 });
 
 export type InsertSalaryRecord = z.infer<typeof insertSalaryRecordSchema>;
@@ -44,11 +52,16 @@ export const goals = pgTable("goals", {
   targetAmount: real("target_amount").notNull(),
   currentAmount: real("current_amount").default(0).notNull(),
   completed: boolean("completed").default(false),
+  encryptedData: text("encrypted_data"), // For encrypted goal data
+  userId: integer("user_id").notNull().default(1), // Default to 1 for demo purposes
+  isPrivate: boolean("is_private").default(true).notNull(), // Privacy control
 });
 
 export const insertGoalSchema = createInsertSchema(goals).pick({
   name: true,
   targetAmount: true,
+  userId: true,
+  isPrivate: true,
 });
 
 export type InsertGoal = z.infer<typeof insertGoalSchema>;
@@ -99,12 +112,22 @@ export type AiInsight = typeof aiInsights.$inferSelect;
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password").notNull(), // Will store hashed password
+  email: text("email"),
+  dataEncryptionEnabled: boolean("data_encryption_enabled").default(true).notNull(),
+  dataSharingEnabled: boolean("data_sharing_enabled").default(false).notNull(),
+  anonymizedAnalytics: boolean("anonymized_analytics").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastLogin: timestamp("last_login"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
+  email: true,
+  dataEncryptionEnabled: true,
+  dataSharingEnabled: true,
+  anonymizedAnalytics: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
