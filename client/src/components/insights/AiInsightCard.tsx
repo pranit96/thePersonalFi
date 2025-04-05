@@ -63,17 +63,20 @@ export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
 
   // Get insight content from either description or content field
   const insightContent = insight.description || insight.content || "No details available";
+  const insightTitle = insight.title || "Financial Insight";
+  const insightDate = insight.date ? new Date(insight.date) : new Date();
+  const insightType = insight.type || "spending_pattern";
 
   return (
     <div className={cn(
       "rounded-lg border bg-gradient-to-b p-6 shadow-lg transition-all duration-300 hover:shadow-xl h-full flex flex-col",
-      getTypeColor(insight.type)
+      getTypeColor(insightType)
     )}>
       <div className="mb-1 flex items-center">
         <div className="w-8 h-8 rounded-full bg-background-dark/30 flex items-center justify-center mr-3">
-          {getTypeIcon(insight.type)}
+          {getTypeIcon(insightType)}
         </div>
-        <h3 className="font-display text-lg font-bold line-clamp-1">{insight.title}</h3>
+        <h3 className="font-display text-lg font-bold line-clamp-1">{insightTitle}</h3>
       </div>
       
       <div className="mt-3 flex-grow">
@@ -90,8 +93,8 @@ export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
       )}
 
       <div className="mt-4 pt-3 border-t border-white/10 flex justify-between text-xs text-text/60">
-        <span>{new Date(insight.date).toLocaleDateString()}</span>
-        <span className="capitalize">{insight.type.replace('_', ' ')}</span>
+        <span>{insightDate.toLocaleDateString()}</span>
+        <span className="capitalize">{insightType.replace(/_/g, ' ')}</span>
       </div>
     </div>
   );

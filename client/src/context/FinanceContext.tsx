@@ -220,10 +220,29 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
   // Function to refresh insights
   const refreshInsights = async () => {
     try {
-      await queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
+      const response = await apiRequest('GET', '/api/insights', {});
+
+      // Format and sort the insights by date (newest first)
+      const formattedInsights = (response.insights || [])
+        .map((insight: any) => ({
+          ...insight,
+          date: insight.date ? new Date(insight.date) : new Date()
+        }))
+        .sort((a: any, b: any) => b.date.getTime() - a.date.getTime());
+
+      setAiInsights(formattedInsights);
+
+      // Check if there's API key metadata
+      if (response._meta?.aiLimits) {
+        setAiServiceMeta({
+          apiKeyMissing: !!response._meta.aiLimits.apiKeyMissing,
+          error: response._meta.aiLimits.error || null,
+          remainingQuota: response._meta.aiLimits.remaining || 0,
+          totalQuota: response._meta.aiLimits.total || 0
+        });
+      }
     } catch (error) {
-      console.error("Error refreshing insights:", error);
-      // Add appropriate error handling here, e.g., display an error message to the user.
+      console.error("Failed to fetch insights:", error);
     }
   };
 

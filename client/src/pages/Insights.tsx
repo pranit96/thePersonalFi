@@ -50,6 +50,7 @@ export default function Insights() {
       // Filter transactions for this month
       const monthlyExpenses = transactions
         .filter(t => {
+          if (!t.date) return false;
           const transDate = new Date(t.date);
           return transDate.getMonth() === month.getMonth() && 
                  transDate.getFullYear() === month.getFullYear() &&
@@ -60,6 +61,7 @@ export default function Insights() {
       // Filter income for this month
       const monthlyIncome = transactions
         .filter(t => {
+          if (!t.date) return false;
           const transDate = new Date(t.date);
           return transDate.getMonth() === month.getMonth() && 
                  transDate.getFullYear() === month.getFullYear() &&
@@ -70,6 +72,7 @@ export default function Insights() {
       // Filter savings for this month
       const monthlySavings = savingsRecords
         .filter(s => {
+          if (!s.date) return false;
           const saveDate = new Date(s.date);
           return saveDate.getMonth() === month.getMonth() && 
                  saveDate.getFullYear() === month.getFullYear();

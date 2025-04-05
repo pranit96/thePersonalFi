@@ -15,10 +15,13 @@ export default function SpendingCategoriesChart({ categories }: SpendingCategori
   const [timeRange, setTimeRange] = useState<'month' | 'lastMonth'>('month');
   
   const chartData = useMemo(() => {
+    if (!categories || categories.length === 0) {
+      return [];
+    }
     return categories.map(category => ({
-      name: category.name,
-      value: category.amount,
-      percentage: category.percentage
+      name: category.name || 'Uncategorized',
+      value: category.amount || 0,
+      percentage: category.percentage || 0
     }));
   }, [categories]);
   
