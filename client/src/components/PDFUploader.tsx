@@ -160,6 +160,20 @@ export default function PDFUploader() {
     
     if (latestNotification.type === 'pdf_processing_complete') {
       setUploadStatus('success');
+      
+      // Refresh transaction data after successful processing
+      queryClient.invalidateQueries(['transactions']);
+      
+      // Also invalidate insights and other data that depends on transactions
+      queryClient.invalidateQueries(['insights']);
+      queryClient.invalidateQueries(['categories']);
+      
+      // Show a toast notification
+      toast({
+        title: "Transactions imported",
+        description: `${latestNotification.data?.transactionCount || 'New'} transactions have been imported and are now available.`,
+        variant: "default",
+      });
     } else if (latestNotification.type === 'pdf_processing_error') {
       setUploadStatus('error');
     }
