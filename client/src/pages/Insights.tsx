@@ -310,22 +310,29 @@ export default function Insights() {
                       {categorySpending[0]?.name} is your largest spending category at {formatCurrency(categorySpending[0]?.amount)}.
                     </span>
                   </li>
-                  {categorySpending.find(c => c.changePercentage > 0) && (
-                    <li className="flex">
-                      <span className="mr-2">•</span>
-                      <span>
-                        {categorySpending.find(c => c.changePercentage > 0)?.name} spending increased by {categorySpending.find(c => c.changePercentage > 0)?.changePercentage}% this month.
-                      </span>
-                    </li>
-                  )}
-                  {categorySpending.find(c => c.changePercentage < 0) && (
-                    <li className="flex text-secondary">
-                      <span className="mr-2">•</span>
-                      <span>
-                        Great job! You reduced {categorySpending.find(c => c.changePercentage < 0)?.name} spending by {Math.abs(categorySpending.find(c => c.changePercentage < 0)?.changePercentage || 0)}%.
-                      </span>
-                    </li>
-                  )}
+                  {(() => {
+                    const increasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage > 0);
+                    return increasedCategory && (
+                      <li className="flex">
+                        <span className="mr-2">•</span>
+                        <span>
+                          {increasedCategory.name} spending increased by {increasedCategory.changePercentage || 0}% this month.
+                        </span>
+                      </li>
+                    );
+                  })()}
+                  
+                  {(() => {
+                    const decreasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage < 0);
+                    return decreasedCategory && (
+                      <li className="flex text-secondary">
+                        <span className="mr-2">•</span>
+                        <span>
+                          Great job! You reduced {decreasedCategory.name} spending by {Math.abs(decreasedCategory.changePercentage || 0)}%.
+                        </span>
+                      </li>
+                    );
+                  })()}
                 </ul>
               </div>
             </div>

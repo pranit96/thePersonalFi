@@ -105,6 +105,10 @@ export default function Goals() {
       await addGoal({
         name: values.name,
         targetAmount: Number(values.targetAmount),
+        completed: false,
+        encryptedData: null,
+        userId: 0, // This will be set by the server
+        isPrivate: false
       });
       
       newGoalForm.reset();
@@ -343,7 +347,7 @@ export default function Goals() {
                     <span className="text-sm font-medium">Progress</span>
                     <span className="text-sm font-mono">{percentage}%</span>
                   </div>
-                  <Progress value={percentage} className="h-3 bg-white/10" indicatorClassName={color} />
+                  <Progress value={percentage} className={`h-3 bg-white/10 [&>div]:${color}`} />
                   
                   <div className="mt-4 grid grid-cols-2 gap-4">
                     <div className="bg-background-dark/30 rounded-lg p-3">

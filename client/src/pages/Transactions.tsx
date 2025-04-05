@@ -110,6 +110,9 @@ export default function Transactions() {
         merchant: values.merchant,
         amount: finalAmount,
         category: values.category,
+        description: null,
+        encryptedData: null,
+        userId: 0 // This will be set by the server
       });
       
       form.reset();
