@@ -5,22 +5,34 @@ import { z } from "zod";
 // Transactions
 export const transactions = pgTable("transactions", {
   id: serial("id").primaryKey(),
-  date: timestamp("date").defaultNow().notNull(),
-  merchant: text("merchant").notNull(),
+  date: timestamp("date").defaultNow(),
   amount: real("amount").notNull(),
-  category: text("category").notNull(),
+  userId: integer("user_id").notNull().default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at"),
+  metaData: text("meta_data"),
+  categoryId: integer("category_id"),
+  isReconciled: boolean("is_reconciled").default(false),
+  isPending: boolean("is_pending").default(false),
+  transactionDate: timestamp("transaction_date"),
+  statementId: integer("statement_id"),
+  currency: text("currency").default("USD"),
   description: text("description"),
+  payee: text("payee"),
+  memo: text("memo"),
   encryptedData: text("encrypted_data"), // For encrypted version of sensitive data
-  userId: integer("user_id").notNull().default(1), // Default to 1 for demo purposes
 });
 
 export const insertTransactionSchema = createInsertSchema(transactions).pick({
-  merchant: true,
   amount: true,
-  category: true,
-  description: true,
-  encryptedData: true,
   userId: true,
+  currency: true,
+  description: true,
+  payee: true,
+  memo: true,
+  categoryId: true,
+  encryptedData: true,
+  transactionDate: true,
 });
 
 export type InsertTransaction = z.infer<typeof insertTransactionSchema>;
@@ -51,19 +63,20 @@ export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
   date: timestamp("date").defaultNow().notNull(),
   name: text("name").notNull(),
-  targetAmount: real("target_amount").notNull(),
-  currentAmount: real("current_amount").default(0).notNull(),
-  completed: boolean("completed").default(false),
+  amount: real("amount").notNull(), // Target amount
+  currentAmount: real("current_amount").default(0),
+  userId: integer("user_id").notNull().default(1),
+  targetDate: timestamp("target_date"),
   encryptedData: text("encrypted_data"), // For encrypted goal data
-  userId: integer("user_id").notNull().default(1), // Default to 1 for demo purposes
-  isPrivate: boolean("is_private").default(true).notNull(), // Privacy control
+  isPrivate: boolean("is_private").default(true), // Privacy control
 });
 
 export const insertGoalSchema = createInsertSchema(goals).pick({
   name: true,
-  targetAmount: true,
-  encryptedData: true,
+  amount: true, // Target amount
   userId: true,
+  targetDate: true,
+  encryptedData: true,
   isPrivate: true,
 });
 
@@ -91,10 +104,12 @@ export type SavingsRecord = typeof savingsRecords.$inferSelect;
 // Category Spending (for analytics)
 export const categorySpending = pgTable("category_spending", {
   id: serial("id").primaryKey(),
-  name: text("name").notNull(),
+  name: text("name"),
   amount: real("amount").notNull(),
-  percentage: real("percentage").notNull(),
-  changePercentage: real("change_percentage").default(0),
+  userId: integer("user_id"),
+  month: integer("month"),
+  year: integer("year"),
+  category: text("category"),
 });
 
 export type CategorySpending = typeof categorySpending.$inferSelect;

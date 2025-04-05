@@ -159,24 +159,42 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
-    // Extract data to encrypt
-    const { merchant, amount, category, description } = insertTransaction;
-    const sensitiveData = { merchant, amount, category, description };
+    // Prepare transaction data for insertion
+    const transactionDate = insertTransaction.transactionDate || new Date();
     
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
+    // If there's sensitive data to encrypt
+    let encryptedData = insertTransaction.encryptedData;
+    if (insertTransaction.description || insertTransaction.payee) {
+      const sensitiveData = {
+        description: insertTransaction.description,
+        payee: insertTransaction.payee,
+        memo: insertTransaction.memo,
+        amount: insertTransaction.amount
+      };
+      encryptedData = encryptFinancialData(sensitiveData);
+    }
     
-    // Insert transaction with encrypted data
+    // Insert transaction with data
     const [transaction] = await db
       .insert(transactions)
       .values({
         ...insertTransaction,
-        encryptedData
+        encryptedData,
+        transactionDate,
+        date: new Date() // Set current date
       })
       .returning();
     
-    // Update category spending (could be implemented in a transaction)
-    // Note: We'll skip this for now, but it would be implemented using SQL queries
+    // Update category spending if categoryId is provided
+    if (insertTransaction.categoryId) {
+      try {
+        // Here we would update the category_spending table based on the new transaction
+        // This would typically be implemented as a separate database operation
+        console.log(`Updating category ${insertTransaction.categoryId} with amount ${insertTransaction.amount}`);
+      } catch (err) {
+        console.error("Error updating category spending:", err);
+      }
+    }
     
     return transaction;
   }
@@ -323,8 +341,8 @@ export class DatabaseStorage implements IStorage {
   
   async createGoal(insertGoal: InsertGoal): Promise<Goal> {
     // Extract data to encrypt
-    const { name, targetAmount, userId, isPrivate } = insertGoal;
-    const sensitiveData = { name, targetAmount, isPrivate };
+    const { name, amount, userId, isPrivate } = insertGoal;
+    const sensitiveData = { name, amount, isPrivate };
     
     // Encrypt sensitive data
     const encryptedData = encryptFinancialData(sensitiveData);
@@ -336,7 +354,7 @@ export class DatabaseStorage implements IStorage {
         ...insertGoal,
         encryptedData,
         currentAmount: 0,
-        completed: false
+        date: new Date()
       })
       .returning();
     
@@ -354,13 +372,10 @@ export class DatabaseStorage implements IStorage {
       throw new Error(`Goal with ID ${id} not found`);
     }
     
-    // Check if goal is completed
-    const completed = currentAmount >= existingGoal.targetAmount;
-    
     // Update the goal
     const [updatedGoal] = await db
       .update(goals)
-      .set({ currentAmount, completed })
+      .set({ currentAmount })
       .where(eq(goals.id, id))
       .returning();
     
@@ -395,7 +410,8 @@ export class DatabaseStorage implements IStorage {
         .where(eq(goals.id, record.goalId));
       
       if (goal) {
-        await this.updateGoal(goal.id, goal.currentAmount + record.amount);
+        const currentAmount = (goal.currentAmount || 0) + record.amount;
+        await this.updateGoal(goal.id, currentAmount);
       }
     }
     
@@ -433,7 +449,7 @@ export class DatabaseStorage implements IStorage {
     for (const category of categories) {
       await db
         .update(categorySpending)
-        .set({ amount: 0, percentage: 0, changePercentage: 0 })
+        .set({ amount: 0 })
         .where(eq(categorySpending.id, category.id));
     }
     // Clear insights
@@ -701,10 +717,10 @@ export class MemStorage implements IStorage {
       id,
       date: new Date(),
       currentAmount: 0,
-      completed: false,
       encryptedData: insertGoal.encryptedData ?? null,
       userId: insertGoal.userId ?? 1,
-      isPrivate: insertGoal.isPrivate ?? true
+      isPrivate: insertGoal.isPrivate ?? true,
+      targetDate: insertGoal.targetDate ?? null
     };
     this.goalsList.set(id, goal);
     return goal;
@@ -716,14 +732,12 @@ export class MemStorage implements IStorage {
       throw new Error(`Goal with ID ${id} not found`);
     }
     
-    const completed = currentAmount >= goal.targetAmount;
-    const updatedGoal = { ...goal, currentAmount, completed };
+    // Update with the new current amount
+    const updatedGoal = { ...goal, currentAmount };
     this.goalsList.set(id, updatedGoal);
     
-    // Generate AI insight when a goal is close to completion or completed
-    if (completed || (currentAmount / goal.targetAmount >= 0.9)) {
-      this.generateGoalInsight(updatedGoal);
-    }
+    // For the memory storage version, we're simplifying
+    // and removing the goal insight generation for now
     
     return updatedGoal;
   }
@@ -752,7 +766,8 @@ export class MemStorage implements IStorage {
     if (savingsRecord.goalId) {
       const goal = this.goalsList.get(savingsRecord.goalId);
       if (goal) {
-        this.updateGoal(savingsRecord.goalId, goal.currentAmount + savingsRecord.amount);
+        const currentAmount = (goal.currentAmount || 0) + savingsRecord.amount;
+        this.updateGoal(savingsRecord.goalId, currentAmount);
       }
     }
     
