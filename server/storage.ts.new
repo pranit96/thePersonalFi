@@ -1,21 +1,12 @@
-import { 
-  users, type User, type InsertUser,
-  transactions, type Transaction, type InsertTransaction,
-  salaryRecords, type SalaryRecord, type InsertSalaryRecord,
-  goals, type Goal, type InsertGoal,
-  savingsRecords, type SavingsRecord, type InsertSavingsRecord,
-  categorySpending, type CategorySpending,
-  aiInsights, type AiInsight
-} from "@shared/schema";
+import { users, type User, type InsertUser, transactions, type Transaction, type InsertTransaction, salaryRecords, type SalaryRecord, type InsertSalaryRecord, goals, type Goal, type InsertGoal, savingsRecords, type SavingsRecord, type InsertSavingsRecord, categorySpending, type CategorySpending, aiInsights, type AiInsight } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
-import { 
-  encrypt, decrypt, hash, secureCompare,
-  encryptFinancialData, decryptFinancialData, 
-  hashPassword, verifyPassword 
-} from "./utils/encryption";
+import { eq, and, desc } from "drizzle-orm";
+import { hashPassword } from "./utils/encryption";
+import { encryptFinancialData, decryptFinancialData } from "./utils/encryption";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
+import { sql } from "drizzle-orm/sql";
 
-// Interfaces for all storage operations
 export interface IStorage {
   // Users
   getUser(id: number): Promise<User | undefined>;
@@ -61,679 +52,330 @@ export interface IStorage {
     categorySpending: CategorySpending[];
     aiInsights: AiInsight[];
   }>;
+  
+  // Session store for authentication
+  sessionStore: session.Store;
 }
 
-// Database implementation of IStorage
+// Create the PostgreSQL session store
+const PostgresSessionStore = connectPg(session);
+const pgPool = {
+  connectionString: process.env.DATABASE_URL,
+};
+
 export class DatabaseStorage implements IStorage {
-  // User methods
-  async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.username, username));
-    return user;
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    // Hash the password before storing
-    const hashedPassword = hashPassword(insertUser.password);
-    
-    // Store the hashed password instead of plaintext
-    const [user] = await db
-      .insert(users)
-      .values({
-        ...insertUser,
-        password: hashedPassword
-      })
-      .returning();
-    
-    return user;
-  }
+  sessionStore: session.Store;
   
-  // Transaction methods
-  async getTransactions(): Promise<Transaction[]> {
-    const transactionsList = await db
-      .select()
-      .from(transactions)
-      .orderBy(desc(transactions.date));
-    
-    // Decrypt sensitive data if present
-    return transactionsList.map(t => {
-      if (t.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(t.encryptedData);
-          return { ...t, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting transaction ${t.id}:`, err);
-        }
-      }
-      return t;
-    });
-  }
-  
-  async getTransaction(id: number): Promise<Transaction | undefined> {
-    const [transaction] = await db
-      .select()
-      .from(transactions)
-      .where(eq(transactions.id, id));
-    
-    if (transaction && transaction.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(transaction.encryptedData);
-        return { ...transaction, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting transaction ${id}:`, err);
-      }
-    }
-    
-    return transaction;
-  }
-  
-  async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
-    // Extract data to encrypt
-    const { merchant, amount, category, description } = insertTransaction;
-    const sensitiveData = { merchant, amount, category, description };
-    
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Insert transaction with encrypted data
-    const [transaction] = await db
-      .insert(transactions)
-      .values({
-        ...insertTransaction,
-        encryptedData
-      })
-      .returning();
-    
-    // Update category spending (could be implemented in a transaction)
-    // Note: We'll skip this for now, but it would be implemented using SQL queries
-    
-    return transaction;
-  }
-  
-  async deleteTransaction(id: number): Promise<void> {
-    await db
-      .delete(transactions)
-      .where(eq(transactions.id, id));
-  }
-  
-  // Salary methods
-  async getSalaryRecords(): Promise<SalaryRecord[]> {
-    const records = await db
-      .select()
-      .from(salaryRecords)
-      .orderBy(desc(salaryRecords.date));
-    
-    // Decrypt sensitive data if present
-    return records.map(r => {
-      if (r.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(r.encryptedData);
-          return { ...r, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting salary record ${r.id}:`, err);
-        }
-      }
-      return r;
-    });
-  }
-  
-  async getSalaryRecord(id: number): Promise<SalaryRecord | undefined> {
-    const [record] = await db
-      .select()
-      .from(salaryRecords)
-      .where(eq(salaryRecords.id, id));
-    
-    if (record && record.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(record.encryptedData);
-        return { ...record, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting salary record ${id}:`, err);
-      }
-    }
-    
-    return record;
-  }
-  
-  async createSalaryRecord(insertSalaryRecord: InsertSalaryRecord): Promise<SalaryRecord> {
-    // Extract data to encrypt
-    const { amount, source } = insertSalaryRecord;
-    const sensitiveData = { amount, source };
-    
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Insert record with encrypted data
-    const [record] = await db
-      .insert(salaryRecords)
-      .values({
-        ...insertSalaryRecord,
-        encryptedData
-      })
-      .returning();
-    
-    return record;
-  }
-  
-  async updateSalaryRecord(id: number, amount: number): Promise<SalaryRecord> {
-    // Fetch existing record to get its data
-    const [existingRecord] = await db
-      .select()
-      .from(salaryRecords)
-      .where(eq(salaryRecords.id, id));
-    
-    if (!existingRecord) {
-      throw new Error(`Salary record with ID ${id} not found`);
-    }
-    
-    // Get the current data and update amount
-    let sensitiveData: Record<string, any> = { amount };
-    
-    if (existingRecord.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(existingRecord.encryptedData);
-        sensitiveData = { ...decryptedData, amount };
-      } catch (err) {
-        console.error(`Error decrypting salary record for update ${id}:`, err);
-      }
-    }
-    
-    // Re-encrypt with updated amount
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Update record
-    const [updatedRecord] = await db
-      .update(salaryRecords)
-      .set({ amount, encryptedData })
-      .where(eq(salaryRecords.id, id))
-      .returning();
-    
-    return updatedRecord;
-  }
-  
-  // Goals methods
-  async getGoals(): Promise<Goal[]> {
-    const goalsList = await db
-      .select()
-      .from(goals)
-      .orderBy(desc(goals.date));
-    
-    // Decrypt sensitive data if present
-    return goalsList.map(g => {
-      if (g.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(g.encryptedData);
-          return { ...g, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting goal ${g.id}:`, err);
-        }
-      }
-      return g;
-    });
-  }
-  
-  async getGoal(id: number): Promise<Goal | undefined> {
-    const [goal] = await db
-      .select()
-      .from(goals)
-      .where(eq(goals.id, id));
-    
-    if (goal && goal.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(goal.encryptedData);
-        return { ...goal, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting goal ${id}:`, err);
-      }
-    }
-    
-    return goal;
-  }
-  
-  async createGoal(insertGoal: InsertGoal): Promise<Goal> {
-    // Extract data to encrypt
-    const { name, targetAmount, userId, isPrivate } = insertGoal;
-    const sensitiveData = { name, targetAmount, isPrivate };
-    
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Insert goal with encrypted data and default values
-    const [goal] = await db
-      .insert(goals)
-      .values({
-        ...insertGoal,
-        encryptedData,
-        currentAmount: 0,
-        completed: false
-      })
-      .returning();
-    
-    return goal;
-  }
-  
-  async updateGoal(id: number, currentAmount: number): Promise<Goal> {
-    // Fetch existing goal to get its data
-    const [existingGoal] = await db
-      .select()
-      .from(goals)
-      .where(eq(goals.id, id));
-    
-    if (!existingGoal) {
-      throw new Error(`Goal with ID ${id} not found`);
-    }
-    
-    // Check if goal is completed
-    const completed = currentAmount >= existingGoal.targetAmount;
-    
-    // Update the goal
-    const [updatedGoal] = await db
-      .update(goals)
-      .set({ currentAmount, completed })
-      .where(eq(goals.id, id))
-      .returning();
-    
-    return updatedGoal;
-  }
-  
-  async deleteGoal(id: number): Promise<void> {
-    await db
-      .delete(goals)
-      .where(eq(goals.id, id));
-  }
-  
-  // Savings methods
-  async getSavingsRecords(): Promise<SavingsRecord[]> {
-    return db
-      .select()
-      .from(savingsRecords)
-      .orderBy(desc(savingsRecords.date));
-  }
-  
-  async createSavingsRecord(insertSavingsRecord: InsertSavingsRecord): Promise<SavingsRecord> {
-    const [record] = await db
-      .insert(savingsRecords)
-      .values(insertSavingsRecord)
-      .returning();
-    
-    // If this saving is associated with a goal, update the goal's current amount
-    if (record.goalId) {
-      const [goal] = await db
-        .select()
-        .from(goals)
-        .where(eq(goals.id, record.goalId));
-      
-      if (goal) {
-        await this.updateGoal(goal.id, goal.currentAmount + record.amount);
-      }
-    }
-    
-    return record;
-  }
-  
-  // Categories methods
-  async getCategorySpending(): Promise<CategorySpending[]> {
-    // In a real implementation, this would be a query that aggregates spending by category
-    // For now, we'll return some sample data
-    const categoriesList = await db
-      .select()
-      .from(categorySpending);
-    
-    return categoriesList;
-  }
-  
-  // AI Insights methods
-  async getAiInsights(): Promise<AiInsight[]> {
-    return db
-      .select()
-      .from(aiInsights)
-      .orderBy(desc(aiInsights.date));
-  }
-  
-  // Data Management methods
-  async deleteAllUserData(): Promise<void> {
-    // In a real application, this should be wrapped in a transaction
-    await db.delete(transactions);
-    await db.delete(salaryRecords);
-    await db.delete(goals);
-    await db.delete(savingsRecords);
-    // Reset category spending but keep categories
-    const categories = await db.select().from(categorySpending);
-    for (const category of categories) {
-      await db
-        .update(categorySpending)
-        .set({ amount: 0, percentage: 0, changePercentage: 0 })
-        .where(eq(categorySpending.id, category.id));
-    }
-    // Clear insights
-    await db.delete(aiInsights);
-  }
-  
-  async exportUserData(): Promise<{
-    transactions: Transaction[];
-    salaryRecords: SalaryRecord[];
-    goals: Goal[];
-    savingsRecords: SavingsRecord[];
-    categorySpending: CategorySpending[];
-    aiInsights: AiInsight[];
-  }> {
-    // Fetch all data
-    const [
-      transactionsList,
-      salaryRecordsList,
-      goalsList,
-      savingsRecordsList,
-      categorySpendingList,
-      aiInsightsList
-    ] = await Promise.all([
-      this.getTransactions(),
-      this.getSalaryRecords(),
-      this.getGoals(),
-      this.getSavingsRecords(),
-      this.getCategorySpending(),
-      this.getAiInsights()
-    ]);
-    
-    return {
-      transactions: transactionsList,
-      salaryRecords: salaryRecordsList,
-      goals: goalsList,
-      savingsRecords: savingsRecordsList,
-      categorySpending: categorySpendingList,
-      aiInsights: aiInsightsList
-    };
-  }
-}
-
-// Memory Storage implementation kept for reference
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private transactionsList: Map<number, Transaction>;
-  private salaryRecordsList: Map<number, SalaryRecord>;
-  private goalsList: Map<number, Goal>;
-  private savingsRecordsList: Map<number, SavingsRecord>;
-  private categorySpendingList: Map<number, CategorySpending>;
-  private aiInsightsList: Map<number, AiInsight>;
-  
-  // IDs for auto-increment
-  private currentUserId: number;
-  private currentTransactionId: number;
-  private currentSalaryId: number;
-  private currentGoalId: number;
-  private currentSavingsId: number;
-  private currentCategoryId: number;
-  private currentInsightId: number;
-
   constructor() {
-    // Initialize storage maps
-    this.users = new Map();
-    this.transactionsList = new Map();
-    this.salaryRecordsList = new Map();
-    this.goalsList = new Map();
-    this.savingsRecordsList = new Map();
-    this.categorySpendingList = new Map();
-    this.aiInsightsList = new Map();
-    
-    // Initialize IDs
-    this.currentUserId = 1;
-    this.currentTransactionId = 1;
-    this.currentSalaryId = 1;
-    this.currentGoalId = 1;
-    this.currentSavingsId = 1;
-    this.currentCategoryId = 1;
-    this.currentInsightId = 1;
-    
-    // Initialize with sample categories for demo
-    this.initializeCategories();
-    this.initializeAiInsights();
-  }
-
-  // Helper to initialize categories for the demo
-  private initializeCategories() {
-    const categories = [
-      { name: "Housing & Utilities", amount: 1250, percentage: 35, changePercentage: -2 },
-      { name: "Food & Dining", amount: 640.50, percentage: 22, changePercentage: 5 },
-      { name: "Entertainment", amount: 320.25, percentage: 18, changePercentage: 0 },
-      { name: "Transportation", amount: 230, percentage: 15, changePercentage: -1 }
-    ];
-    
-    categories.forEach(cat => {
-      const category: CategorySpending = {
-        id: this.currentCategoryId++,
-        name: cat.name,
-        amount: cat.amount,
-        percentage: cat.percentage,
-        changePercentage: cat.changePercentage
-      };
-      this.categorySpendingList.set(category.id, category);
+    this.sessionStore = new PostgresSessionStore({ 
+      pool: pgPool, 
+      createTableIfMissing: true 
     });
   }
   
-  // Helper to initialize AI insights for the demo
-  private initializeAiInsights() {
-    const insights = [
-      { 
-        type: "spending_pattern", 
-        title: "Spending Pattern Detected", 
-        description: "Your dining expenses have increased by 25% this month compared to your 6-month average.",
-        actionText: "Get Budget Tips"
-      },
-      { 
-        type: "saving_opportunity", 
-        title: "Saving Opportunity", 
-        description: "You could save $45/month by consolidating your streaming subscriptions.",
-        actionText: "View Analysis"
-      },
-      { 
-        type: "goal_achievement", 
-        title: "Goal Achievement", 
-        description: "At your current saving rate, you'll reach your \"Home Down Payment\" goal 2 months ahead of schedule.",
-        actionText: "Adjust Goals"
-      }
-    ];
-    
-    insights.forEach(insight => {
-      const aiInsight: AiInsight = {
-        id: this.currentInsightId++,
-        date: new Date(),
-        type: insight.type,
-        title: insight.title,
-        description: insight.description,
-        actionText: insight.actionText
-      };
-      this.aiInsightsList.set(aiInsight.id, aiInsight);
-    });
-  }
-
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    try {
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user;
+    } catch (error) {
+      console.error("Error getting user:", error);
+      return undefined;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    try {
+      const [user] = await db.select().from(users).where(eq(users.username, username));
+      return user;
+    } catch (error) {
+      console.error("Error getting user by username:", error);
+      return undefined;
+    }
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const now = new Date();
-    const user: User = { 
-      ...insertUser, 
-      id, 
-      createdAt: now,
-      lastLogin: null,
-      dataEncryptionEnabled: true,
-      dataSharingEnabled: false,
-      anonymizedAnalytics: true
-    };
-    this.users.set(id, user);
-    return user;
+    try {
+      // Hash the password
+      const hashedPassword = hashPassword(insertUser.password);
+      
+      // Create the user with the hashed password
+      const userData = {
+        ...insertUser,
+        password: hashedPassword,
+        email: insertUser.email || null,  // Convert undefined to null
+      };
+      
+      const [user] = await db.insert(users).values(userData).returning();
+      return user;
+    } catch (error) {
+      console.error("Error creating user:", error);
+      throw error;
+    }
   }
-  
+
   // Transaction methods
   async getTransactions(): Promise<Transaction[]> {
-    return Array.from(this.transactionsList.values());
+    try {
+      return await db.select().from(transactions).orderBy(desc(transactions.date));
+    } catch (error) {
+      console.error("Error getting transactions:", error);
+      return [];
+    }
   }
-  
+
   async getTransaction(id: number): Promise<Transaction | undefined> {
-    return this.transactionsList.get(id);
+    try {
+      const [transaction] = await db.select().from(transactions).where(eq(transactions.id, id));
+      return transaction;
+    } catch (error) {
+      console.error("Error getting transaction:", error);
+      return undefined;
+    }
   }
-  
+
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
-    const id = this.currentTransactionId++;
-    const transaction: Transaction = {
-      ...insertTransaction,
-      id,
-      date: new Date()
-    };
-    this.transactionsList.set(id, transaction);
-    
-    // Update category spending based on new transaction
-    this.updateCategorySpending(transaction);
-    
-    // Generate AI insights based on transaction patterns
-    this.generateTransactionInsights(transaction);
-    
-    return transaction;
+    try {
+      // Ensure description is null and not undefined
+      const transactionData = {
+        ...insertTransaction,
+        description: insertTransaction.description || null,
+        encryptedData: insertTransaction.encryptedData || null,
+        userId: insertTransaction.userId || 1, // Default to 1 if not provided
+      };
+      
+      const [transaction] = await db.insert(transactions).values(transactionData).returning();
+      return transaction;
+    } catch (error) {
+      console.error("Error creating transaction:", error);
+      throw error;
+    }
   }
-  
+
   async deleteTransaction(id: number): Promise<void> {
-    this.transactionsList.delete(id);
+    try {
+      await db.delete(transactions).where(eq(transactions.id, id));
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      throw error;
+    }
   }
-  
+
   // Salary methods
   async getSalaryRecords(): Promise<SalaryRecord[]> {
-    return Array.from(this.salaryRecordsList.values());
+    try {
+      return await db.select().from(salaryRecords).orderBy(desc(salaryRecords.date));
+    } catch (error) {
+      console.error("Error getting salary records:", error);
+      return [];
+    }
   }
-  
+
   async getSalaryRecord(id: number): Promise<SalaryRecord | undefined> {
-    return this.salaryRecordsList.get(id);
+    try {
+      const [record] = await db.select().from(salaryRecords).where(eq(salaryRecords.id, id));
+      return record;
+    } catch (error) {
+      console.error("Error getting salary record:", error);
+      return undefined;
+    }
   }
-  
+
   async createSalaryRecord(insertSalaryRecord: InsertSalaryRecord): Promise<SalaryRecord> {
-    const id = this.currentSalaryId++;
-    const salaryRecord: SalaryRecord = {
-      ...insertSalaryRecord,
-      id,
-      date: new Date()
-    };
-    this.salaryRecordsList.set(id, salaryRecord);
-    return salaryRecord;
+    try {
+      // Ensure values are properly formatted
+      const salaryData = {
+        ...insertSalaryRecord,
+        source: insertSalaryRecord.source || "Primary Job",
+        encryptedData: insertSalaryRecord.encryptedData || null,
+        userId: insertSalaryRecord.userId || 1,
+      };
+      
+      const [salaryRecord] = await db.insert(salaryRecords).values(salaryData).returning();
+      return salaryRecord;
+    } catch (error) {
+      console.error("Error creating salary record:", error);
+      throw error;
+    }
   }
-  
+
   async updateSalaryRecord(id: number, amount: number): Promise<SalaryRecord> {
-    const record = this.salaryRecordsList.get(id);
-    if (!record) {
-      throw new Error(`Salary record with ID ${id} not found`);
+    try {
+      const [updatedRecord] = await db
+        .update(salaryRecords)
+        .set({ amount })
+        .where(eq(salaryRecords.id, id))
+        .returning();
+      
+      return updatedRecord;
+    } catch (error) {
+      console.error("Error updating salary record:", error);
+      throw error;
     }
-    
-    const updatedRecord = { ...record, amount };
-    this.salaryRecordsList.set(id, updatedRecord);
-    return updatedRecord;
   }
-  
-  // Goals methods
+
+  // Goal methods
   async getGoals(): Promise<Goal[]> {
-    return Array.from(this.goalsList.values());
+    try {
+      return await db.select().from(goals).orderBy(desc(goals.date));
+    } catch (error) {
+      console.error("Error getting goals:", error);
+      return [];
+    }
   }
-  
+
   async getGoal(id: number): Promise<Goal | undefined> {
-    return this.goalsList.get(id);
+    try {
+      const [goal] = await db.select().from(goals).where(eq(goals.id, id));
+      return goal;
+    } catch (error) {
+      console.error("Error getting goal:", error);
+      return undefined;
+    }
   }
-  
+
   async createGoal(insertGoal: InsertGoal): Promise<Goal> {
-    const id = this.currentGoalId++;
-    const goal: Goal = {
-      ...insertGoal,
-      id,
-      date: new Date(),
-      currentAmount: 0,
-      completed: false
-    };
-    this.goalsList.set(id, goal);
-    return goal;
+    try {
+      // Set default values and ensure proper formatting
+      const goalData = {
+        ...insertGoal,
+        currentAmount: 0,
+        completed: false,
+        encryptedData: insertGoal.encryptedData || null,
+        userId: insertGoal.userId || 1,
+        isPrivate: insertGoal.isPrivate ?? true,
+      };
+      
+      const [goal] = await db.insert(goals).values(goalData).returning();
+      return goal;
+    } catch (error) {
+      console.error("Error creating goal:", error);
+      throw error;
+    }
   }
-  
+
   async updateGoal(id: number, currentAmount: number): Promise<Goal> {
-    const goal = this.goalsList.get(id);
-    if (!goal) {
-      throw new Error(`Goal with ID ${id} not found`);
+    try {
+      // Calculate if the goal is completed
+      const [goal] = await db.select().from(goals).where(eq(goals.id, id));
+      if (!goal) {
+        throw new Error("Goal not found");
+      }
+      
+      const completed = currentAmount >= goal.targetAmount;
+      
+      const [updatedGoal] = await db
+        .update(goals)
+        .set({ 
+          currentAmount,
+          completed
+        })
+        .where(eq(goals.id, id))
+        .returning();
+      
+      return updatedGoal;
+    } catch (error) {
+      console.error("Error updating goal:", error);
+      throw error;
     }
-    
-    const completed = currentAmount >= goal.targetAmount;
-    const updatedGoal = { ...goal, currentAmount, completed };
-    this.goalsList.set(id, updatedGoal);
-    
-    // Generate AI insight when a goal is close to completion or completed
-    if (completed || (currentAmount / goal.targetAmount >= 0.9)) {
-      this.generateGoalInsight(updatedGoal);
-    }
-    
-    return updatedGoal;
   }
-  
+
   async deleteGoal(id: number): Promise<void> {
-    this.goalsList.delete(id);
+    try {
+      await db.delete(goals).where(eq(goals.id, id));
+    } catch (error) {
+      console.error("Error deleting goal:", error);
+      throw error;
+    }
   }
-  
+
   // Savings methods
   async getSavingsRecords(): Promise<SavingsRecord[]> {
-    return Array.from(this.savingsRecordsList.values());
-  }
-  
-  async createSavingsRecord(insertSavingsRecord: InsertSavingsRecord): Promise<SavingsRecord> {
-    const id = this.currentSavingsId++;
-    const savingsRecord: SavingsRecord = {
-      ...insertSavingsRecord,
-      id,
-      date: new Date()
-    };
-    this.savingsRecordsList.set(id, savingsRecord);
-    
-    // If this saving is associated with a goal, update the goal's current amount
-    if (savingsRecord.goalId) {
-      const goal = this.goalsList.get(savingsRecord.goalId);
-      if (goal) {
-        this.updateGoal(savingsRecord.goalId, goal.currentAmount + savingsRecord.amount);
-      }
+    try {
+      return await db.select().from(savingsRecords).orderBy(desc(savingsRecords.date));
+    } catch (error) {
+      console.error("Error getting savings records:", error);
+      return [];
     }
-    
-    return savingsRecord;
   }
-  
-  // Categories methods
+
+  async createSavingsRecord(insertSavingsRecord: InsertSavingsRecord): Promise<SavingsRecord> {
+    try {
+      // Ensure values are properly formatted
+      const savingsData = {
+        ...insertSavingsRecord,
+        description: insertSavingsRecord.description || null,
+        goalId: insertSavingsRecord.goalId || null,
+      };
+      
+      const [savingsRecord] = await db.insert(savingsRecords).values(savingsData).returning();
+      
+      // If there is a goal associated with this savings record, update the goal's current amount
+      if (savingsRecord.goalId) {
+        const goal = await this.getGoal(savingsRecord.goalId);
+        if (goal) {
+          await this.updateGoal(goal.id, goal.currentAmount + savingsRecord.amount);
+        }
+      }
+      
+      return savingsRecord;
+    } catch (error) {
+      console.error("Error creating savings record:", error);
+      throw error;
+    }
+  }
+
+  // Category methods - for real application this would analyze actual spending patterns
   async getCategorySpending(): Promise<CategorySpending[]> {
-    return Array.from(this.categorySpendingList.values());
+    try {
+      // Get categories from actual transactions
+      const result = await db.execute<CategorySpending>(sql`
+        SELECT 
+          category as name, 
+          SUM(amount) as amount,
+          ROUND((SUM(amount) * 100.0 / (SELECT SUM(amount) FROM transactions)), 2) as percentage,
+          0 as change_percentage,
+          0 as id
+        FROM 
+          transactions 
+        GROUP BY 
+          category 
+        ORDER BY 
+          amount DESC
+      `);
+      
+      return result as unknown as CategorySpending[];
+    } catch (error) {
+      console.error("Error getting category spending:", error);
+      return [];
+    }
   }
-  
-  // AI Insights methods
+
+  // AI Insights methods - for real application this would generate insights based on transaction data
   async getAiInsights(): Promise<AiInsight[]> {
-    return Array.from(this.aiInsightsList.values());
+    try {
+      return await db.select().from(aiInsights).orderBy(desc(aiInsights.date));
+    } catch (error) {
+      console.error("Error getting AI insights:", error);
+      return [];
+    }
   }
-  
+
   // Data Management methods
   async deleteAllUserData(): Promise<void> {
-    this.transactionsList.clear();
-    this.salaryRecordsList.clear();
-    this.goalsList.clear();
-    this.savingsRecordsList.clear();
-    // Keep categories but reset amounts
-    Array.from(this.categorySpendingList.values()).forEach(category => {
-      category.amount = 0;
-      category.percentage = 0;
-      category.changePercentage = 0;
-    });
-    // Reset AI insights but keep some basic ones
-    this.aiInsightsList.clear();
-    this.initializeAiInsights();
+    try {
+      // In a real application, this would be limited to the current user's data
+      await db.delete(transactions);
+      await db.delete(salaryRecords);
+      await db.delete(goals);
+      await db.delete(savingsRecords);
+      await db.delete(aiInsights);
+    } catch (error) {
+      console.error("Error deleting all user data:", error);
+      throw error;
+    }
   }
-  
+
   async exportUserData(): Promise<{
     transactions: Transaction[];
     salaryRecords: SalaryRecord[];
@@ -742,110 +384,54 @@ export class MemStorage implements IStorage {
     categorySpending: CategorySpending[];
     aiInsights: AiInsight[];
   }> {
-    return {
-      transactions: Array.from(this.transactionsList.values()),
-      salaryRecords: Array.from(this.salaryRecordsList.values()),
-      goals: Array.from(this.goalsList.values()),
-      savingsRecords: Array.from(this.savingsRecordsList.values()),
-      categorySpending: Array.from(this.categorySpendingList.values()),
-      aiInsights: Array.from(this.aiInsightsList.values())
-    };
-  }
-  
-  // Helper methods
-  private updateCategorySpending(transaction: Transaction): void {
-    if (transaction.amount >= 0) return; // Skip income transactions
-    
-    const amount = Math.abs(transaction.amount);
-    let category = Array.from(this.categorySpendingList.values())
-      .find(c => c.name.toLowerCase() === transaction.category.toLowerCase());
-    
-    if (!category) {
-      // Create new category if it doesn't exist
-      category = {
-        id: this.currentCategoryId++,
-        name: transaction.category,
-        amount: 0,
-        percentage: 0,
-        changePercentage: 0
-      };
-      this.categorySpendingList.set(category.id, category);
-    }
-    
-    // Update category amount
-    category.amount += amount;
-    
-    // Recalculate percentages for all categories
-    const totalSpending = Array.from(this.categorySpendingList.values())
-      .reduce((sum, cat) => sum + cat.amount, 0);
-    
-    Array.from(this.categorySpendingList.values()).forEach(cat => {
-      if (totalSpending > 0) {
-        cat.percentage = Math.round((cat.amount / totalSpending) * 100);
-      } else {
-        cat.percentage = 0;
-      }
-    });
-  }
-  
-  private generateTransactionInsights(transaction: Transaction): void {
-    // Only generate insights for expenses
-    if (transaction.amount >= 0) return;
-    
-    const category = transaction.category;
-    const amount = Math.abs(transaction.amount);
-    
-    // Get all transactions in this category
-    const categoryTransactions = Array.from(this.transactionsList.values())
-      .filter(t => t.category === category && t.amount < 0);
-    
-    // If we have multiple transactions in this category, analyze patterns
-    if (categoryTransactions.length >= 3) {
-      const avgSpending = categoryTransactions
-        .reduce((sum, t) => sum + Math.abs(t.amount), 0) / categoryTransactions.length;
+    try {
+      // In a real application, this would be limited to the current user's data
+      const [
+        transactionsList,
+        salaryRecordsList,
+        goalsList,
+        savingsRecordsList,
+        categorySpendingList,
+        aiInsightsList
+      ] = await Promise.all([
+        this.getTransactions(),
+        this.getSalaryRecords(),
+        this.getGoals(),
+        this.getSavingsRecords(),
+        this.getCategorySpending(),
+        this.getAiInsights()
+      ]);
       
-      // If this transaction is significantly higher than average
-      if (amount > avgSpending * 1.5) {
-        const insight: AiInsight = {
-          id: this.currentInsightId++,
-          date: new Date(),
-          type: "spending_pattern",
-          title: `High ${category} Spending Detected`,
-          description: `Your recent ${category} expense of $${amount.toFixed(2)} is ${Math.round((amount / avgSpending - 1) * 100)}% higher than your average.`,
-          actionText: "View Spending Tips"
-        };
-        this.aiInsightsList.set(insight.id, insight);
-      }
-    }
-  }
-  
-  private generateGoalInsight(goal: Goal): void {
-    const percentComplete = Math.round((goal.currentAmount / goal.targetAmount) * 100);
-    
-    let insight: AiInsight;
-    if (goal.completed) {
-      insight = {
-        id: this.currentInsightId++,
-        date: new Date(),
-        type: "goal_achievement",
-        title: "Goal Completed! 🎉",
-        description: `Congratulations! You've reached your "${goal.name}" goal of ${goal.targetAmount.toFixed(2)}.`,
-        actionText: "Set New Goal"
+      // Decrypt sensitive data for export if needed
+      const decryptedTransactions = transactionsList.map(transaction => {
+        if (transaction.encryptedData) {
+          try {
+            const decryptedData = decryptFinancialData(transaction.encryptedData);
+            return {
+              ...transaction,
+              decryptedData
+            };
+          } catch (e) {
+            return transaction;
+          }
+        }
+        return transaction;
+      });
+      
+      return {
+        transactions: decryptedTransactions,
+        salaryRecords: salaryRecordsList,
+        goals: goalsList,
+        savingsRecords: savingsRecordsList,
+        categorySpending: categorySpendingList,
+        aiInsights: aiInsightsList
       };
-    } else {
-      insight = {
-        id: this.currentInsightId++,
-        date: new Date(),
-        type: "goal_achievement",
-        title: "Almost There!",
-        description: `You're ${percentComplete}% of the way to your "${goal.name}" goal.`,
-        actionText: "Review Goal"
-      };
+    } catch (error) {
+      console.error("Error exporting user data:", error);
+      throw error;
     }
-    
-    this.aiInsightsList.set(insight.id, insight);
   }
 }
 
-// Switch to the DatabaseStorage implementation
+// Create and export an instance of the storage
 export const storage = new DatabaseStorage();

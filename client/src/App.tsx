@@ -8,38 +8,90 @@ import Transactions from "@/pages/Transactions";
 import Goals from "@/pages/Goals";
 import Insights from "@/pages/Insights";
 import Privacy from "@/pages/Privacy";
+import AuthPage from "@/pages/auth-page";
 import { FinanceProvider } from "./context/FinanceContext";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 import Sidebar from "./components/Sidebar";
 import MobileNav from "./components/layout/MobileNav";
 
-function Router() {
+function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-to-br from-background-dark to-background-light text-text">
       <Sidebar />
       <main className="flex-1 overflow-y-auto pt-4 md:pt-0 pb-4 px-4 mt-14 md:mt-0">
         <MobileNav />
         <div className="max-w-6xl mx-auto">
-          <Switch>
-            <Route path="/" component={Dashboard} />
-            <Route path="/transactions" component={Transactions} />
-            <Route path="/goals" component={Goals} />
-            <Route path="/insights" component={Insights} />
-            <Route path="/privacy" component={Privacy} />
-            <Route component={NotFound} />
-          </Switch>
+          {children}
         </div>
       </main>
     </div>
   );
 }
 
+function DashboardPage() {
+  return (
+    <MainLayout>
+      <Dashboard />
+    </MainLayout>
+  );
+}
+
+function TransactionsPage() {
+  return (
+    <MainLayout>
+      <Transactions />
+    </MainLayout>
+  );
+}
+
+function GoalsPage() {
+  return (
+    <MainLayout>
+      <Goals />
+    </MainLayout>
+  );
+}
+
+function InsightsPage() {
+  return (
+    <MainLayout>
+      <Insights />
+    </MainLayout>
+  );
+}
+
+function PrivacyPage() {
+  return (
+    <MainLayout>
+      <Privacy />
+    </MainLayout>
+  );
+}
+
+function Router() {
+  return (
+    <Switch>
+      <ProtectedRoute path="/" component={DashboardPage} />
+      <ProtectedRoute path="/transactions" component={TransactionsPage} />
+      <ProtectedRoute path="/goals" component={GoalsPage} />
+      <ProtectedRoute path="/insights" component={InsightsPage} />
+      <ProtectedRoute path="/privacy" component={PrivacyPage} />
+      <Route path="/auth" component={AuthPage} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <FinanceProvider>
-        <Router />
-        <Toaster />
-      </FinanceProvider>
+      <AuthProvider>
+        <FinanceProvider>
+          <Router />
+          <Toaster />
+        </FinanceProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

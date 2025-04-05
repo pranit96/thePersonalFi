@@ -19,6 +19,7 @@ export const insertTransactionSchema = createInsertSchema(transactions).pick({
   amount: true,
   category: true,
   description: true,
+  encryptedData: true,
   userId: true,
 });
 
@@ -38,6 +39,7 @@ export const salaryRecords = pgTable("salary_records", {
 export const insertSalaryRecordSchema = createInsertSchema(salaryRecords).pick({
   amount: true,
   source: true,
+  encryptedData: true,
   userId: true,
 });
 
@@ -60,6 +62,7 @@ export const goals = pgTable("goals", {
 export const insertGoalSchema = createInsertSchema(goals).pick({
   name: true,
   targetAmount: true,
+  encryptedData: true,
   userId: true,
   isPrivate: true,
 });

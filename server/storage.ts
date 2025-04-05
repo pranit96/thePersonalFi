@@ -14,6 +14,8 @@ import {
   encryptFinancialData, decryptFinancialData, 
   hashPassword, verifyPassword 
 } from "./utils/encryption";
+import connectPg from "connect-pg-simple";
+import session from "express-session";
 
 // Interfaces for all storage operations
 export interface IStorage {
@@ -61,10 +63,25 @@ export interface IStorage {
     categorySpending: CategorySpending[];
     aiInsights: AiInsight[];
   }>;
+  
+  // Session store for authentication
+  sessionStore: session.Store;
 }
 
 // Database implementation of IStorage
 export class DatabaseStorage implements IStorage {
+  sessionStore: session.Store;
+  
+  constructor() {
+    // Create a PostgreSQL session store for authentication
+    const PostgresSessionStore = connectPg(session);
+    this.sessionStore = new PostgresSessionStore({
+      conObject: {
+        connectionString: process.env.DATABASE_URL,
+      },
+      createTableIfMissing: true,
+    });
+  }
   // User methods
   async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -451,6 +468,9 @@ export class DatabaseStorage implements IStorage {
 
 // Memory Storage implementation kept for reference
 export class MemStorage implements IStorage {
+  // Session store for authentication
+  sessionStore: session.Store;
+  
   private users: Map<number, User>;
   private transactionsList: Map<number, Transaction>;
   private salaryRecordsList: Map<number, SalaryRecord>;
@@ -469,6 +489,12 @@ export class MemStorage implements IStorage {
   private currentInsightId: number;
 
   constructor() {
+    // Initialize session store for in-memory storage
+    const MemoryStore = require('memorystore')(session);
+    this.sessionStore = new MemoryStore({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    });
+    
     // Initialize storage maps
     this.users = new Map();
     this.transactionsList = new Map();
@@ -570,7 +596,8 @@ export class MemStorage implements IStorage {
       lastLogin: null,
       dataEncryptionEnabled: true,
       dataSharingEnabled: false,
-      anonymizedAnalytics: true
+      anonymizedAnalytics: true,
+      email: insertUser.email ?? null
     };
     this.users.set(id, user);
     return user;
@@ -590,7 +617,10 @@ export class MemStorage implements IStorage {
     const transaction: Transaction = {
       ...insertTransaction,
       id,
-      date: new Date()
+      date: new Date(),
+      description: insertTransaction.description ?? null,
+      encryptedData: insertTransaction.encryptedData ?? null,
+      userId: insertTransaction.userId ?? 1
     };
     this.transactionsList.set(id, transaction);
     
@@ -621,7 +651,10 @@ export class MemStorage implements IStorage {
     const salaryRecord: SalaryRecord = {
       ...insertSalaryRecord,
       id,
-      date: new Date()
+      date: new Date(),
+      encryptedData: insertSalaryRecord.encryptedData ?? null,
+      userId: insertSalaryRecord.userId ?? 1,
+      source: insertSalaryRecord.source ?? null
     };
     this.salaryRecordsList.set(id, salaryRecord);
     return salaryRecord;
@@ -654,7 +687,10 @@ export class MemStorage implements IStorage {
       id,
       date: new Date(),
       currentAmount: 0,
-      completed: false
+      completed: false,
+      encryptedData: insertGoal.encryptedData ?? null,
+      userId: insertGoal.userId ?? 1,
+      isPrivate: insertGoal.isPrivate ?? true
     };
     this.goalsList.set(id, goal);
     return goal;
@@ -692,7 +728,9 @@ export class MemStorage implements IStorage {
     const savingsRecord: SavingsRecord = {
       ...insertSavingsRecord,
       id,
-      date: new Date()
+      date: new Date(),
+      description: insertSavingsRecord.description ?? null,
+      goalId: insertSavingsRecord.goalId ?? null
     };
     this.savingsRecordsList.set(id, savingsRecord);
     

@@ -1,6 +1,7 @@
 import { createContext, useContext, ReactNode, useState, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useAuth } from "@/hooks/use-auth";
 import { 
   type Transaction, 
   type SalaryRecord, 
@@ -52,47 +53,55 @@ export function useFinance() {
 }
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
+  
   // Query hooks
   const { 
-    data: transactions = [],
+    data: transactions = [] as Transaction[],
     isLoading: isLoadingTransactions
-  } = useQuery({
+  } = useQuery<Transaction[]>({
     queryKey: ['/api/transactions'],
+    enabled: !!user, // Only run query if user is authenticated
   });
   
   const {
-    data: salaryRecords = [],
+    data: salaryRecords = [] as SalaryRecord[],
     isLoading: isLoadingSalary
-  } = useQuery({
+  } = useQuery<SalaryRecord[]>({
     queryKey: ['/api/salary'],
+    enabled: !!user,
   });
   
   const {
-    data: goals = [],
+    data: goals = [] as Goal[],
     isLoading: isLoadingGoals
-  } = useQuery({
+  } = useQuery<Goal[]>({
     queryKey: ['/api/goals'],
+    enabled: !!user,
   });
   
   const {
-    data: savingsRecords = [],
+    data: savingsRecords = [] as SavingsRecord[],
     isLoading: isLoadingSavings
-  } = useQuery({
+  } = useQuery<SavingsRecord[]>({
     queryKey: ['/api/savings'],
+    enabled: !!user,
   });
   
   const {
-    data: categorySpending = [],
+    data: categorySpending = [] as CategorySpending[],
     isLoading: isLoadingCategories
-  } = useQuery({
+  } = useQuery<CategorySpending[]>({
     queryKey: ['/api/categories'],
+    enabled: !!user,
   });
   
   const {
-    data: aiInsights = [],
+    data: aiInsights = [] as AiInsight[],
     isLoading: isLoadingInsights
-  } = useQuery({
+  } = useQuery<AiInsight[]>({
     queryKey: ['/api/insights'],
+    enabled: !!user,
   });
   
   // Mutations for transactions
@@ -177,55 +186,56 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     isLoadingCategories ||
     isLoadingInsights;
   
+  // Create typed value object to avoid TypeScript errors
+  const contextValue: FinanceContextType = {
+    // Transactions
+    transactions: transactions as Transaction[],
+    addTransaction: async (transaction) => {
+      await addTransactionMutation.mutateAsync(transaction);
+    },
+    deleteTransaction: async (id) => {
+      await deleteTransactionMutation.mutateAsync(id);
+    },
+    
+    // Salary
+    salaryRecords: salaryRecords as SalaryRecord[],
+    addSalaryRecord: async (record) => {
+      await addSalaryMutation.mutateAsync(record);
+    },
+    updateSalaryRecord: async (id, amount) => {
+      await updateSalaryMutation.mutateAsync({ id, amount });
+    },
+    
+    // Goals
+    goals: goals as Goal[],
+    addGoal: async (goal) => {
+      await addGoalMutation.mutateAsync(goal);
+    },
+    updateGoal: async (id, currentAmount) => {
+      await updateGoalMutation.mutateAsync({ id, currentAmount });
+    },
+    deleteGoal: async (id) => {
+      await deleteGoalMutation.mutateAsync(id);
+    },
+    
+    // Savings
+    savingsRecords: savingsRecords as SavingsRecord[],
+    addSavingsRecord: async (record) => {
+      await addSavingsMutation.mutateAsync(record);
+    },
+    
+    // Categories
+    categorySpending: categorySpending as CategorySpending[],
+    
+    // AI Insights
+    aiInsights: aiInsights as AiInsight[],
+    
+    // Loading states
+    isLoading
+  };
+
   return (
-    <FinanceContext.Provider
-      value={{
-        // Transactions
-        transactions,
-        addTransaction: async (transaction) => {
-          await addTransactionMutation.mutateAsync(transaction);
-        },
-        deleteTransaction: async (id) => {
-          await deleteTransactionMutation.mutateAsync(id);
-        },
-        
-        // Salary
-        salaryRecords,
-        addSalaryRecord: async (record) => {
-          await addSalaryMutation.mutateAsync(record);
-        },
-        updateSalaryRecord: async (id, amount) => {
-          await updateSalaryMutation.mutateAsync({ id, amount });
-        },
-        
-        // Goals
-        goals,
-        addGoal: async (goal) => {
-          await addGoalMutation.mutateAsync(goal);
-        },
-        updateGoal: async (id, currentAmount) => {
-          await updateGoalMutation.mutateAsync({ id, currentAmount });
-        },
-        deleteGoal: async (id) => {
-          await deleteGoalMutation.mutateAsync(id);
-        },
-        
-        // Savings
-        savingsRecords,
-        addSavingsRecord: async (record) => {
-          await addSavingsMutation.mutateAsync(record);
-        },
-        
-        // Categories
-        categorySpending,
-        
-        // AI Insights
-        aiInsights,
-        
-        // Loading states
-        isLoading
-      }}
-    >
+    <FinanceContext.Provider value={contextValue}>
       {children}
     </FinanceContext.Provider>
   );

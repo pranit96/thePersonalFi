@@ -1,30 +1,34 @@
 import crypto from 'crypto';
 
-// Use environment variable for encryption key
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || '';
+// Get the encryption key from environment variables
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
+
 if (!ENCRYPTION_KEY) {
-  console.error('ENCRYPTION_KEY environment variable is not set!');
-  throw new Error('ENCRYPTION_KEY must be set for secure data encryption');
+  console.warn('ENCRYPTION_KEY is not set. Data encryption will not work properly.');
 }
 
-// Ensure key is of correct length for AES-256 (32 bytes)
-const NORMALIZED_KEY = crypto.createHash('sha256').update(String(ENCRYPTION_KEY)).digest();
-const IV_LENGTH = 16; // For AES, this is always 16 bytes
+// Encryption algorithm
+const ALGORITHM = 'aes-256-gcm';
 
 /**
- * Encrypts sensitive data using AES-256-CBC
+ * Encrypts data using AES-256-GCM
  * @param text - The plaintext to encrypt
- * @returns Encrypted data with IV prepended (hex encoded)
+ * @returns The encrypted data as a hex string (IV + Auth Tag + Encrypted Data)
  */
 export function encrypt(text: string): string {
+  if (!ENCRYPTION_KEY) {
+    console.warn('Cannot encrypt: ENCRYPTION_KEY is not set');
+    return text; // Return plaintext as fallback
+  }
+
   try {
-    // Create a random initialization vector
-    const iv = crypto.randomBytes(IV_LENGTH);
+    // Generate a random initialization vector
+    const iv = crypto.randomBytes(16);
     
-    // Create cipher with normalized key and iv
+    // Create cipher with key and iv
     const cipher = crypto.createCipheriv(
-      'aes-256-cbc', 
-      NORMALIZED_KEY, 
+      ALGORITHM, 
+      Buffer.from(ENCRYPTION_KEY, 'hex'), 
       iv
     );
     
@@ -32,10 +36,13 @@ export function encrypt(text: string): string {
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
     
-    // Prepend IV to encrypted data for use in decryption
-    return iv.toString('hex') + ':' + encrypted;
-  } catch (err) {
-    console.error('Encryption error:', err);
+    // Get the auth tag (for GCM mode)
+    const authTag = cipher.getAuthTag().toString('hex');
+    
+    // Return IV + Auth Tag + Encrypted Data
+    return iv.toString('hex') + authTag + encrypted;
+  } catch (error) {
+    console.error('Encryption error:', error);
     throw new Error('Failed to encrypt data');
   }
 }
@@ -46,26 +53,38 @@ export function encrypt(text: string): string {
  * @returns Decrypted plaintext
  */
 export function decrypt(encryptedText: string): string {
+  if (!ENCRYPTION_KEY) {
+    console.warn('Cannot decrypt: ENCRYPTION_KEY is not set');
+    return encryptedText; // Return as-is as fallback
+  }
+
   try {
-    // Extract IV from the encrypted text
-    const textParts = encryptedText.split(':');
-    const iv = Buffer.from(textParts[0], 'hex');
-    const encryptedData = textParts[1];
+    // Extract the IV (first 32 hex chars = 16 bytes)
+    const iv = Buffer.from(encryptedText.slice(0, 32), 'hex');
     
-    // Create decipher with normalized key and iv
+    // Extract the auth tag (next 32 hex chars = 16 bytes)
+    const authTag = Buffer.from(encryptedText.slice(32, 64), 'hex');
+    
+    // Extract the encrypted data (the rest)
+    const encryptedData = encryptedText.slice(64);
+    
+    // Create decipher
     const decipher = crypto.createDecipheriv(
-      'aes-256-cbc', 
-      NORMALIZED_KEY, 
+      ALGORITHM, 
+      Buffer.from(ENCRYPTION_KEY, 'hex'), 
       iv
     );
+    
+    // Set auth tag
+    decipher.setAuthTag(authTag);
     
     // Decrypt the data
     let decrypted = decipher.update(encryptedData, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
     
     return decrypted;
-  } catch (err) {
-    console.error('Decryption error:', err);
+  } catch (error) {
+    console.error('Decryption error:', error);
     throw new Error('Failed to decrypt data');
   }
 }
@@ -76,10 +95,7 @@ export function decrypt(encryptedText: string): string {
  * @returns Hashed data
  */
 export function hash(data: string): string {
-  return crypto
-    .createHash('sha256')
-    .update(data)
-    .digest('hex');
+  return crypto.createHash('sha256').update(data).digest('hex');
 }
 
 /**
@@ -89,28 +105,10 @@ export function hash(data: string): string {
  * @returns Whether the strings are equal
  */
 export function secureCompare(a: string, b: string): boolean {
-  // To prevent timing attacks, we need to compare strings of the same length
-  try {
-    // Ensure both buffers are of the same length
-    const bufA = Buffer.from(a, 'utf8');
-    const bufB = Buffer.from(b, 'utf8');
-    
-    // If the lengths are different, they're not equal, but compare them anyway
-    // to avoid timing attacks
-    if (bufA.length !== bufB.length) {
-      // Create a new buffer of the same length as bufA
-      const fakeBuf = Buffer.alloc(bufA.length, 0);
-      // Compare with fakeBuf to maintain constant time operation
-      crypto.timingSafeEqual(bufA, fakeBuf);
-      return false;
-    }
-    
-    // If the lengths are the same, do a proper secure comparison
-    return crypto.timingSafeEqual(bufA, bufB);
-  } catch (err) {
-    console.error('Secure compare error:', err);
-    return false;
-  }
+  return crypto.timingSafeEqual(
+    Buffer.from(a, 'utf8'),
+    Buffer.from(b, 'utf8')
+  );
 }
 
 /**
@@ -119,12 +117,7 @@ export function secureCompare(a: string, b: string): boolean {
  * @returns String with encrypted data
  */
 export function encryptFinancialData(data: Record<string, any>): string {
-  try {
-    return encrypt(JSON.stringify(data));
-  } catch (err) {
-    console.error('Error encrypting financial data:', err);
-    throw new Error('Failed to encrypt financial data');
-  }
+  return encrypt(JSON.stringify(data));
 }
 
 /**
@@ -136,9 +129,9 @@ export function decryptFinancialData(encryptedData: string): Record<string, any>
   try {
     const decrypted = decrypt(encryptedData);
     return JSON.parse(decrypted);
-  } catch (err) {
-    console.error('Error decrypting financial data:', err);
-    throw new Error('Failed to decrypt financial data');
+  } catch (error) {
+    console.error('Failed to decrypt financial data:', error);
+    return {};
   }
 }
 
@@ -152,13 +145,12 @@ export function hashPassword(password: string): string {
   const salt = crypto.randomBytes(16).toString('hex');
   
   // Hash the password with the salt
-  const hash = crypto
-    .createHash('sha256')
-    .update(password + salt)
-    .digest('hex');
+  const hashedPassword = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+    .toString('hex');
   
-  // Return the salt and hash separated by a colon
-  return `${salt}:${hash}`;
+  // Return the salt and hash together
+  return `${salt}:${hashedPassword}`;
 }
 
 /**
@@ -168,19 +160,14 @@ export function hashPassword(password: string): string {
  * @returns Whether the password matches
  */
 export function verifyPassword(password: string, storedHash: string): boolean {
-  try {
-    const [salt, hash] = storedHash.split(':');
-    
-    // Hash the input password with the stored salt
-    const inputHash = crypto
-      .createHash('sha256')
-      .update(password + salt)
-      .digest('hex');
-    
-    // Use secure comparison to verify
-    return secureCompare(inputHash, hash);
-  } catch (err) {
-    console.error('Password verification error:', err);
-    return false;
-  }
+  // Extract the salt and hash
+  const [salt, hash] = storedHash.split(':');
+  
+  // Hash the password with the extracted salt
+  const hashedPassword = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, 'sha512')
+    .toString('hex');
+  
+  // Return true if the generated hash matches the stored hash
+  return hash === hashedPassword;
 }

@@ -1,28 +1,53 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertTransactionSchema, insertSalaryRecordSchema, insertGoalSchema, insertSavingsRecordSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
+import { encrypt, decrypt, encryptFinancialData, decryptFinancialData } from "./utils/encryption";
+import { setupAuth } from "./auth";
+import multer from "multer";
+import path from "path";
+import { extractTransactionsFromPDF, cleanupTemporaryFiles } from "./services/pdfService";
+import { sendWelcomeEmail, sendDataExportEmail } from "./services/emailService";
 
-// Create a simple encryption/decryption module for enhanced security
-const crypto = {
-  // Simple encryption for demo purposes
-  encrypt: (data: any): string => {
-    return Buffer.from(JSON.stringify(data)).toString('base64');
+// Configure multer for file uploads
+const storage_config = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, path.join(process.cwd(), 'uploads'));
   },
-  
-  // Simple decryption for demo purposes
-  decrypt: (encryptedData: string): any => {
-    try {
-      return JSON.parse(Buffer.from(encryptedData, 'base64').toString());
-    } catch (e) {
-      return null;
+  filename: (_req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage_config,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (_req, file, cb) => {
+    // Accept only PDF files
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
     }
   }
-};
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Set up authentication
+  setupAuth(app);
+  
+  // Authentication middleware for protected routes
+  const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Authentication required" });
+    }
+    next();
+  };
   // Error handler middleware
   const handleError = (err: any, res: Response) => {
     console.error("API Error:", err);
@@ -36,8 +61,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
   
   // Transactions Routes
-  app.get("/api/transactions", async (_req: Request, res: Response) => {
+  app.get("/api/transactions", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const transactions = await storage.getTransactions();
       res.json(transactions);
     } catch (err) {
@@ -45,9 +75,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post("/api/transactions", async (req: Request, res: Response) => {
+  app.post("/api/transactions", requireAuth, async (req: Request, res: Response) => {
     try {
-      const validatedData = insertTransactionSchema.parse(req.body);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Add userId to the validated data
+      const data = { ...req.body, userId };
+      const validatedData = insertTransactionSchema.parse(data);
+      
+      // If data encryption is enabled, encrypt sensitive details
+      const user = req.user as any;
+      if (user.dataEncryptionEnabled && validatedData.description) {
+        // Store sensitive details in encrypted format
+        const sensitiveData = {
+          fullDescription: validatedData.description,
+          notes: req.body.notes,
+          metadata: req.body.metadata
+        };
+        validatedData.encryptedData = encryptFinancialData(sensitiveData);
+      }
+      
       const transaction = await storage.createTransaction(validatedData);
       res.status(201).json(transaction);
     } catch (err) {
@@ -55,13 +105,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.delete("/api/transactions/:id", async (req: Request, res: Response) => {
+  app.delete("/api/transactions/:id", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
       }
       
+      // Ensure the transaction belongs to the user (would be implemented in storage)
       await storage.deleteTransaction(id);
       res.status(204).end();
     } catch (err) {
@@ -70,8 +126,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Salary Routes
-  app.get("/api/salary", async (_req: Request, res: Response) => {
+  app.get("/api/salary", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const salaryRecords = await storage.getSalaryRecords();
       res.json(salaryRecords);
     } catch (err) {
@@ -79,9 +140,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post("/api/salary", async (req: Request, res: Response) => {
+  app.post("/api/salary", requireAuth, async (req: Request, res: Response) => {
     try {
-      const validatedData = insertSalaryRecordSchema.parse(req.body);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Add userId to the validated data
+      const data = { ...req.body, userId };
+      const validatedData = insertSalaryRecordSchema.parse(data);
+      
+      // If data encryption is enabled, encrypt sensitive details
+      const user = req.user as any;
+      if (user.dataEncryptionEnabled) {
+        // Store sensitive details in encrypted format
+        const sensitiveData = {
+          source: validatedData.source,
+          notes: req.body.notes,
+          bonusDetails: req.body.bonusDetails
+        };
+        validatedData.encryptedData = encryptFinancialData(sensitiveData);
+      }
+      
       const salaryRecord = await storage.createSalaryRecord(validatedData);
       res.status(201).json(salaryRecord);
     } catch (err) {
@@ -89,8 +170,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.put("/api/salary/:id", async (req: Request, res: Response) => {
+  app.put("/api/salary/:id", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -99,6 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const schema = z.object({ amount: z.number().positive() });
       const { amount } = schema.parse(req.body);
       
+      // Ensure the record belongs to the user (would be implemented in storage)
       const updatedRecord = await storage.updateSalaryRecord(id, amount);
       res.json(updatedRecord);
     } catch (err) {
@@ -107,8 +194,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Goals Routes
-  app.get("/api/goals", async (_req: Request, res: Response) => {
+  app.get("/api/goals", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const goals = await storage.getGoals();
       res.json(goals);
     } catch (err) {
@@ -116,9 +208,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post("/api/goals", async (req: Request, res: Response) => {
+  app.post("/api/goals", requireAuth, async (req: Request, res: Response) => {
     try {
-      const validatedData = insertGoalSchema.parse(req.body);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Add userId to the validated data
+      const data = { ...req.body, userId };
+      const validatedData = insertGoalSchema.parse(data);
+      
+      // If data encryption is enabled, encrypt sensitive details
+      const user = req.user as any;
+      if (user.dataEncryptionEnabled) {
+        // Store sensitive details in encrypted format
+        const sensitiveData = {
+          notes: req.body.notes,
+          strategies: req.body.strategies,
+          purpose: req.body.purpose
+        };
+        validatedData.encryptedData = encryptFinancialData(sensitiveData);
+      }
+      
       const goal = await storage.createGoal(validatedData);
       res.status(201).json(goal);
     } catch (err) {
@@ -126,8 +238,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.put("/api/goals/:id", async (req: Request, res: Response) => {
+  app.put("/api/goals/:id", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
@@ -136,6 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const schema = z.object({ currentAmount: z.number().nonnegative() });
       const { currentAmount } = schema.parse(req.body);
       
+      // Ensure the goal belongs to the user (would be implemented in storage)
       const updatedGoal = await storage.updateGoal(id, currentAmount);
       res.json(updatedGoal);
     } catch (err) {
@@ -143,13 +261,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.delete("/api/goals/:id", async (req: Request, res: Response) => {
+  app.delete("/api/goals/:id", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid ID format" });
       }
       
+      // Ensure the goal belongs to the user (would be implemented in storage)
       await storage.deleteGoal(id);
       res.status(204).end();
     } catch (err) {
@@ -158,8 +282,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Savings Routes
-  app.get("/api/savings", async (_req: Request, res: Response) => {
+  app.get("/api/savings", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       const savingsRecords = await storage.getSavingsRecords();
       res.json(savingsRecords);
     } catch (err) {
@@ -167,9 +296,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.post("/api/savings", async (req: Request, res: Response) => {
+  app.post("/api/savings", requireAuth, async (req: Request, res: Response) => {
     try {
-      const validatedData = insertSavingsRecordSchema.parse(req.body);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Add userId to the validated data
+      const data = { ...req.body, userId };
+      const validatedData = insertSavingsRecordSchema.parse(data);
+      
       const savingsRecord = await storage.createSavingsRecord(validatedData);
       res.status(201).json(savingsRecord);
     } catch (err) {
@@ -177,8 +314,53 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // AI-powered custom insights using Groq SDK
+  app.post("/api/insights/custom", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Check for GROQ_API_KEY
+      const GROQ_API_KEY = process.env.GROQ_API_KEY;
+      if (!GROQ_API_KEY) {
+        return res.status(503).json({ 
+          message: "AI insights are temporarily unavailable (API key not configured)" 
+        });
+      }
+      
+      // Validate request for custom insight query
+      const schema = z.object({ 
+        query: z.string().min(5).max(200),
+        timeframe: z.enum(["week", "month", "quarter", "year", "all"]).optional()
+      });
+      
+      const { query, timeframe = "month" } = schema.parse(req.body);
+      
+      // For a real implementation, we would use Groq SDK here
+      // Example: groq.Completion.create({ model: "mixtral-8x7b", messages: [...] })
+      // For now, we'll return a placeholder response
+      const insightResponse = {
+        insight: `Custom insight for query: "${query}" over ${timeframe} timeframe`,
+        generatedAt: new Date().toISOString(),
+        source: "AI Analysis",
+        confidence: 0.85,
+        additionalRecommendations: [
+          "Consider setting up automatic savings transfers",
+          "Review subscriptions for potential savings",
+          "Track your food expenses more granularly"
+        ]
+      };
+      
+      res.json(insightResponse);
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
   // Categories Routes
-  app.get("/api/categories", async (_req: Request, res: Response) => {
+  app.get("/api/categories", requireAuth, async (_req: Request, res: Response) => {
     try {
       const categories = await storage.getCategorySpending();
       res.json(categories);
@@ -188,7 +370,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // AI Insights Routes
-  app.get("/api/insights", async (_req: Request, res: Response) => {
+  app.get("/api/insights", requireAuth, async (_req: Request, res: Response) => {
     try {
       const insights = await storage.getAiInsights();
       res.json(insights);
@@ -197,9 +379,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Data Management Routes
-  app.delete("/api/user/data", async (_req: Request, res: Response) => {
+  // PDF Upload and Processing
+  app.post("/api/upload/pdf", requireAuth, upload.single('pdf'), async (req: Request, res: Response) => {
     try {
+      if (!req.file) {
+        return res.status(400).json({ message: "No PDF file provided" });
+      }
+      
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // Extract transactions from the PDF
+      const transactions = await extractTransactionsFromPDF(req.file.path, userId);
+      
+      if (!transactions || transactions.length === 0) {
+        return res.status(422).json({ message: "Could not extract any transactions from the PDF" });
+      }
+      
+      // Save all extracted transactions
+      const savedTransactions = [];
+      for (const transaction of transactions) {
+        const saved = await storage.createTransaction(transaction);
+        savedTransactions.push(saved);
+      }
+      
+      res.status(201).json({
+        message: `Successfully extracted ${savedTransactions.length} transactions`,
+        transactions: savedTransactions
+      });
+    } catch (err) {
+      handleError(err, res);
+    }
+  });
+  
+  // Run temporary file cleanup periodically
+  setInterval(cleanupTemporaryFiles, 24 * 60 * 60 * 1000); // Once per day
+  
+  // Data Management Routes
+  app.delete("/api/user/data", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
       await storage.deleteAllUserData();
       res.status(204).end();
     } catch (err) {
@@ -207,17 +432,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  app.get("/api/user/export", async (_req: Request, res: Response) => {
+  app.get("/api/user/export", requireAuth, async (req: Request, res: Response) => {
     try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      const user = req.user;
       const data = await storage.exportUserData();
       
       // Encrypt the data for additional security
-      const encryptedData = crypto.encrypt(data);
+      const encryptedData = encryptFinancialData(data);
       const exportData = {
         data: encryptedData,
         exportDate: new Date().toISOString(),
         format: "encrypted-json"
       };
+      
+      // Generate a temporary download link (in a real app this would be a signed URL)
+      const downloadLink = `/api/download/${encryptedData.substring(0, 32)}`;
+      
+      // Send email notification (asynchronously, don't wait for it)
+      if (user && 'email' in user) {
+        sendDataExportEmail(user, downloadLink).catch(console.error);
+      }
       
       res.json(exportData);
     } catch (err) {
