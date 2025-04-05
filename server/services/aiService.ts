@@ -1,11 +1,10 @@
-import OpenAI from 'openai';
+import { Groq } from 'groq-sdk';
 import { Transaction, SalaryRecord, Goal, SavingsRecord } from '@shared/schema';
 import { decrypt } from '../utils/encryption';
 
-// Initialize OpenAI client with Groq's API base URL
-const openai = new OpenAI({
+// Initialize Groq client using official SDK
+const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
-  baseURL: 'https://api.groq.com/openai/v1',
 });
 
 // Models to use
@@ -105,7 +104,7 @@ export async function generateSpendingInsights(
     `;
 
     // Call the AI model
-    const response = await openai.chat.completions.create({
+    const response = await groq.chat.completions.create({
       messages: [
         {
           role: "user",
@@ -202,7 +201,7 @@ export async function generatePersonalizedAdvice(
     `;
 
     // Call the AI model
-    const response = await openai.chat.completions.create({
+    const response = await groq.chat.completions.create({
       messages: [
         {
           role: "user",
@@ -287,7 +286,7 @@ export async function answerCustomFinancialQuestion(
     `;
 
     // Call the AI model
-    const response = await openai.chat.completions.create({
+    const response = await groq.chat.completions.create({
       messages: [
         {
           role: "user",
