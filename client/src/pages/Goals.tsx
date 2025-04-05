@@ -24,6 +24,11 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 import { 
   Plus, 
   Trash2, 
@@ -33,7 +38,12 @@ import {
   GraduationCap, 
   Car, 
   Heart,
-  Smartphone
+  Smartphone,
+  Sparkles,
+  Clock,
+  Target,
+  AlertCircle,
+  ChevronRight
 } from "lucide-react";
 
 const goalIcons: Record<string, React.ReactNode> = {
@@ -70,7 +80,7 @@ const updateGoalSchema = z.object({
 });
 
 export default function Goals() {
-  const { goals, addGoal, updateGoal, deleteGoal, isLoading } = useFinance();
+  const { goals, goalAdvice, hasGoalAdvice, addGoal, updateGoal, deleteGoal, isLoading } = useFinance();
   const [isNewGoalDialogOpen, setIsNewGoalDialogOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<number | null>(null);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
@@ -155,6 +165,65 @@ export default function Goals() {
   return (
     <>
       <Header title="Saving Goals" subtitle="Track and manage your financial targets" />
+      
+      {/* AI-powered goal advice section */}
+      {hasGoalAdvice && goalAdvice && goalAdvice.length > 0 && (
+        <div className="bg-background-light/60 backdrop-blur-xl border border-primary/20 shadow-lg rounded-xl p-5 mb-8">
+          <div className="flex items-center mb-4">
+            <Sparkles className="h-5 w-5 text-primary mr-2" />
+            <h3 className="font-display font-bold">AI-Powered Goal Insights</h3>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {goalAdvice.map((advice, idx) => {
+              // Determine the icon based on advice content
+              let icon = <Target className="h-5 w-5" />;
+              if (advice.title.toLowerCase().includes('time') || advice.timeframe) {
+                icon = <Clock className="h-5 w-5" />;
+              } else if (advice.title.toLowerCase().includes('warn') || advice.title.toLowerCase().includes('caution')) {
+                icon = <AlertCircle className="h-5 w-5" />;
+              }
+              
+              return (
+                <Alert key={idx} className="bg-background-dark/30 border-primary/10">
+                  <div className="flex items-start">
+                    <div className="bg-primary/10 p-2 rounded-full mr-3">
+                      {icon}
+                    </div>
+                    <div>
+                      <AlertTitle className="text-base flex items-center">
+                        {advice.title}
+                        {advice.goalName && advice.goalName !== 'General' && (
+                          <span className="ml-2 text-xs py-0.5 px-2 bg-primary/20 text-primary rounded-full">
+                            {advice.goalName}
+                          </span>
+                        )}
+                      </AlertTitle>
+                      <AlertDescription className="text-text/80 mt-1">
+                        {advice.description}
+                        
+                        {advice.timeframe && (
+                          <div className="flex items-center mt-2 text-sm text-primary/80">
+                            <Clock className="h-4 w-4 mr-1" />
+                            <span>{advice.timeframe}</span>
+                          </div>
+                        )}
+                        
+                        {advice.actionText && (
+                          <div className="mt-3 bg-background-light/30 p-2 rounded-md flex items-center text-sm border-l-2 border-primary">
+                            <ChevronRight className="h-4 w-4 text-primary mr-1 flex-shrink-0" />
+                            <span>{advice.actionText}</span>
+                          </div>
+                        )}
+                      </AlertDescription>
+                    </div>
+                  </div>
+                </Alert>
+              );
+            })}
+          </div>
+        </div>
+      )}
       
       <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
         <div className="flex justify-between items-center mb-6">

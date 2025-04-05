@@ -11,6 +11,15 @@ import {
   type AiInsight
 } from "@shared/schema";
 
+// Type for AI-generated goal advice
+interface GoalAdvice {
+  title: string;
+  description: string;
+  goalName: string;
+  timeframe: string;
+  actionText: string;
+}
+
 interface FinanceContextType {
   // Transactions
   transactions: Transaction[];
@@ -24,6 +33,8 @@ interface FinanceContextType {
   
   // Goals
   goals: Goal[];
+  goalAdvice?: GoalAdvice[];
+  hasGoalAdvice: boolean;
   addGoal: (goal: Omit<Goal, "id" | "date" | "currentAmount">) => Promise<void>;
   updateGoal: (id: number, currentAmount: number) => Promise<void>;
   deleteGoal: (id: number) => Promise<void>;
@@ -72,11 +83,19 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     enabled: !!user,
   });
   
+  // Updated query to handle the new response format with advice
   const {
-    data: goals = [] as Goal[],
+    data: goalsResponse = { goals: [] as Goal[], advice: [], hasAdvice: false },
     isLoading: isLoadingGoals
-  } = useQuery<Goal[]>({
+  } = useQuery<{ goals: Goal[], advice?: any[], hasAdvice: boolean }>({
     queryKey: ['/api/goals'],
+    queryFn: async ({ queryKey }) => {
+      const response = await fetch(`${queryKey[0]}?advice=true`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch goals');
+      }
+      return await response.json();
+    },
     enabled: !!user,
   });
   
@@ -206,8 +225,10 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       await updateSalaryMutation.mutateAsync({ id, amount });
     },
     
-    // Goals
-    goals: goals as Goal[],
+    // Goals with AI advice
+    goals: goalsResponse.goals,
+    goalAdvice: goalsResponse.advice,
+    hasGoalAdvice: goalsResponse.hasAdvice,
     addGoal: async (goal) => {
       await addGoalMutation.mutateAsync(goal);
     },

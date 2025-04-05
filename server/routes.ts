@@ -202,7 +202,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const goals = await storage.getGoals();
-      res.json(goals);
+      
+      // Check if advice parameter is provided and truthy
+      const includeAdvice = req.query.advice === 'true';
+      
+      if (includeAdvice && process.env.GROQ_API_KEY && goals.length > 0) {
+        try {
+          // Get transactions and salary data for AI analysis
+          const transactions = await storage.getTransactions();
+          const salaryRecords = await storage.getSalaryRecords();
+          
+          // Import AI service
+          const { generatePersonalizedAdvice } = await import('./services/aiService');
+          
+          // Generate advice asynchronously
+          const advice = await generatePersonalizedAdvice(goals, transactions, salaryRecords);
+          
+          // Return goals with advice
+          return res.json({
+            goals,
+            advice,
+            hasAdvice: true
+          });
+        } catch (aiError) {
+          console.error("Error generating goal advice:", aiError);
+          // Return only goals if AI fails
+          return res.json({ goals, hasAdvice: false });
+        }
+      }
+      
+      // Default: return just the goals
+      res.json({ goals, hasAdvice: false });
     } catch (err) {
       handleError(err, res);
     }
@@ -332,29 +362,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Validate request for custom insight query
       const schema = z.object({ 
-        query: z.string().min(5).max(200),
+        question: z.string().min(5).max(200),
         timeframe: z.enum(["week", "month", "quarter", "year", "all"]).optional()
       });
       
-      const { query, timeframe = "month" } = schema.parse(req.body);
+      const { question, timeframe = "month" } = schema.parse(req.body);
       
-      // For a real implementation, we would use Groq SDK here
-      // Example: groq.Completion.create({ model: "mixtral-8x7b", messages: [...] })
-      // For now, we'll return a placeholder response
-      const insightResponse = {
-        insight: `Custom insight for query: "${query}" over ${timeframe} timeframe`,
+      // Get user's financial data
+      const transactions = await storage.getTransactions();
+      const salaryRecords = await storage.getSalaryRecords();
+      const goals = await storage.getGoals();
+      const savingsRecords = await storage.getSavingsRecords();
+      
+      // Import the AI service functionality
+      const { answerCustomFinancialQuestion } = await import('./services/aiService');
+      
+      // Call the AI service with the user's question and financial data
+      const response = await answerCustomFinancialQuestion(
+        question,
+        transactions,
+        salaryRecords,
+        goals,
+        savingsRecords
+      );
+      
+      // Return the AI-generated insights
+      res.json({
+        answer: response.answer,
+        actionItems: response.actionItems,
         generatedAt: new Date().toISOString(),
-        source: "AI Analysis",
-        confidence: 0.85,
-        additionalRecommendations: [
-          "Consider setting up automatic savings transfers",
-          "Review subscriptions for potential savings",
-          "Track your food expenses more granularly"
-        ]
-      };
-      
-      res.json(insightResponse);
+        question
+      });
     } catch (err) {
+      console.error("AI insights error:", err);
       handleError(err, res);
     }
   });
@@ -370,10 +410,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // AI Insights Routes
-  app.get("/api/insights", requireAuth, async (_req: Request, res: Response) => {
+  app.get("/api/insights", requireAuth, async (req: Request, res: Response) => {
     try {
-      const insights = await storage.getAiInsights();
-      res.json(insights);
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: "User ID not available" });
+      }
+      
+      // First check if we have stored insights
+      const savedInsights = await storage.getAiInsights();
+      
+      // If we have enough saved insights or don't have Groq API key, return saved ones
+      if (savedInsights.length >= 3 || !process.env.GROQ_API_KEY) {
+        return res.json(savedInsights);
+      }
+      
+      // Otherwise, generate new insights
+      const transactions = await storage.getTransactions();
+      const salaryRecords = await storage.getSalaryRecords();
+      const goals = await storage.getGoals();
+      const savingsRecords = await storage.getSavingsRecords();
+      
+      // Import the AI service functionality
+      const { generateSpendingInsights } = await import('./services/aiService');
+      
+      try {
+        // Generate new insights using AI
+        const newInsights = await generateSpendingInsights(
+          transactions,
+          salaryRecords,
+          goals,
+          savingsRecords
+        );
+        
+        // Return combined insights
+        res.json([...savedInsights, ...newInsights]);
+      } catch (aiError) {
+        console.error("Error generating AI insights:", aiError);
+        // Still return saved insights on error
+        res.json(savedInsights);
+      }
     } catch (err) {
       handleError(err, res);
     }
