@@ -1,0 +1,1544 @@
+11:40:14 AM [express] GET /api/transactions 304 in 307ms :: [{"id":4,"date":"2025-04-05T11:19:28.145Z…
+Split PDF text into 11 chunks for processing
+Processing chunk 1/11
+AI rate limit or error on chunk 1: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"01/04/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 190.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"01/04/24\",\n    \"merchant\": \"AMAZON PAY\",\n    \"amount\": 1345.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"01/04/24\",\n    \"merchant\": \"INGLE SHUBHAM KRISHN\",\n    \"amount\": 1345.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"04/04/24\",\n    \"merchant\": \"SANTOSH TULSHIRAM KA\",\n    \"amount\": 13.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"04/04/24\",\n    \"merchant\": \"ZOMATO LIMITED\",\n    \"amount\": 197.58,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"05/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"06/04/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 95.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"06/04/24\",\n    \"merchant\": \"SANIKA BALAKRISHNA S\",\n    \"amount\": 1225.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"06/04/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 85.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"06/04/24\",\n    \"merchant\": \"PRAKASH RAMCHAND JAI\",\n    \"amount\": 15.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"07/04/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 240.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"07/04/24\",\n    \"merchant\": \"SRI TULSI TRUST\",\n    \"amount\": 830.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"08/04/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 6400.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"10/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 56.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"11/04/24\",\n    \"merchant\": \"AVENUE SUPERMARTS LT\",\n    \"amount\": 2026.11,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"11/04/24\",\n    \"merchant\": \"NAVRATNA PALACE\",\n    \"amount\": 437.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"11/04/24\",\n    \"merchant\": \"KANK VIJAY DYANADEV\",\n    \"amount\": 50.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"12/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 36.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"13/04/24\",\n    \"merchant\": \"MUSHIR AHAMAD\",\n    \"amount\": 100.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"13/04/24\",\n    \"merchant\": \"MAHESHSHIV PETROLEUM\",\n    \"amount\": 240.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"13/04/24\",\n    \"merchant\": \"EKNATH BARKU GAVALI\",\n    \"amount\": 70.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"13/04/24\",\n    \"merchant\": \"SANSKRITI ENTERPRISE\",\n    \"amount\": 60.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"14/04/24\",\n    \"merchant\": \"BASANTA BAHADUR ROKA\",\n    \"amount\": 50.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"15/04/24\",\n    \"merchant\": \"SOHANLAL MOTIJI CHAU\",\n    \"amount\": 35.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"15/04/24\",\n    \"merchant\": \"ZOMATO ONLINE ORDER\",\n    \"amount\": 576.79,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"15/04/24\",\n    \"merchant\": \"JAISWAR SAHIL ANIL\",\n    \"amount\": 35.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"16/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 36.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"17/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 224.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  }"}}
+Waiting 10 seconds before processing chunk 2/11...
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c509999ac36d-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:40:23 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=QZ2k6nWKs8.qkPVUUPLrqPJowH5Rj5vCKcUDNZAo99U-1743853223-1.0.1.1-y_60xsLnY1KMc3tuikgWNcIfaRpHHQ5XXk19FR6JP75CJfKDlWg7iaIrFGw3yk_c1kjJPWF75BUFo1B2YFnmHySJpH27QansV5kWJ6vLK7c; path=/; expires=Sat, 05-Apr-25 12:10:23 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '998',
+    'x-ratelimit-remaining-tokens': '2466',
+    'x-ratelimit-reset-requests': '2m50.843s',
+    'x-ratelimit-reset-tokens': '35.338s',
+    'x-request-id': 'req_01jr2w0rgffanrdgvhr1fbpgsd'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "01/04/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 190.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/04/24",\n' +
+        '    "merchant": "AMAZON PAY",\n' +
+        '    "amount": 1345.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/04/24",\n' +
+        '    "merchant": "INGLE SHUBHAM KRISHN",\n' +
+        '    "amount": 1345.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "04/04/24",\n' +
+        '    "merchant": "SANTOSH TULSHIRAM KA",\n' +
+        '    "amount": 13.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "04/04/24",\n' +
+        '    "merchant": "ZOMATO LIMITED",\n' +
+        '    "amount": 197.58,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "05/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "06/04/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 95.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "06/04/24",\n' +
+        '    "merchant": "SANIKA BALAKRISHNA S",\n' +
+        '    "amount": 1225.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "06/04/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 85.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "06/04/24",\n' +
+        '    "merchant": "PRAKASH RAMCHAND JAI",\n' +
+        '    "amount": 15.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "07/04/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 240.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "07/04/24",\n' +
+        '    "merchant": "SRI TULSI TRUST",\n' +
+        '    "amount": 830.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "08/04/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 6400.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "10/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 56.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "11/04/24",\n' +
+        '    "merchant": "AVENUE SUPERMARTS LT",\n' +
+        '    "amount": 2026.11,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "11/04/24",\n' +
+        '    "merchant": "NAVRATNA PALACE",\n' +
+        '    "amount": 437.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "11/04/24",\n' +
+        '    "merchant": "KANK VIJAY DYANADEV",\n' +
+        '    "amount": 50.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "12/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 36.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/04/24",\n' +
+        '    "merchant": "MUSHIR AHAMAD",\n' +
+        '    "amount": 100.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/04/24",\n' +
+        '    "merchant": "MAHESHSHIV PETROLEUM",\n' +
+        '    "amount": 240.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/04/24",\n' +
+        '    "merchant": "EKNATH BARKU GAVALI",\n' +
+        '    "amount": 70.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/04/24",\n' +
+        '    "merchant": "SANSKRITI ENTERPRISE",\n' +
+        '    "amount": 60.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "14/04/24",\n' +
+        '    "merchant": "BASANTA BAHADUR ROKA",\n' +
+        '    "amount": 50.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/04/24",\n' +
+        '    "merchant": "SOHANLAL MOTIJI CHAU",\n' +
+        '    "amount": 35.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/04/24",\n' +
+        '    "merchant": "ZOMATO ONLINE ORDER",\n' +
+        '    "amount": 576.79,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/04/24",\n' +
+        '    "merchant": "JAISWAR SAHIL ANIL",\n' +
+        '    "amount": 35.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "16/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 36.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "17/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 224.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 2/11
+Waiting 10 seconds before processing chunk 3/11...
+AI rate limit or error on chunk 2: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"18/04/24\",\n    \"merchant\": \"SATISH PANDESHIV PET\",\n    \"amount\": 240.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"18/04/24\",\n    \"merchant\": \"VIJAY BAHADUR YADAV\",\n    \"amount\": 60.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"20/04/24\",\n    \"merchant\": \"BABA VADAPAV AND SNA\",\n    \"amount\": 10.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"20/04/24\",\n    \"merchant\": \"ILLTILL CHEMIST 2\",\n    \"amount\": 65.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"20/04/24\",\n    \"merchant\": \"DARJEELING LEPCHA MO\",\n    \"amount\": 290.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"20/04/24\",\n    \"merchant\": \"ISRATALI\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"20/04/24\",\n    \"merchant\": \"JUMBOKING\",\n    \"amount\": 109.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"21/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 170.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"21/04/24\",\n    \"merchant\": \"AVENUE SUPERMARTS LT\",\n    \"amount\": 1709.20,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"22/04/24\",\n    \"merchant\": \"ZOWORLD LIMITED\",\n    \"amount\": 187.92,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"22/04/24\",\n    \"merchant\": \"ZOMATO ONLINE ORDER\",\n    \"amount\": 306.90,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"23/04/24\",\n    \"merchant\": \"TEJASHRI SAGAR THORA\",\n    \"amount\": 75.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"23/04/24\",\n    \"merchant\": \"SHARFUDDIN S KHAN\",\n    \"amount\": 20.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"23/04/24\",\n    \"merchant\": \"SAHIL EGG CENTER\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"23/04/24\",\n    \"merchant\": \"AIRTEL PREPAID RECHA\",\n    \"amount\": 148.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"24/04/24\",\n    \"merchant\": \"ZOWORLD LIMITED\",\n    \"amount\": 211.44,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"25/04/24\",\n    \"merchant\": \"SHREE SAMARTH KRUPA\",\n    \"amount\": 210.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"25/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"25/04/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 3000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"25/04/24\",\n    \"merchant\": \"APPLE MEDIA SERVICES\",\n    \"amount\": 360.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"26/04/24\",\n    \"merchant\": \"IRCTC\",\n    \"amount\": 190.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"26/04/24\",\n    \"merchant\": \"SHARDA S PATEL\",\n    \"amount\": 45.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  }"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c5781d9cefde-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:40:41 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=djvSabLmjMMiNwrna4jsrva3Ab.p6okVScqis9MJhyk-1743853241-1.0.1.1-60bf2BGEDJCzkIFg8akZz1eouf.mx77mwfKfbPGkczfSvRvaa9xLt0MhDY8vXWsUX7Gzp1CJl.TuEPdanleA8VxVxalXWPGOYnvPBvvuNh8; path=/; expires=Sat, 05-Apr-25 12:10:41 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '997',
+    'x-ratelimit-remaining-tokens': '4236',
+    'x-ratelimit-reset-requests': '4m1.496999999s',
+    'x-ratelimit-reset-tokens': '17.635s',
+    'x-request-id': 'req_01jr2w19sne6arjdztaf0zvbjw'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "18/04/24",\n' +
+        '    "merchant": "SATISH PANDESHIV PET",\n' +
+        '    "amount": 240.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "18/04/24",\n' +
+        '    "merchant": "VIJAY BAHADUR YADAV",\n' +
+        '    "amount": 60.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/04/24",\n' +
+        '    "merchant": "BABA VADAPAV AND SNA",\n' +
+        '    "amount": 10.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/04/24",\n' +
+        '    "merchant": "ILLTILL CHEMIST 2",\n' +
+        '    "amount": 65.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/04/24",\n' +
+        '    "merchant": "DARJEELING LEPCHA MO",\n' +
+        '    "amount": 290.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/04/24",\n' +
+        '    "merchant": "ISRATALI",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/04/24",\n' +
+        '    "merchant": "JUMBOKING",\n' +
+        '    "amount": 109.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "21/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 170.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "21/04/24",\n' +
+        '    "merchant": "AVENUE SUPERMARTS LT",\n' +
+        '    "amount": 1709.20,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "22/04/24",\n' +
+        '    "merchant": "ZOWORLD LIMITED",\n' +
+        '    "amount": 187.92,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "22/04/24",\n' +
+        '    "merchant": "ZOMATO ONLINE ORDER",\n' +
+        '    "amount": 306.90,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "23/04/24",\n' +
+        '    "merchant": "TEJASHRI SAGAR THORA",\n' +
+        '    "amount": 75.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "23/04/24",\n' +
+        '    "merchant": "SHARFUDDIN S KHAN",\n' +
+        '    "amount": 20.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "23/04/24",\n' +
+        '    "merchant": "SAHIL EGG CENTER",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "23/04/24",\n' +
+        '    "merchant": "AIRTEL PREPAID RECHA",\n' +
+        '    "amount": 148.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "24/04/24",\n' +
+        '    "merchant": "ZOWORLD LIMITED",\n' +
+        '    "amount": 211.44,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/04/24",\n' +
+        '    "merchant": "SHREE SAMARTH KRUPA",\n' +
+        '    "amount": 210.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/04/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 3000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/04/24",\n' +
+        '    "merchant": "APPLE MEDIA SERVICES",\n' +
+        '    "amount": 360.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "26/04/24",\n' +
+        '    "merchant": "IRCTC",\n' +
+        '    "amount": 190.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "26/04/24",\n' +
+        '    "merchant": "SHARDA S PATEL",\n' +
+        '    "amount": 45.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 3/11
+AI rate limit or error on chunk 3: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"27/04/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 10.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 2500.00,\n    \"isDeposit\": true,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 2500.00,\n    \"isDeposit\": true,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"SANJEEVANI MEDICAL A\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"APPLE CHEMIST\",\n    \"amount\": 125.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 2500.00,\n    \"isDeposit\": true,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 380.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"27/04/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 199.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"28/04/24\",\n    \"merchant\": \"DILIP UGAN PANDIT\",\n    \"amount\": 137.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"28/04/24\",\n    \"merchant\": \"BATTULA KALPALATHA\",\n    \"amount\": 800.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"28/04/24\",\n    \"merchant\": \"VEERAMALLA RAMESH K\",\n    \"amount\": 75.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"28/04/24\",\n    \"merchant\": \"VADDE SHANTA\",\n    \"amount\": 50.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"29/04/24\",\n    \"merchant\": \"THAMSHETTY NAVEEN\",\n    \"amount\": 771.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"29/04/24\",\n    \"merchant\": \"HOTEL RAMKRISHNA\",\n    \"amount\": 283.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"29/04/24\",\n    \"merchant\": \"IRCTC\",\n    \"amount\": 495.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"29/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 80.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"29/04/24\",\n    \"merchant\": \"NAMRATA GIRISH DALMI\",\n    \"amount\": 80.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"30/04/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 9100.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"01/05/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 44.88,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  }"}}
+Waiting 10 seconds before processing chunk 4/11...
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c5e35e6bfef8-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:40:58 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=rScarYzzWEhzLIRvkGe_HtLib3k4AUcl5YqeKshlVXk-1743853258-1.0.1.1-VAxq7CRHFm52sASmz8gNkFjdEw4NvZb.fQ_.6icW2XNgxFDLP.LKNeEOkLv7slNBhixdxg6LW5cEMIe9aqYbropl3y8FjJC4cXnW1gtJuAs; path=/; expires=Sat, 05-Apr-25 12:10:58 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '996',
+    'x-ratelimit-remaining-tokens': '4317',
+    'x-ratelimit-reset-requests': '5m28.458999999s',
+    'x-ratelimit-reset-tokens': '16.829999999s',
+    'x-request-id': 'req_01jr2w1thbf7t833npx24w7rk3'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 10.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 2500.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 2500.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "SANJEEVANI MEDICAL A",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "APPLE CHEMIST",\n' +
+        '    "amount": 125.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 2500.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 380.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/04/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 199.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/04/24",\n' +
+        '    "merchant": "DILIP UGAN PANDIT",\n' +
+        '    "amount": 137.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/04/24",\n' +
+        '    "merchant": "BATTULA KALPALATHA",\n' +
+        '    "amount": 800.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/04/24",\n' +
+        '    "merchant": "VEERAMALLA RAMESH K",\n' +
+        '    "amount": 75.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/04/24",\n' +
+        '    "merchant": "VADDE SHANTA",\n' +
+        '    "amount": 50.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/04/24",\n' +
+        '    "merchant": "THAMSHETTY NAVEEN",\n' +
+        '    "amount": 771.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/04/24",\n' +
+        '    "merchant": "HOTEL RAMKRISHNA",\n' +
+        '    "amount": 283.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/04/24",\n' +
+        '    "merchant": "IRCTC",\n' +
+        '    "amount": 495.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 80.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/04/24",\n' +
+        '    "merchant": "NAMRATA GIRISH DALMI",\n' +
+        '    "amount": 80.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "30/04/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 9100.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/05/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 44.88,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 4/11
+AI rate limit or error on chunk 4: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"01/05/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 15.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"01/05/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 20.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"01/05/24\",\n    \"merchant\": \"MONALI BIJAY PADHI\",\n    \"amount\": 154.20,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"02/05/24\",\n    \"merchant\": \"AIRTEL BILL PAYMENTS\",\n    \"amount\": 270.00,\n    \"isDeposit\": false,\n    \"category\": \"Housing & Utilities\"\n  },\n  {\n    \"date\": \"02/05/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 5000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"03/05/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 80.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"04/05/24\",\n    \"merchant\": \"MSEDCL QR\",\n    \"amount\": 710.00,\n    \"isDeposit\": false,\n    \"category\": \"Housing & Utilities\"\n  },\n  {\n    \"date\": \"06/05/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"09/05/24\",\n    \"merchant\": \"INGLE SHUBHAM KRISHN\",\n    \"amount\": 1579.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"10/05/24\",\n    \"merchant\": \"PATEL RETAIL MANJARL\",\n    \"amount\": 275.70,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"10/05/24\",\n    \"merchant\": \"TDCC\",\n    \"amount\": 10.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"11/05/24\",\n    \"merchant\": \"ZOMATO LTD\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"12/05/24\",\n    \"merchant\": \"LENSKART\",\n    \"amount\": 5000.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"13/05/24\",\n    \"merchant\": \"CHANDAN SUPER MARKET\",\n    \"amount\": 30.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"13/05/24\",\n    \"merchant\": \"APPLE MEDIA SERVICES\",\n    \"amount\": 365.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"13/05/24\",\n    \"merchant\": \"GOOGLE INDIA DIGITAL\",\n    \"amount\": 19.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"14/05/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 10000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"14/05/24\",\n    \"merchant\": \"NAVRATNA PALACE\",\n    \"amount\": 409.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  }"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+Waiting 10 seconds before processing chunk 5/11...
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c64e9e406e09-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:41:17 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=F1lYKIp22_dWY6tGz7HwRo9hZbnbCNQJbBgkjQO07oE-1743853277-1.0.1.1-gZGiR4gVUibFO1zz.CH8c1A2S__8XdcnWNyLRqV4EZg3R2qhOgEhWvT2IJ84N_OvH7TNO.AFhGgCgP1RWyz6VabdjsVp5ZKVuIraQgt51X0; path=/; expires=Sat, 05-Apr-25 12:11:17 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '995',
+    'x-ratelimit-remaining-tokens': '4317',
+    'x-ratelimit-reset-requests': '6m54.84s',
+    'x-ratelimit-reset-tokens': '16.829999999s',
+    'x-request-id': 'req_01jr2w2b9kerfv5a93x9hs8c5h'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "01/05/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 15.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/05/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 20.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/05/24",\n' +
+        '    "merchant": "MONALI BIJAY PADHI",\n' +
+        '    "amount": 154.20,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "02/05/24",\n' +
+        '    "merchant": "AIRTEL BILL PAYMENTS",\n' +
+        '    "amount": 270.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Housing & Utilities"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "02/05/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 5000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/05/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 80.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "04/05/24",\n' +
+        '    "merchant": "MSEDCL QR",\n' +
+        '    "amount": 710.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Housing & Utilities"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "06/05/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/05/24",\n' +
+        '    "merchant": "INGLE SHUBHAM KRISHN",\n' +
+        '    "amount": 1579.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "10/05/24",\n' +
+        '    "merchant": "PATEL RETAIL MANJARL",\n' +
+        '    "amount": 275.70,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "10/05/24",\n' +
+        '    "merchant": "TDCC",\n' +
+        '    "amount": 10.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "11/05/24",\n' +
+        '    "merchant": "ZOMATO LTD",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "12/05/24",\n' +
+        '    "merchant": "LENSKART",\n' +
+        '    "amount": 5000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/05/24",\n' +
+        '    "merchant": "CHANDAN SUPER MARKET",\n' +
+        '    "amount": 30.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/05/24",\n' +
+        '    "merchant": "APPLE MEDIA SERVICES",\n' +
+        '    "amount": 365.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/05/24",\n' +
+        '    "merchant": "GOOGLE INDIA DIGITAL",\n' +
+        '    "amount": 19.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "14/05/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 10000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "14/05/24",\n' +
+        '    "merchant": "NAVRATNA PALACE",\n' +
+        '    "amount": 409.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 5/11
+Waiting 10 seconds before processing chunk 6/11...
+Processing chunk 6/11
+AI rate limit or error on chunk 6: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"08/06/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 12000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"09/06/24\",\n    \"merchant\": \"MADRASI RAJA\",\n    \"amount\": 325.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"09/06/24\",\n    \"merchant\": \"AMARAVATHI DAMIREDDY\",\n    \"amount\": 3000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"09/06/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 3000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"09/06/24\",\n    \"merchant\": \"AMARAVATHI DAMIREDDY\",\n    \"amount\": 4000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"09/06/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 2000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"13/06/24\",\n    \"merchant\": \"APPLE MEDIA SERVICES\",\n    \"amount\": 365.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"24/06/24\",\n    \"merchant\": \"MOBIKWIK MERCHANT\",\n    \"amount\": 260.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"25/06/24\",\n    \"merchant\": \"BHARTI TELEMEDIA\",\n    \"amount\": 270.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"26/06/24\",\n    \"merchant\": \"BALAJI BIKE CARE\",\n    \"amount\": 1648.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"27/06/24\",\n    \"merchant\": \"EXPRESS BISTRO\",\n    \"amount\": 105.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"27/06/24\",\n    \"merchant\": \"VIGNESHWARA VEGETABLE\",\n    \"amount\": 20.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"27/06/24\",\n    \"merchant\": \"ARUN KATHWATE AND SON\",\n    \"amount\": 310.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"28/06/24\",\n    \"merchant\": \"MSAMIMI ENTERPRISE\",\n    \"amount\": 370.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"28/06/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 4000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"01/07/24\",\n    \"merchant\": \"INTEREST PAID\",\n    \"amount\": 55.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"02/07/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 1500.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"03/07/24\",\n    \"merchant\": \"RAHUL BALAJI SOLANKE\",\n    \"amount\": 53.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"03/07/24\",\n    \"merchant\": \"PRIDE MEDICO\",\n    \"amount\": 1080.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"03/07/24\",\n    \"merchant\": \"VAIBHAV DILIP PATIL\",\n    \"amount\": 176.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"03/07/24\",\n    \"merchant\": \"NIRMAL AHIR\",\n    \"amount\": 35.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  }"}}
+Waiting 10 seconds before processing chunk 7/11...
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c7447d70e8e9-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:41:54 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=0DN4_hNYzYW8aCECDzB4OSTIooJ1jH3nmR2Jpen_8hc-1743853314-1.0.1.1-JjDfSUBx8LPv9LlD1olkHHe.9UFix3Mf6sRdqNILIHnVO9fWqbyC1t8jZh7ahXKDEW0v4AzyA.gSX.rL16crD7gYITNevkrfhEQRhAcAsmg; path=/; expires=Sat, 05-Apr-25 12:11:54 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '993',
+    'x-ratelimit-remaining-tokens': '404',
+    'x-ratelimit-reset-requests': '9m44.966999999s',
+    'x-ratelimit-reset-tokens': '55.955s',
+    'x-request-id': 'req_01jr2w3hq7eke8dj20c9vg4weq'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "08/06/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 12000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/06/24",\n' +
+        '    "merchant": "MADRASI RAJA",\n' +
+        '    "amount": 325.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/06/24",\n' +
+        '    "merchant": "AMARAVATHI DAMIREDDY",\n' +
+        '    "amount": 3000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/06/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 3000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/06/24",\n' +
+        '    "merchant": "AMARAVATHI DAMIREDDY",\n' +
+        '    "amount": 4000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/06/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 2000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "13/06/24",\n' +
+        '    "merchant": "APPLE MEDIA SERVICES",\n' +
+        '    "amount": 365.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "24/06/24",\n' +
+        '    "merchant": "MOBIKWIK MERCHANT",\n' +
+        '    "amount": 260.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/06/24",\n' +
+        '    "merchant": "BHARTI TELEMEDIA",\n' +
+        '    "amount": 270.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "26/06/24",\n' +
+        '    "merchant": "BALAJI BIKE CARE",\n' +
+        '    "amount": 1648.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/06/24",\n' +
+        '    "merchant": "EXPRESS BISTRO",\n' +
+        '    "amount": 105.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/06/24",\n' +
+        '    "merchant": "VIGNESHWARA VEGETABLE",\n' +
+        '    "amount": 20.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/06/24",\n' +
+        '    "merchant": "ARUN KATHWATE AND SON",\n' +
+        '    "amount": 310.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/06/24",\n' +
+        '    "merchant": "MSAMIMI ENTERPRISE",\n' +
+        '    "amount": 370.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "28/06/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 4000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/07/24",\n' +
+        '    "merchant": "INTEREST PAID",\n' +
+        '    "amount": 55.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "02/07/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 1500.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/07/24",\n' +
+        '    "merchant": "RAHUL BALAJI SOLANKE",\n' +
+        '    "amount": 53.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/07/24",\n' +
+        '    "merchant": "PRIDE MEDICO",\n' +
+        '    "amount": 1080.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/07/24",\n' +
+        '    "merchant": "VAIBHAV DILIP PATIL",\n' +
+        '    "amount": 176.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/07/24",\n' +
+        '    "merchant": "NIRMAL AHIR",\n' +
+        '    "amount": 35.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  }'
+    }
+  }
+}
+==> Detected service running on port 5000
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+Processing chunk 7/11
+AI rate limit or error on chunk 7: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":""}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c7ac2a9aff07-PDX',
+    connection: 'keep-alive',
+Waiting 10 seconds before processing chunk 8/11...
+    'content-length': '202',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:42:13 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=6XnU2OvDRLtdyHfcGY2EaSeRHWp4P5hYEB0yf8Y8yhY-1743853333-1.0.1.1-TtXHHEVH9oyRKU9Ri98z3iKq0kfxpdpJgduVJgtYVn1_pmqFAPZFvZlRDb1w_ExpFH7FH4X79WNjDmYP86486AMBcNdmIN6myu9ud6P94es; path=/; expires=Sat, 05-Apr-25 12:12:13 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '992',
+    'x-ratelimit-remaining-tokens': '2063',
+    'x-ratelimit-reset-requests': '11m14.612s',
+    'x-ratelimit-reset-tokens': '39.366s',
+    'x-request-id': 'req_01jr2w41xmfb1tm7421gw3zdzw'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: ''
+    }
+  }
+}
+Processing chunk 8/11
+AI rate limit or error on chunk 8: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":""}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+Waiting 10 seconds before processing chunk 9/11...
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c826cab4ff07-PDX',
+    connection: 'keep-alive',
+    'content-length': '202',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:42:35 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=4I.61P4StsRHLnPwmjGSzz0SAxmLnzR7D4BW8TI0Bhc-1743853355-1.0.1.1-sLMQ9sO.M_1eQdl5YIAd_xfuytAtwPAg5JguxtuYYes6eQjIidFHqcROIzqbZQNKDH_rr7QDdrA8pBloPrRbhbcRYAoYbXL6.KlZAtqiTHU; path=/; expires=Sat, 05-Apr-25 12:12:35 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '991',
+    'x-ratelimit-remaining-tokens': '4024',
+    'x-ratelimit-reset-requests': '12m37.988s',
+    'x-ratelimit-reset-tokens': '19.753999999s',
+    'x-request-id': 'req_01jr2w4n2ffkstqpqxhqb1e85b'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: ''
+    }
+  }
+}
+Processing chunk 9/11
+AI rate limit or error on chunk 9: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"16/08/24\",\n    \"merchant\": \"MOTHERS KITCHEN\",\n    \"amount\": 231.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"16/08/24\",\n    \"merchant\": \"7 ELEVEN\",\n    \"amount\": 400.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"17/08/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 2000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"17/08/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 500.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"17/08/24\",\n    \"merchant\": \"IRCTC APP UPI\",\n    \"amount\": 579.05,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"17/08/24\",\n    \"merchant\": \"ZOMATO LTD\",\n    \"amount\": 2387.40,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"18/08/24\",\n    \"merchant\": \"MOTHERS KITCHEN\",\n    \"amount\": 242.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"18/08/24\",\n    \"merchant\": \"GANESH SHAMRAV GHARE\",\n    \"amount\": 100.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"19/08/24\",\n    \"merchant\": \"ZOMATO LTD\",\n    \"amount\": 806.13,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"19/08/24\",\n    \"merchant\": \"AMAZON PAY\",\n    \"amount\": 200.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"19/08/24\",\n    \"merchant\": \"DHIRAJ DILIP GHOLAP\",\n    \"amount\": 450.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"22/08/24\",\n    \"merchant\": \"AMAZON SELLER SERVICES\",\n    \"amount\": 1199.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"22/08/24\",\n    \"merchant\": \"SAHIL EGG CENTER\",\n    \"amount\": 70.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"24/08/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  },\n  {\n    \"date\": \"24/08/24\",\n    \"merchant\": \"PAVITHRAN KUNHAMBU\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"24/08/24\",\n    \"merchant\": \"SFC FRANKIE ROLL\",\n    \"amount\": 80.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"27/08/24\",\n    \"merchant\": \"GANESH ANNA KSHIR\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"29/08/24\",\n    \"merchant\": \"GOOGLE INDIA DIGITAL\",\n    \"amount\": 275.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"31/08/24\",\n    \"merchant\": \"MONALI BIJAY PADHI\",\n    \"amount\": 4000.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  },\n  {\n    \"date\": \"01/09/24\",\n    \"merchant\": \"IRCTC UTS\",\n    \"amount\": 40.00,\n    \"isDeposit\": false,\n    \"category\": \"Transportation\"\n  }"}}
+Waiting 10 seconds before processing chunk 10/11...
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c8b149a6503f-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:42:52 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=LZaw1x4aIRuLufFlgRnkVYMznAEQChWYpoD6NOXIVwc-1743853372-1.0.1.1-bQ_MwW1wpJB7FoGenti8iDt3vjZXeNDpWG6lMrGwTkcbKh8.1G.dJDPGQ3_60RmfpAb0G6GtNUb6zVSqjMNvDkmvn7ZeISTIIm2N4H4623w; path=/; expires=Sat, 05-Apr-25 12:12:52 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '990',
+    'x-ratelimit-remaining-tokens': '4317',
+    'x-ratelimit-reset-requests': '14m1.842s',
+    'x-ratelimit-reset-tokens': '16.829999999s',
+    'x-request-id': 'req_01jr2w5apzfkta1msnqbfcaqtq'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "16/08/24",\n' +
+        '    "merchant": "MOTHERS KITCHEN",\n' +
+        '    "amount": 231.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "16/08/24",\n' +
+        '    "merchant": "7 ELEVEN",\n' +
+        '    "amount": 400.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "17/08/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 2000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "17/08/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 500.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "17/08/24",\n' +
+        '    "merchant": "IRCTC APP UPI",\n' +
+        '    "amount": 579.05,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "17/08/24",\n' +
+        '    "merchant": "ZOMATO LTD",\n' +
+        '    "amount": 2387.40,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "18/08/24",\n' +
+        '    "merchant": "MOTHERS KITCHEN",\n' +
+        '    "amount": 242.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "18/08/24",\n' +
+        '    "merchant": "GANESH SHAMRAV GHARE",\n' +
+        '    "amount": 100.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "19/08/24",\n' +
+        '    "merchant": "ZOMATO LTD",\n' +
+        '    "amount": 806.13,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "19/08/24",\n' +
+        '    "merchant": "AMAZON PAY",\n' +
+        '    "amount": 200.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "19/08/24",\n' +
+        '    "merchant": "DHIRAJ DILIP GHOLAP",\n' +
+        '    "amount": 450.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "22/08/24",\n' +
+        '    "merchant": "AMAZON SELLER SERVICES",\n' +
+        '    "amount": 1199.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "22/08/24",\n' +
+        '    "merchant": "SAHIL EGG CENTER",\n' +
+        '    "amount": 70.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "24/08/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "24/08/24",\n' +
+        '    "merchant": "PAVITHRAN KUNHAMBU",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "24/08/24",\n' +
+        '    "merchant": "SFC FRANKIE ROLL",\n' +
+        '    "amount": 80.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "27/08/24",\n' +
+        '    "merchant": "GANESH ANNA KSHIR",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/08/24",\n' +
+        '    "merchant": "GOOGLE INDIA DIGITAL",\n' +
+        '    "amount": 275.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "31/08/24",\n' +
+        '    "merchant": "MONALI BIJAY PADHI",\n' +
+        '    "amount": 4000.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/09/24",\n' +
+        '    "merchant": "IRCTC UTS",\n' +
+        '    "amount": 40.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Transportation"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 10/11
+Waiting 10 seconds before processing chunk 11/11...
+AI rate limit or error on chunk 10: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"{\n    \"date\": \"01/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 1000.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"03/09/24\",\n    \"merchant\": \"MONALI BIJAY PADHI\",\n    \"amount\": 320.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"03/09/24\",\n    \"merchant\": \"LYFE MEDICARE\",\n    \"amount\": 150.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"04/09/24\",\n    \"merchant\": \"VIGNESHWARA VEGETABL\",\n    \"amount\": 72.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"05/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 1500.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"05/09/24\",\n    \"merchant\": \"BALAJI BIKE CARE\",\n    \"amount\": 4000.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"08/09/24\",\n    \"merchant\": \"MAHADEV PAN SHOP\",\n    \"amount\": 20.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"09/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 2000.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"10/09/24\",\n    \"merchant\": \"AMB CHRG INCL GST FOR AUG2024\",\n    \"amount\": 238.54,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"10/09/24\",\n    \"merchant\": \"AMB CHRG INCL GST FOR JUL2024\",\n    \"amount\": 507.12,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"11/09/24\",\n    \"merchant\": \"ZOMATO LTD\",\n    \"amount\": 232.33,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"12/09/24\",\n    \"merchant\": \"GOOGLE INDIA DIGITAL\",\n    \"amount\": 740.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"12/09/24\",\n    \"merchant\": \"VIGHESHWARA CATERERS\",\n    \"amount\": 70.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"12/09/24\",\n    \"merchant\": \"INFOSYS PUNE FC3 MRP\",\n    \"amount\": 60.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"15/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 67.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"15/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 132.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"15/09/24\",\n    \"merchant\": \"7 ELEVEN\",\n    \"amount\": 150.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"15/09/24\",\n    \"merchant\": \"7 ELEVEN\",\n    \"amount\": 50.00,\n    \"isDeposit\": false,\n    \"category\": \"Shopping\"\n  },\n  {\n    \"date\": \"16/09/24\",\n    \"merchant\": \"PRIDE MEDICO\",\n    \"amount\": 20.00,\n    \"isDeposit\": false,\n    \"category\": \"Health & Fitness\"\n  },\n  {\n    \"date\": \"20/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 150.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"25/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 8000.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"25/09/24\",\n    \"merchant\": \"APPLE MEDIA SERVICES\",\n    \"amount\": 365.00,\n    \"isDeposit\": false,\n    \"category\": \"Entertainment\"\n  },\n  {\n    \"date\": \"29/09/24\",\n    \"merchant\": \"HAPPINESS STREET\",\n    \"amount\": 319.00,\n    \"isDeposit\": false,\n    \"category\": \"Food & Dining\"\n  },\n  {\n    \"date\": \"29/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 300.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"29/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 300.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"30/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 4000.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"30/09/24\",\n    \"merchant\": \"PRANIT DASHARATH THO\",\n    \"amount\": 3000.00,\n    \"isDeposit\": false,\n    \"category\": \"Miscellaneous\"\n  },\n  {\n    \"date\": \"01/10/24\",\n    \"merchant\": \"INTEREST PAID TILL 30-SEP-2024\",\n    \"amount\": 31.00,\n    \"isDeposit\": true,\n    \"category\": \"Income\"\n  }"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c91a3db64afe-PDX',
+    connection: 'keep-alive',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:43:10 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=Mdg0n6oTwWDJOFL26ASOJnD98wApuEMNTLU1lpCmpx4-1743853390-1.0.1.1-OCKe5Ibs1Z0_NBZ7kgaXKuimuYv3Ez_hD6qagPbh2lQHZFB5HVgYKEr45_iAMjHP45QlUFZPbfEht4n2s00vZRBeFMZ6wH3zoCakVT2zYzQ; path=/; expires=Sat, 05-Apr-25 12:13:10 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    'transfer-encoding': 'chunked',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '989',
+    'x-ratelimit-remaining-tokens': '4317',
+    'x-ratelimit-reset-requests': '15m33.594s',
+    'x-ratelimit-reset-tokens': '16.829999999s',
+    'x-request-id': 'req_01jr2w5v46fbbr39cgkynfhkt6'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '{\n' +
+        '    "date": "01/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 1000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/09/24",\n' +
+        '    "merchant": "MONALI BIJAY PADHI",\n' +
+        '    "amount": 320.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "03/09/24",\n' +
+        '    "merchant": "LYFE MEDICARE",\n' +
+        '    "amount": 150.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "04/09/24",\n' +
+        '    "merchant": "VIGNESHWARA VEGETABL",\n' +
+        '    "amount": 72.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "05/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 1500.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "05/09/24",\n' +
+        '    "merchant": "BALAJI BIKE CARE",\n' +
+        '    "amount": 4000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "08/09/24",\n' +
+        '    "merchant": "MAHADEV PAN SHOP",\n' +
+        '    "amount": 20.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "09/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 2000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "10/09/24",\n' +
+        '    "merchant": "AMB CHRG INCL GST FOR AUG2024",\n' +
+        '    "amount": 238.54,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "10/09/24",\n' +
+        '    "merchant": "AMB CHRG INCL GST FOR JUL2024",\n' +
+        '    "amount": 507.12,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "11/09/24",\n' +
+        '    "merchant": "ZOMATO LTD",\n' +
+        '    "amount": 232.33,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "12/09/24",\n' +
+        '    "merchant": "GOOGLE INDIA DIGITAL",\n' +
+        '    "amount": 740.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "12/09/24",\n' +
+        '    "merchant": "VIGHESHWARA CATERERS",\n' +
+        '    "amount": 70.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "12/09/24",\n' +
+        '    "merchant": "INFOSYS PUNE FC3 MRP",\n' +
+        '    "amount": 60.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 67.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 132.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/09/24",\n' +
+        '    "merchant": "7 ELEVEN",\n' +
+        '    "amount": 150.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "15/09/24",\n' +
+        '    "merchant": "7 ELEVEN",\n' +
+        '    "amount": 50.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Shopping"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "16/09/24",\n' +
+        '    "merchant": "PRIDE MEDICO",\n' +
+        '    "amount": 20.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Health & Fitness"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "20/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 150.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 8000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "25/09/24",\n' +
+        '    "merchant": "APPLE MEDIA SERVICES",\n' +
+        '    "amount": 365.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Entertainment"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/09/24",\n' +
+        '    "merchant": "HAPPINESS STREET",\n' +
+        '    "amount": 319.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Food & Dining"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 300.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "29/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 300.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "30/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 4000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "30/09/24",\n' +
+        '    "merchant": "PRANIT DASHARATH THO",\n' +
+        '    "amount": 3000.00,\n' +
+        '    "isDeposit": false,\n' +
+        '    "category": "Miscellaneous"\n' +
+        '  },\n' +
+        '  {\n' +
+        '    "date": "01/10/24",\n' +
+        '    "merchant": "INTEREST PAID TILL 30-SEP-2024",\n' +
+        '    "amount": 31.00,\n' +
+        '    "isDeposit": true,\n' +
+        '    "category": "Income"\n' +
+        '  }'
+    }
+  }
+}
+Processing chunk 11/11
+AI rate limit or error on chunk 11: BadRequestError: 400 {"error":{"message":"Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.","type":"invalid_request_error","code":"json_validate_failed","failed_generation":"[]"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:36:20)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:299:29)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:522:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:520:3)
+    at async file:///opt/render/project/src/dist/index.js:1934:29 {
+  status: 400,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8c98b4b879790-PDX',
+    connection: 'keep-alive',
+    'content-length': '204',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:43:23 GMT',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=r8VWaLqGMicwSoxf9SqH83rlcYM1JsPJjnfJnSjLXKE-1743853403-1.0.1.1-hwHnIHQeta3s9R9yfKnWpyGO6d0.Rph9Kr1bWf_P2aP2R5ND_.ZUxS.BhpmJqQFGiHKjzHCCLt.CTvmNraErrzxQ4GY7ySnLCsypvIpH28M; path=/; expires=Sat, 05-Apr-25 12:13:23 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+Extracted 0 unique transactions from all chunks
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '988',
+    'x-ratelimit-remaining-tokens': '4936',
+    'x-ratelimit-reset-requests': '16m58.732s',
+    'x-ratelimit-reset-tokens': '10.64s',
+    'x-request-id': 'req_01jr2w6crvfk5tsctkek1kzqgx'
+  },
+  error: {
+    error: {
+      message: "Failed to generate JSON. Please adjust your prompt. See 'failed_generation' for more details.",
+      type: 'invalid_request_error',
+      code: 'json_validate_failed',
+      failed_generation: '[]'
+    }
+  }
+}
+Could not extract any transactions from the uploaded PDFs
+You can also use theRender CLIto explore logs in your command line.
+
