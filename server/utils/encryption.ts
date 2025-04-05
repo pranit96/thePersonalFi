@@ -5,6 +5,9 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
 
 if (!ENCRYPTION_KEY) {
   console.warn('ENCRYPTION_KEY is not set. Data encryption will not work properly.');
+} else {
+  // Log the first few characters of the key for debugging
+  console.log(`ENCRYPTION_KEY is set with length: ${ENCRYPTION_KEY.length}. First 4 chars: ${ENCRYPTION_KEY.substring(0, 4)}...`);
 }
 
 // Encryption algorithm
@@ -25,10 +28,18 @@ export function encrypt(text: string): string {
     // Generate a random initialization vector
     const iv = crypto.randomBytes(16);
     
+    // Log key length for debugging
+    console.log(`Key length in bytes: ${Buffer.from(ENCRYPTION_KEY, 'hex').length}`);
+    
+    // For AES-256, we need a 32-byte (256-bit) key
+    const key = Buffer.from(ENCRYPTION_KEY, 'hex').length === 32 
+      ? Buffer.from(ENCRYPTION_KEY, 'hex')
+      : crypto.createHash('sha256').update(String(ENCRYPTION_KEY)).digest();
+    
     // Create cipher with key and iv
     const cipher = crypto.createCipheriv(
       ALGORITHM, 
-      Buffer.from(ENCRYPTION_KEY, 'hex'), 
+      key, 
       iv
     );
     
@@ -68,10 +79,15 @@ export function decrypt(encryptedText: string): string {
     // Extract the encrypted data (the rest)
     const encryptedData = encryptedText.slice(64);
     
+    // For AES-256, we need a 32-byte (256-bit) key
+    const key = Buffer.from(ENCRYPTION_KEY, 'hex').length === 32 
+      ? Buffer.from(ENCRYPTION_KEY, 'hex')
+      : crypto.createHash('sha256').update(String(ENCRYPTION_KEY)).digest();
+      
     // Create decipher
     const decipher = crypto.createDecipheriv(
       ALGORITHM, 
-      Buffer.from(ENCRYPTION_KEY, 'hex'), 
+      key, 
       iv
     );
     

@@ -10,6 +10,12 @@ import multer from "multer";
 import path from "path";
 import { extractTransactionsFromPDF, cleanupTemporaryFiles } from "./services/pdfService";
 import { sendWelcomeEmail, sendDataExportEmail } from "./services/emailService";
+import { 
+  generateSpendingInsights, 
+  generatePersonalizedAdvice, 
+  answerCustomFinancialQuestion 
+} from "./services/aiService";
+import { rateLimiter, RATE_LIMITS } from "./services/rateLimiterService";
 
 // Configure multer for file uploads
 const storage_config = multer.diskStorage({
@@ -413,8 +419,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savingsRecords
       );
       
-      // Import rate limiter to check remaining quota
-      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      // Check remaining quota from the imported rate limiter
       const remainingQuota = rateLimiter.getRemainingQuota('CUSTOM_QUESTIONS', RATE_LIMITS.CUSTOM_QUESTIONS);
       
       // Return the AI-generated insights with rate limit information
@@ -434,8 +439,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (err) {
       console.error("AI insights error:", err);
       
-      // Get rate limit information
-      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      // Get rate limit information from imported rate limiter
       const remainingQuota = rateLimiter.getRemainingQuota('CUSTOM_QUESTIONS', RATE_LIMITS.CUSTOM_QUESTIONS);
       
       // Check if it's a rate limit error
@@ -508,8 +512,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           savingsRecords
         );
         
-        // Get rate limit information
-        const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+        // Get rate limit information from imported rate limiter
         const remainingQuota = rateLimiter.getRemainingQuota('GENERAL_INSIGHTS', RATE_LIMITS.GENERAL_INSIGHTS);
         
         // Return combined insights with rate limit metadata
@@ -526,8 +529,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       } catch (aiError) {
         console.error("Error generating AI insights:", aiError);
-        // Still return saved insights on error with rate limit info
-        const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+        // Still return saved insights on error with rate limit info from imported rate limiter
         const remainingQuota = rateLimiter.getRemainingQuota('GENERAL_INSIGHTS', RATE_LIMITS.GENERAL_INSIGHTS);
         
         res.json({
@@ -570,8 +572,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn("GROQ_API_KEY not available, will use pattern matching only for PDF parsing");
       }
       
-      // Get rate limit information for PDF processing
-      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      // Get rate limit information for PDF processing using imported rate limiter
       const remainingQuota = rateLimiter.getRemainingQuota('PDF_PROCESSING', RATE_LIMITS.PDF_PROCESSING);
       
       // Send an initial response to let the client know processing has started
