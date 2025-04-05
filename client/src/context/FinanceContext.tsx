@@ -34,12 +34,12 @@ interface FinanceContextType {
   transactions: Transaction[];
   addTransaction: (transaction: Omit<Transaction, "id" | "date">) => Promise<void>;
   deleteTransaction: (id: number) => Promise<void>;
-  
+
   // Salary
   salaryRecords: SalaryRecord[];
   addSalaryRecord: (record: Omit<SalaryRecord, "id" | "date">) => Promise<void>;
   updateSalaryRecord: (id: number, amount: number) => Promise<void>;
-  
+
   // Goals
   goals: Goal[];
   goalAdvice?: GoalAdvice[];
@@ -47,20 +47,21 @@ interface FinanceContextType {
   addGoal: (goal: Omit<Goal, "id" | "date" | "currentAmount">) => Promise<void>;
   updateGoal: (id: number, currentAmount: number) => Promise<void>;
   deleteGoal: (id: number) => Promise<void>;
-  
+
   // Savings
   savingsRecords: SavingsRecord[];
   addSavingsRecord: (record: Omit<SavingsRecord, "id" | "date">) => Promise<void>;
-  
+
   // Categories
   categorySpending: CategorySpending[];
-  
+
   // AI Insights
   aiInsights: AiInsight[];
   aiServiceMeta: AiServiceMeta;
-  
+
   // Loading states
   isLoading: boolean;
+  refreshInsights: () => Promise<void>;
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
@@ -75,7 +76,7 @@ export function useFinance() {
 
 export function FinanceProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
-  
+
   // Query hooks
   const { 
     data: transactions = [] as Transaction[],
@@ -84,7 +85,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/transactions'],
     enabled: !!user, // Only run query if user is authenticated
   });
-  
+
   const {
     data: salaryRecords = [] as SalaryRecord[],
     isLoading: isLoadingSalary
@@ -92,7 +93,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/salary'],
     enabled: !!user,
   });
-  
+
   // Updated query to handle the new response format with advice
   const {
     data: goalsResponse = { goals: [] as Goal[], advice: [], hasAdvice: false },
@@ -108,7 +109,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     },
     enabled: !!user,
   });
-  
+
   const {
     data: savingsRecords = [] as SavingsRecord[],
     isLoading: isLoadingSavings
@@ -116,7 +117,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/savings'],
     enabled: !!user,
   });
-  
+
   const {
     data: categorySpending = [] as CategorySpending[],
     isLoading: isLoadingCategories
@@ -124,7 +125,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/categories'],
     enabled: !!user,
   });
-  
+
   // Updated query to handle the new response format with metadata
   const {
     data: insightsResponse = { insights: [] as AiInsight[], _meta: { aiLimits: { apiKeyMissing: false } } },
@@ -133,7 +134,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     queryKey: ['/api/insights'],
     enabled: !!user,
   });
-  
+
   // Mutations for transactions
   const addTransactionMutation = useMutation({
     mutationFn: (transaction: Omit<Transaction, "id" | "date">) => 
@@ -144,7 +145,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
     }
   });
-  
+
   const deleteTransactionMutation = useMutation({
     mutationFn: (id: number) => 
       apiRequest('DELETE', `/api/transactions/${id}`),
@@ -154,7 +155,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
     }
   });
-  
+
   // Mutations for salary
   const addSalaryMutation = useMutation({
     mutationFn: (record: Omit<SalaryRecord, "id" | "date">) => 
@@ -164,7 +165,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
     }
   });
-  
+
   const updateSalaryMutation = useMutation({
     mutationFn: ({ id, amount }: { id: number, amount: number }) => 
       apiRequest('PUT', `/api/salary/${id}`, { amount }),
@@ -172,7 +173,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/salary'] });
     }
   });
-  
+
   // Mutations for goals
   const addGoalMutation = useMutation({
     mutationFn: (goal: Omit<Goal, "id" | "date" | "currentAmount">) => 
@@ -181,7 +182,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/goals'] });
     }
   });
-  
+
   const updateGoalMutation = useMutation({
     mutationFn: ({ id, currentAmount }: { id: number, currentAmount: number }) => 
       apiRequest('PUT', `/api/goals/${id}`, { currentAmount }),
@@ -190,7 +191,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
     }
   });
-  
+
   const deleteGoalMutation = useMutation({
     mutationFn: (id: number) => 
       apiRequest('DELETE', `/api/goals/${id}`),
@@ -198,7 +199,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/goals'] });
     }
   });
-  
+
   // Mutations for savings
   const addSavingsMutation = useMutation({
     mutationFn: (record: Omit<SavingsRecord, "id" | "date">) => 
@@ -208,14 +209,24 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
       queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
     }
   });
-  
+
   const isLoading = isLoadingTransactions || 
     isLoadingSalary || 
     isLoadingGoals || 
     isLoadingSavings || 
     isLoadingCategories ||
     isLoadingInsights;
-  
+
+  // Function to refresh insights
+  const refreshInsights = async () => {
+    try {
+      await queryClient.invalidateQueries({ queryKey: ['/api/insights'] });
+    } catch (error) {
+      console.error("Error refreshing insights:", error);
+      // Add appropriate error handling here, e.g., display an error message to the user.
+    }
+  };
+
   // Create typed value object to avoid TypeScript errors
   const contextValue: FinanceContextType = {
     // Transactions
@@ -226,7 +237,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     deleteTransaction: async (id) => {
       await deleteTransactionMutation.mutateAsync(id);
     },
-    
+
     // Salary
     salaryRecords: salaryRecords as SalaryRecord[],
     addSalaryRecord: async (record) => {
@@ -235,7 +246,7 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     updateSalaryRecord: async (id, amount) => {
       await updateSalaryMutation.mutateAsync({ id, amount });
     },
-    
+
     // Goals with AI advice
     goals: goalsResponse.goals,
     goalAdvice: goalsResponse.advice,
@@ -249,22 +260,23 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     deleteGoal: async (id) => {
       await deleteGoalMutation.mutateAsync(id);
     },
-    
+
     // Savings
     savingsRecords: savingsRecords as SavingsRecord[],
     addSavingsRecord: async (record) => {
       await addSavingsMutation.mutateAsync(record);
     },
-    
+
     // Categories
     categorySpending: categorySpending as CategorySpending[],
-    
+
     // AI Insights
     aiInsights: insightsResponse.insights,
     aiServiceMeta: insightsResponse._meta?.aiLimits || { apiKeyMissing: false },
-    
+
     // Loading states
-    isLoading
+    isLoading,
+    refreshInsights
   };
 
   return (

@@ -1,3 +1,43 @@
+
+import { useState, useEffect } from 'react';
+
+type ToastVariant = 'default' | 'destructive' | 'success';
+
+interface Toast {
+  id: string;
+  title: string;
+  description?: string;
+  variant?: ToastVariant;
+}
+
+interface ToastOptions {
+  title: string;
+  description?: string;
+  variant?: ToastVariant;
+  duration?: number;
+}
+
+export function useToast() {
+  const [toasts, setToasts] = useState<Toast[]>([]);
+
+  const toast = ({ title, description, variant = 'default', duration = 5000 }: ToastOptions) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, title, description, variant }]);
+
+    if (duration !== Infinity) {
+      setTimeout(() => {
+        setToasts((prev) => prev.filter((toast) => toast.id !== id));
+      }, duration);
+    }
+  };
+
+  const dismiss = (id: string) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  };
+
+  return { toast, dismiss, toasts };
+}
+
 import * as React from "react"
 
 import type {

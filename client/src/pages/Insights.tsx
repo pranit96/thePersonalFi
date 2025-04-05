@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import Header from "@/components/layout/Header";
 import AiInsightCard from "@/components/insights/AiInsightCard";
@@ -20,7 +20,13 @@ import { formatCurrency } from "@/lib/utils";
 
 const COLORS = ["#6366F1", "#10B981", "#EC4899", "#F59E0B", "#3B82F6", "#EF4444"];
 
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+
 export default function Insights() {
+  const { toast } = useToast();
+  const [isGeneratingInsights, setIsGeneratingInsights] = useState(false);
   const { 
     transactions, 
     salaryRecords, 
@@ -29,7 +35,8 @@ export default function Insights() {
     categorySpending, 
     aiInsights,
     aiServiceMeta,
-    isLoading
+    isLoading,
+    refreshInsights
   } = useFinance();
   
   const monthlySpendingData = useMemo(() => {
@@ -89,6 +96,32 @@ export default function Insights() {
     }));
   }, [categorySpending]);
   
+  // Function to manually generate insights
+  const handleGenerateInsights = async () => {
+    if (isGeneratingInsights || aiServiceMeta.apiKeyMissing) return;
+    
+    setIsGeneratingInsights(true);
+    try {
+      await apiRequest('POST', '/api/insights/generate', {});
+      // Refresh insights data
+      await refreshInsights();
+      toast({
+        title: "Insights Generated",
+        description: "New financial insights have been generated based on your data.",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Failed to generate insights:", error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate insights. Please try again later.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingInsights(false);
+    }
+  };
+  
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -137,8 +170,27 @@ export default function Insights() {
       <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
         <div className="flex items-center mb-6">
           <h3 className="font-display font-bold flex-1">AI Financial Insights</h3>
-          <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center animate-pulse">
-            <div className="text-accent">🤖</div>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handleGenerateInsights}
+              disabled={isGeneratingInsights || aiServiceMeta.apiKeyMissing}
+              className="text-xs bg-primary hover:bg-primary/80 text-primary-foreground py-1 px-3 rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGeneratingInsights ? (
+                <>
+                  <div className="w-3 h-3 border-2 border-white/30 border-t-white/90 rounded-full animate-spin"></div>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v3"></path><path d="M18.42 6.5 16.3 8.62"></path><path d="M21 12h-3"></path><path d="M18.42 17.5 16.3 15.38"></path><path d="M12 21v-3"></path><path d="M7.58 17.5 9.7 15.38"></path><path d="M3 12h3"></path><path d="M7.58 6.5 9.7 8.62"></path></svg>
+                  Generate Insights
+                </>
+              )}
+            </button>
+            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center animate-pulse">
+              <div className="text-accent">🤖</div>
+            </div>
           </div>
         </div>
         

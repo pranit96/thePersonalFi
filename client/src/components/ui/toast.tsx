@@ -1,3 +1,58 @@
+
+import { ReactNode } from "react";
+import { cn } from "@/lib/utils";
+
+interface ToastProps {
+  id: string;
+  variant?: "default" | "destructive" | "success";
+  title: string;
+  description?: string;
+  onDismiss: (id: string) => void;
+}
+
+export function Toast({ id, title, description, variant = "default", onDismiss }: ToastProps) {
+  const variantClasses = {
+    default: "bg-background-light/90 border border-border",
+    destructive: "bg-destructive/90 border border-destructive/20 text-destructive-foreground",
+    success: "bg-secondary/90 border border-secondary/20 text-secondary-foreground"
+  };
+  
+  return (
+    <div 
+      className={cn(
+        "flex w-full max-w-sm overflow-hidden rounded-lg shadow-lg backdrop-blur-sm",
+        variantClasses[variant]
+      )}
+    >
+      <div className="flex-1 p-4">
+        <div className="flex items-start">
+          <div className="flex-1">
+            <h3 className="font-medium">{title}</h3>
+            {description && <p className="mt-1 text-sm opacity-90">{description}</p>}
+          </div>
+          <button
+            onClick={() => onDismiss(id)}
+            className="ml-4 inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-gray-400 hover:text-gray-500 focus:outline-none"
+          >
+            <span className="sr-only">Close</span>
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function ToastContainer({ children }: { children: ReactNode }) {
+  return (
+    <div className="fixed top-4 right-4 z-50 flex flex-col gap-2">
+      {children}
+    </div>
+  );
+}
+
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"

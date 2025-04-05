@@ -16,6 +16,9 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Sidebar from "./components/Sidebar";
 import MobileNav from "./components/layout/MobileNav";
+import { useToast } from './hooks/use-toast'; // Added import
+import { Toast, ToastContainer } from './components/ui/toast'; // Added import
+
 
 function MainLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -95,13 +98,38 @@ function Router() {
 }
 
 function App() {
+  const { user, loading } = useAuth();
+  const { toasts, dismiss } = useToast(); // Added useToast
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background text-text">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-t-primary border-primary/30 rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <WebSocketProvider>
           <FinanceProvider>
             <Router />
-            <Toaster />
+            <ToastContainer> {/* Added ToastContainer */}
+              {toasts.map((toast) => (
+                <Toast
+                  key={toast.id}
+                  id={toast.id}
+                  title={toast.title}
+                  description={toast.description}
+                  variant={toast.variant}
+                  onDismiss={dismiss}
+                />
+              ))}
+            </ToastContainer>
           </FinanceProvider>
         </WebSocketProvider>
       </AuthProvider>
