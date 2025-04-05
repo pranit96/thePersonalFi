@@ -2,6 +2,7 @@ import { createContext, useContext, ReactNode, useState, useEffect } from "react
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
+import { toast } from "@/hooks/use-toast";
 import { 
   type Transaction, 
   type SalaryRecord, 
@@ -247,10 +248,37 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Placeholder for exportUserData - needs actual implementation
+  // Export user data functionality
   const exportUserData = async () => {
-    //Implementation to export user data would go here.  This is a placeholder.
-    console.log("Exporting user data...");
+    try {
+      const response = await apiRequest('GET', '/api/user/export');
+      const data = await response.json();
+      
+      // Create a download link for the data
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'finspire_data_export.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      // Show success toast
+      toast({
+        title: "Data exported successfully",
+        description: "Your data has been downloaded as a JSON file.",
+        variant: "success"
+      });
+    } catch (error) {
+      console.error("Failed to export data:", error);
+      toast({
+        title: "Export failed",
+        description: "There was an error exporting your data.",
+        variant: "destructive"
+      });
+    }
   };
 
 

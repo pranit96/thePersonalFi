@@ -22,6 +22,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { apiRequest } from "@/lib/queryClient";
+import { useFinance } from "@/context/FinanceContext";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Privacy() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -33,34 +35,31 @@ export default function Privacy() {
     try {
       await apiRequest('DELETE', '/api/user/data');
       setIsDeleteDialogOpen(false);
-      // Show success message
-      alert("All your data has been successfully deleted.");
-      // Redirect to dashboard
-      window.location.href = "/";
+      
+      // Show success toast
+      toast({
+        title: "Data deleted successfully",
+        description: "All your data has been removed from our servers.",
+        variant: "success"
+      });
+      
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
     } catch (error) {
       console.error("Failed to delete data:", error);
+      toast({
+        title: "Deletion failed",
+        description: "There was an error deleting your data. Please try again.",
+        variant: "destructive"
+      });
     }
   };
   
-  const exportData = async () => {
-    try {
-      const response = await apiRequest('GET', '/api/user/export');
-      const data = await response.json();
-      
-      // Create a download link for the data
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'finspire_data_export.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Failed to export data:", error);
-    }
-  };
+  // Use the export function from FinanceContext
+  const { exportUserData } = useFinance();
+  const { toast } = useToast();
   
   return (
     <>
@@ -170,10 +169,7 @@ export default function Privacy() {
               <Button 
                 variant="outline" 
                 className="w-full border-primary/20 text-primary"
-                onClick={() => {
-                  const { exportUserData } = useFinance();
-                  exportUserData();
-                }}
+                onClick={exportUserData}
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export Data
