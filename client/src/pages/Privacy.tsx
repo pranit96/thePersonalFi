@@ -170,7 +170,10 @@ export default function Privacy() {
               <Button 
                 variant="outline" 
                 className="w-full border-primary/20 text-primary"
-                onClick={exportData}
+                onClick={() => {
+                  const { exportUserData } = useFinance();
+                  exportUserData();
+                }}
               >
                 <Download className="w-4 h-4 mr-2" />
                 Export Data

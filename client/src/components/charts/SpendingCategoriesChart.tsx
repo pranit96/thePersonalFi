@@ -28,7 +28,7 @@ export default function SpendingCategoriesChart({ categories }: SpendingCategori
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-light/95 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-2 text-text">
+        <div className="bg-background-dark/95 backdrop-blur-xl border border-border shadow-lg rounded-lg p-2 text-foreground">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-sm">{formatCurrency(payload[0].value)}</p>
           <p className="text-xs">{payload[0].payload.percentage}% of total</p>

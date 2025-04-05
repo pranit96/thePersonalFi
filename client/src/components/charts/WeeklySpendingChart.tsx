@@ -99,10 +99,10 @@ export default function WeeklySpendingChart({ transactions }: WeeklySpendingChar
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: '#F8FAFC'
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                border: '1px solid var(--border)',
+                borderRadius: '8px', 
+                color: 'var(--foreground)'
               }}
               formatter={(value) => [`$${value.toFixed(2)}`, undefined]}
             />

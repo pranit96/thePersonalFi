@@ -62,6 +62,7 @@ interface FinanceContextType {
   // Loading states
   isLoading: boolean;
   refreshInsights: () => Promise<void>;
+  exportUserData: () => Promise<void>; // Added exportUserData function
 }
 
 const FinanceContext = createContext<FinanceContextType | undefined>(undefined);
@@ -246,6 +247,13 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Placeholder for exportUserData - needs actual implementation
+  const exportUserData = async () => {
+    //Implementation to export user data would go here.  This is a placeholder.
+    console.log("Exporting user data...");
+  };
+
+
   // Create typed value object to avoid TypeScript errors
   const contextValue: FinanceContextType = {
     // Transactions
@@ -295,8 +303,13 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
 
     // Loading states
     isLoading,
-    refreshInsights
+    refreshInsights,
+    exportUserData // Added exportUserData to contextValue
   };
+
+  const [aiInsights, setAiInsights] = useState(insightsResponse.insights);
+  const [aiServiceMeta, setAiServiceMeta] = useState(insightsResponse._meta?.aiLimits || { apiKeyMissing: false });
+
 
   return (
     <FinanceContext.Provider value={contextValue}>
