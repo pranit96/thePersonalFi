@@ -52,7 +52,7 @@ export interface IStorage {
 
   // AI Insights
   getAiInsights(): Promise<AiInsight[]>;
-  addAiInsights(insights: any[]): Promise<void>; // Added method
+  addAiInsights(insights: any[], userId?: number): Promise<void>; // Updated method signature
 
   // Data Management
   deleteAllUserData(): Promise<void>;
@@ -350,17 +350,31 @@ export class DatabaseStorage implements IStorage {
   }
 
     // Added method to add AI insights
-  async addAiInsights(insights: any[]): Promise<void> {
+  async addAiInsights(insights: any[], userId?: number): Promise<void> {
+    // Get the next available ID from the database
+    const maxIdResult = await db.select({ maxId: max(aiInsights.id) }).from(aiInsights);
+    let nextId = 1; // Default to 1 if table is empty
+    if (maxIdResult && maxIdResult[0] && maxIdResult[0].maxId) {
+      nextId = maxIdResult[0].maxId + 1;
+    }
+    
     for (const insightData of insights) {
       const newInsight: AiInsight = {
-        id:  (await db.select({ maxId: max(aiInsights.id) }).from(aiInsights))[0].maxId + 1, //get next id
+        id: nextId++,
         date: new Date(),
         title: insightData.title || "Financial Insight",
         description: insightData.description || "",
         type: mapInsightType(insightData.type || "spending"),
-        userId: insightData.userId, // Assuming userId is provided in insightData
+        // Use the provided userId parameter or fallback to insightData.userId
+        userId: userId || insightData.userId,
         actionText: insightData.actionText || "Take Action"
       };
+      
+      // Ensure userId is not null before inserting
+      if (!newInsight.userId) {
+        console.error("Cannot add insight: userId is null");
+        continue; // Skip this insight
+      }
 
       await db.insert(aiInsights).values(newInsight);
     }
