@@ -1,0 +1,63 @@
+index-VhWTQOgb.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/user 401 (Unauthorized)
+(anonymous) @ index-VhWTQOgb.js:48
+a @ index-VhWTQOgb.js:48
+v @ index-VhWTQOgb.js:48
+start @ index-VhWTQOgb.js:48
+fetch @ index-VhWTQOgb.js:48
+su @ index-VhWTQOgb.js:48
+onSubscribe @ index-VhWTQOgb.js:48
+subscribe @ index-VhWTQOgb.js:48
+(anonymous) @ index-VhWTQOgb.js:48
+eC @ index-VhWTQOgb.js:38
+Hm @ index-VhWTQOgb.js:40
+Ys @ index-VhWTQOgb.js:40
+aj @ index-VhWTQOgb.js:40
+Xa @ index-VhWTQOgb.js:38
+o5 @ index-VhWTQOgb.js:40
+uo @ index-VhWTQOgb.js:40
+TC @ index-VhWTQOgb.js:40
+w @ index-VhWTQOgb.js:25
+E @ index-VhWTQOgb.js:25
+index-VhWTQOgb.js:453 Connecting to WebSocket: wss://fintrack-exvz.onrender.com/ws?sessionId=1743867089523
+index-VhWTQOgb.js:453 WebSocket connection established
+index-VhWTQOgb.js:453 WebSocket message received: {type: 'connected', message: 'Connected to financial tracker notifications'}
+index-VhWTQOgb.js:453 Successfully connected to notification server
+index-VhWTQOgb.js:453 WebSocket message received: {type: 'auth_success', message: 'Authentication successful'}
+index-VhWTQOgb.js:453 WebSocket authentication successful
+index-VhWTQOgb.js:48 
+            
+            
+           POST https://fintrack-exvz.onrender.com/api/insights/generate 500 (Internal Server Error)
+Wt @ index-VhWTQOgb.js:48
+v @ index-VhWTQOgb.js:453
+OF @ index-VhWTQOgb.js:37
+AF @ index-VhWTQOgb.js:37
+EF @ index-VhWTQOgb.js:37
+k_ @ index-VhWTQOgb.js:37
+LN @ index-VhWTQOgb.js:37
+(anonymous) @ index-VhWTQOgb.js:37
+$w @ index-VhWTQOgb.js:40
+lN @ index-VhWTQOgb.js:37
+Ry @ index-VhWTQOgb.js:37
+sw @ index-VhWTQOgb.js:37
+WF @ index-VhWTQOgb.js:37
+index-VhWTQOgb.js:453 Failed to generate insights: Error: 500: {"error":"null value in column \"content\" of relation \"ai_insights\" violates not-null constraint"}
+    at yT (index-VhWTQOgb.js:48:42890)
+    at async Wt (index-VhWTQOgb.js:48:43091)
+    at async v (index-VhWTQOgb.js:453:41340)
+v @ index-VhWTQOgb.js:453
+await in v
+OF @ index-VhWTQOgb.js:37
+AF @ index-VhWTQOgb.js:37
+EF @ index-VhWTQOgb.js:37
+k_ @ index-VhWTQOgb.js:37
+LN @ index-VhWTQOgb.js:37
+(anonymous) @ index-VhWTQOgb.js:37
+$w @ index-VhWTQOgb.js:40
+lN @ index-VhWTQOgb.js:37
+Ry @ index-VhWTQOgb.js:37
+sw @ index-VhWTQOgb.js:37
+WF @ index-VhWTQOgb.js:37
