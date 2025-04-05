@@ -12,7 +12,8 @@ const groq = new Groq({
 });
 
 // Models to use
-const PDF_MODEL = 'llama3-70b-8192';  // Model for PDF parsing with high accuracy
+// llama3-8b-8192 has higher rate limits in free tier but still good accuracy
+const PDF_MODEL = process.env.GROQ_USE_SMALL_MODEL === 'true' ? 'llama3-8b-8192' : 'llama3-70b-8192';
 
 // Convert fs functions to promise-based
 const readFile = promisify(fs.readFile);
@@ -215,13 +216,38 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
       
       console.log(`Processing chunk ${i+1}/${chunks.length}`);
       
-      const chunkResponse = await groq.chat.completions.create({
-        messages: [{ role: "user", content: chunkPrompt }],
-        model: PDF_MODEL,
-        temperature: 0.1,
-        max_tokens: 2500,
-        response_format: { type: "json_object" }
-      });
+      // Add retry mechanism for transient failures
+      let attempts = 0;
+      const maxAttempts = 3;
+      let chunkResponse;
+      
+      while (attempts < maxAttempts) {
+        try {
+          chunkResponse = await groq.chat.completions.create({
+            messages: [{ role: "user", content: chunkPrompt }],
+            model: PDF_MODEL,
+            temperature: 0.1,
+            max_tokens: 2500,
+            response_format: { type: "json_object" }
+          });
+          
+          // If successful, break out of retry loop
+          break;
+        } catch (retryError) {
+          attempts++;
+          console.warn(`Attempt ${attempts}/${maxAttempts} failed for chunk ${i+1}:`, retryError);
+          
+          if (attempts >= maxAttempts) {
+            console.error(`All ${maxAttempts} attempts failed for chunk ${i+1}`);
+            throw retryError;
+          }
+          
+          // Wait longer between retries (exponential backoff)
+          const delay = Math.pow(2, attempts) * 1000; // 2s, 4s, 8s
+          console.log(`Waiting ${delay/1000}s before retry...`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+        }
+      }
       
       try {
         const content = chunkResponse.choices[0]?.message?.content || '{"transactions":[]}';
@@ -254,14 +280,85 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
   console.log(`Extracted ${uniqueTransactions.length} unique transactions from all chunks`);
   
   // Convert to our application's transaction format
-  return uniqueTransactions.map(t => ({
-    merchant: t.merchant,
-    // For deposits (income), use positive amount, for expenses use negative
-    amount: t.isDeposit ? Math.abs(t.amount) : -Math.abs(t.amount), 
-    categoryId: getCategoryIdFromName(t.category), // Convert category name to ID
-    description: t.merchant,
-    userId
-  }));
+  return uniqueTransactions.map(t => {
+    // Parse the date from the extracted data
+    let transactionDate = null;
+    try {
+      // Try to parse the date string (supports multiple formats)
+      if (t.date) {
+        // Common date formats in bank statements
+        const formats = [
+          // MM/DD/YY
+          /^(\d{1,2})\/(\d{1,2})\/(\d{2})$/,
+          // MM/DD/YYYY
+          /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/,
+          // DD-MM-YYYY
+          /^(\d{1,2})-(\d{1,2})-(\d{4})$/,
+          // YYYY-MM-DD
+          /^(\d{4})-(\d{1,2})-(\d{1,2})$/
+        ];
+        
+        let dateObj = null;
+        
+        // Try each format until we find a match
+        for (const format of formats) {
+          const match = t.date.match(format);
+          if (match) {
+            if (format === formats[0]) {
+              // MM/DD/YY format
+              const month = parseInt(match[1]) - 1;  // JS months are 0-indexed
+              const day = parseInt(match[2]);
+              let year = parseInt(match[3]);
+              // Adjust 2-digit year (assume 20xx for years < 50, 19xx for >= 50)
+              year = year < 50 ? 2000 + year : 1900 + year;
+              dateObj = new Date(year, month, day);
+            } else if (format === formats[1]) {
+              // MM/DD/YYYY format
+              const month = parseInt(match[1]) - 1;
+              const day = parseInt(match[2]);
+              const year = parseInt(match[3]);
+              dateObj = new Date(year, month, day);
+            } else if (format === formats[2]) {
+              // DD-MM-YYYY format
+              const day = parseInt(match[1]);
+              const month = parseInt(match[2]) - 1;
+              const year = parseInt(match[3]);
+              dateObj = new Date(year, month, day);
+            } else if (format === formats[3]) {
+              // YYYY-MM-DD format
+              const year = parseInt(match[1]);
+              const month = parseInt(match[2]) - 1;
+              const day = parseInt(match[3]);
+              dateObj = new Date(year, month, day);
+            }
+            break;
+          }
+        }
+        
+        // If none of the standard formats worked, try Date constructor
+        if (!dateObj) {
+          dateObj = new Date(t.date);
+        }
+        
+        // Only use the date if it's valid (not NaN)
+        if (!isNaN(dateObj.getTime())) {
+          transactionDate = dateObj;
+        }
+      }
+    } catch (error) {
+      console.error(`Failed to parse date: ${t.date}`, error);
+    }
+    
+    return {
+      merchant: t.merchant,
+      // For deposits (income), use positive amount, for expenses use negative
+      amount: t.isDeposit ? Math.abs(t.amount) : -Math.abs(t.amount), 
+      categoryId: getCategoryIdFromName(t.category), // Convert category name to ID
+      description: t.merchant,
+      transactionDate: transactionDate, // Use the parsed date or null
+      userId
+    };
+  });
 }
 
 /**

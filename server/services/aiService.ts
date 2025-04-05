@@ -173,12 +173,19 @@ export async function generatePersonalizedAdvice(
       .reduce((sum, t) => sum + t.amount, 0);
     
     // Format goals for AI input
-    const formattedGoals = goals.map(g => ({
-      name: g.name,
-      targetAmount: g.targetAmount,
-      currentAmount: g.currentAmount,
-      progress: (g.currentAmount / g.targetAmount * 100).toFixed(1) + '%'
-    }));
+    const formattedGoals = goals.map(g => {
+      // Use the "amount" field as targetAmount and handle null values
+      const targetAmount = g.amount || 0;
+      const currentAmount = g.currentAmount || 0;
+      const progress = targetAmount > 0 ? ((currentAmount / targetAmount) * 100).toFixed(1) + '%' : '0.0%';
+      
+      return {
+        name: g.name || 'Unnamed Goal',
+        targetAmount: targetAmount,
+        currentAmount: currentAmount,
+        progress: progress
+      };
+    });
     
     // Create the prompt
     const prompt = `

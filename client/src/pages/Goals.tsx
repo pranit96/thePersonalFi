@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { useForm } from "react-hook-form"; // Added import for useForm
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -84,7 +84,7 @@ export default function Goals() {
   const [isNewGoalDialogOpen, setIsNewGoalDialogOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState<number | null>(null);
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
-  
+
   const newGoalForm = useForm<z.infer<typeof newGoalSchema>>({
     resolver: zodResolver(newGoalSchema),
     defaultValues: {
@@ -92,14 +92,14 @@ export default function Goals() {
       targetAmount: "",
     },
   });
-  
+
   const updateGoalForm = useForm<z.infer<typeof updateGoalSchema>>({
     resolver: zodResolver(updateGoalSchema),
     defaultValues: {
       currentAmount: "",
     },
   });
-  
+
   const onSubmitNewGoal = async (values: z.infer<typeof newGoalSchema>) => {
     try {
       await addGoal({
@@ -107,20 +107,20 @@ export default function Goals() {
         targetAmount: Number(values.targetAmount),
         completed: false,
         encryptedData: null,
-        userId: 0, // This will be set by the server
+        userId: 0, 
         isPrivate: false
       });
-      
+
       newGoalForm.reset();
       setIsNewGoalDialogOpen(false);
     } catch (error) {
       console.error("Failed to add goal:", error);
     }
   };
-  
+
   const onSubmitUpdateGoal = async (values: z.infer<typeof updateGoalSchema>) => {
     if (selectedGoal === null) return;
-    
+
     try {
       await updateGoal(selectedGoal, Number(values.currentAmount));
       updateGoalForm.reset();
@@ -130,13 +130,13 @@ export default function Goals() {
       console.error("Failed to update goal:", error);
     }
   };
-  
+
   const openUpdateDialog = (goalId: number, currentAmount: number) => {
     setSelectedGoal(goalId);
     updateGoalForm.setValue("currentAmount", currentAmount.toString());
     setIsUpdateDialogOpen(true);
   };
-  
+
   const handleDeleteGoal = async (goalId: number) => {
     if (confirm("Are you sure you want to delete this goal?")) {
       try {
@@ -146,15 +146,15 @@ export default function Goals() {
       }
     }
   };
-  
+
   const getIconForGoal = (goalName: string) => {
     return goalIcons[goalName] || goalIcons.Default;
   };
-  
+
   const getColorForGoal = (goalName: string) => {
     return goalColors[goalName] || goalColors.Default;
   };
-  
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -165,11 +165,11 @@ export default function Goals() {
       </div>
     );
   }
-  
+
   return (
     <>
       <Header title="Saving Goals" subtitle="Track and manage your financial targets" />
-      
+
       {/* AI-powered goal advice section */}
       {hasGoalAdvice && goalAdvice && goalAdvice.length > 0 && (
         <div className="bg-background-light/60 backdrop-blur-xl border border-primary/20 shadow-lg rounded-xl p-5 mb-8">
@@ -177,7 +177,7 @@ export default function Goals() {
             <Sparkles className="h-5 w-5 text-primary mr-2" />
             <h3 className="font-display font-bold">AI-Powered Goal Insights</h3>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {goalAdvice.map((advice, idx) => {
               // Determine the icon based on advice content
@@ -187,7 +187,7 @@ export default function Goals() {
               } else if (advice.title.toLowerCase().includes('warn') || advice.title.toLowerCase().includes('caution')) {
                 icon = <AlertCircle className="h-5 w-5" />;
               }
-              
+
               return (
                 <Alert key={idx} className="bg-background-dark/30 border-primary/10">
                   <div className="flex items-start">
@@ -205,14 +205,14 @@ export default function Goals() {
                       </AlertTitle>
                       <AlertDescription className="text-text/80 mt-1">
                         {advice.description}
-                        
+
                         {advice.timeframe && (
                           <div className="flex items-center mt-2 text-sm text-primary/80">
                             <Clock className="h-4 w-4 mr-1" />
                             <span>{advice.timeframe}</span>
                           </div>
                         )}
-                        
+
                         {advice.actionText && (
                           <div className="mt-3 bg-background-light/30 p-2 rounded-md flex items-center text-sm border-l-2 border-primary">
                             <ChevronRight className="h-4 w-4 text-primary mr-1 flex-shrink-0" />
@@ -228,7 +228,7 @@ export default function Goals() {
           </div>
         </div>
       )}
-      
+
       <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
         <div className="flex justify-between items-center mb-6">
           <h3 className="font-display font-bold">Your Goals</h3>
@@ -289,7 +289,7 @@ export default function Goals() {
             </DialogContent>
           </Dialog>
         </div>
-        
+
         {goals.length === 0 ? (
           <div className="text-center py-12 text-text/70">
             <p className="mb-4">You don't have any saving goals yet.</p>
@@ -308,7 +308,7 @@ export default function Goals() {
               const percentage = calculatePercentage(goal.currentAmount, goal.targetAmount);
               const icon = getIconForGoal(goal.name);
               const color = getColorForGoal(goal.name);
-              
+
               return (
                 <div key={goal.id} className="bg-background-light/40 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5">
                   <div className="flex justify-between items-center mb-4">
@@ -342,13 +342,13 @@ export default function Goals() {
                       </Button>
                     </div>
                   </div>
-                  
+
                   <div className="mb-2 flex justify-between items-center">
                     <span className="text-sm font-medium">Progress</span>
                     <span className="text-sm font-mono">{percentage}%</span>
                   </div>
                   <Progress value={percentage} className={`h-3 bg-white/10 [&>div]:${color}`} />
-                  
+
                   <div className="mt-4 grid grid-cols-2 gap-4">
                     <div className="bg-background-dark/30 rounded-lg p-3">
                       <p className="text-xs text-text/70 mb-1">Current</p>
@@ -359,7 +359,7 @@ export default function Goals() {
                       <p className="text-lg font-display font-medium">{formatCurrency(goal.targetAmount)}</p>
                     </div>
                   </div>
-                  
+
                   {percentage < 100 && (
                     <Button 
                       variant="outline" 
@@ -370,7 +370,7 @@ export default function Goals() {
                       Update Progress
                     </Button>
                   )}
-                  
+
                   {percentage >= 100 && (
                     <div className="w-full mt-4 py-2 text-center bg-secondary/20 text-secondary rounded-lg text-sm">
                       Goal Completed! 🎉
@@ -382,7 +382,7 @@ export default function Goals() {
           </div>
         )}
       </div>
-      
+
       <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
         <DialogContent className="bg-background-light/95 backdrop-blur-xl border border-white/10">
           <DialogHeader>
