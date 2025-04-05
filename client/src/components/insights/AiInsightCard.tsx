@@ -1,3 +1,4 @@
+
 import { AiInsight } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -6,45 +7,76 @@ interface AiInsightCardProps {
   insight: AiInsight;
 }
 
-const insightTypeToColor: Record<string, { border: string, button: string, textButton: string }> = {
+const insightTypeToColor: Record<string, { border: string, bg: string, textButton: string, icon: string }> = {
   "spending_pattern": {
     border: "border-primary",
-    button: "bg-primary/20",
-    textButton: "text-primary"
+    bg: "bg-primary/10",
+    textButton: "text-primary",
+    icon: "💰"
   },
   "saving_opportunity": {
     border: "border-secondary",
-    button: "bg-secondary/20",
-    textButton: "text-secondary"
+    bg: "bg-secondary/10",
+    textButton: "text-secondary",
+    icon: "💹"
   },
   "goal_achievement": {
     border: "border-accent",
-    button: "bg-accent/20",
-    textButton: "text-accent"
+    bg: "bg-accent/10",
+    textButton: "text-accent",
+    icon: "🎯"
   }
 };
 
 export default function AiInsightCard({ insight }: AiInsightCardProps) {
   const colors = insightTypeToColor[insight.type] || insightTypeToColor.spending_pattern;
   
+  // Format the insight content for better readability
+  const formatContent = (content: string) => {
+    // Split the content into sections if it contains section headers
+    if (content.includes("\n\n")) {
+      return content.split("\n\n").map((section, i) => (
+        <p key={i} className="text-sm text-text/80 mb-2">
+          {section}
+        </p>
+      ));
+    }
+    
+    return <p className="text-sm text-text/80">{content}</p>;
+  };
+  
   return (
     <div className={cn(
-      "bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg p-4 border-l-2",
+      "bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-lg overflow-hidden",
       colors.border
     )}>
-      <h4 className="text-sm font-medium mb-2 line-clamp-1">{insight.title}</h4>
-      <p className="text-xs text-text/70 mb-3 overflow-auto max-h-24">{insight.description}</p>
-      <Button 
-        variant="ghost"
-        size="sm"
-        className={cn(
-          "text-xs px-3 py-1 rounded-full h-auto truncate max-w-full",
-          colors.button,
-          colors.textButton
-        )}
-      >
-        {insight.actionText}
-      </Button>
+      {/* Card Header */}
+      <div className={cn("p-4", colors.bg)}>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+            <span>{colors.icon}</span>
+          </div>
+          <h4 className="font-medium">{insight.title}</h4>
+        </div>
+      </div>
+      
+      {/* Card Body */}
+      <div className="p-4">
+        <div className="prose prose-sm prose-invert max-w-none mb-3">
+          {formatContent(insight.description)}
+        </div>
+        
+        <Button 
+          variant="secondary"
+          size="sm"
+          className={cn(
+            "mt-2 text-xs px-4 py-2 rounded-full h-auto",
+            colors.textButton
+          )}
+        >
+          {insight.actionText || "Take Action"}
+        </Button>
+      </div>
     </div>
   );
 }
