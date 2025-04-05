@@ -37,6 +37,25 @@ const upload = multer({
   }
 });
 
+import { WebSocketServer, WebSocket as WSWebSocket } from 'ws';
+
+// Keep track of connected WebSocket clients by user ID
+const connectedClients: Map<number, Set<WSWebSocket>> = new Map();
+
+// Helper function to send messages to a specific user
+function sendNotificationToUser(userId: number, message: any): void {
+  const userClients = connectedClients.get(userId);
+  if (userClients && userClients.size > 0) {
+    const messageStr = JSON.stringify(message);
+    // Convert Set to Array to avoid iteration issues
+    Array.from(userClients).forEach(client => {
+      if (client.readyState === WSWebSocket.OPEN) {
+        client.send(messageStr);
+      }
+    });
+  }
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
@@ -456,37 +475,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // PDF Upload and Processing
-  app.post("/api/upload/pdf", requireAuth, upload.single('pdf'), async (req: Request, res: Response) => {
+  app.post("/api/upload/pdf", requireAuth, upload.array('pdf', 10), async (req: Request, res: Response) => {
+    let userId: number | undefined;
+    let uploadedFiles: Express.Multer.File[] = [];
+    
     try {
-      if (!req.file) {
-        return res.status(400).json({ message: "No PDF file provided" });
+      // Get the files and user ID
+      uploadedFiles = req.files as Express.Multer.File[] || [];
+      userId = req.user?.id;
+      
+      if (!uploadedFiles || uploadedFiles.length === 0) {
+        return res.status(400).json({ message: "No PDF files provided" });
       }
       
-      const userId = req.user?.id;
       if (!userId) {
         return res.status(401).json({ message: "User ID not available" });
       }
       
-      // Extract transactions from the PDF
-      const transactions = await extractTransactionsFromPDF(req.file.path, userId);
+      // Check if we have the Groq API key for AI parsing
+      if (!process.env.GROQ_API_KEY) {
+        console.warn("GROQ_API_KEY not available, will use pattern matching only for PDF parsing");
+      }
+      
+      // Send an initial response to let the client know processing has started
+      res.status(202).json({ 
+        message: "PDF processing started", 
+        files: uploadedFiles.length,
+        status: "processing"
+      });
+      
+      // Process all PDFs asynchronously after sending the response
+      const filePaths = uploadedFiles.map(file => file.path);
+      const { processMultiplePDFs } = await import('./services/pdfService');
+      
+      // Extract transactions from all PDFs
+      const transactions = await processMultiplePDFs(filePaths, userId);
       
       if (!transactions || transactions.length === 0) {
-        return res.status(422).json({ message: "Could not extract any transactions from the PDF" });
+        console.warn("Could not extract any transactions from the uploaded PDFs");
+        
+        // Send error notification to user via WebSocket
+        sendNotificationToUser(userId, {
+          type: 'pdf_processing_error',
+          message: 'Could not extract any transactions from the uploaded PDFs',
+          data: {
+            fileCount: uploadedFiles.length,
+            success: false,
+            timestamp: new Date().toISOString()
+          }
+        });
+        
+        return;
       }
       
       // Save all extracted transactions
       const savedTransactions = [];
       for (const transaction of transactions) {
-        const saved = await storage.createTransaction(transaction);
-        savedTransactions.push(saved);
+        try {
+          const saved = await storage.createTransaction(transaction);
+          savedTransactions.push(saved);
+        } catch (saveError) {
+          console.error("Failed to save transaction:", saveError);
+          // Continue with other transactions even if one fails
+        }
       }
       
-      res.status(201).json({
-        message: `Successfully extracted ${savedTransactions.length} transactions`,
-        transactions: savedTransactions
+      console.log(`Successfully processed ${uploadedFiles.length} PDFs and extracted ${savedTransactions.length} transactions`);
+      
+      // Send notification to user via WebSocket if they're connected
+      sendNotificationToUser(userId, {
+        type: 'pdf_processing_complete',
+        message: `Successfully processed ${uploadedFiles.length} PDFs and extracted ${savedTransactions.length} transactions`,
+        data: {
+          fileCount: uploadedFiles.length,
+          transactionCount: savedTransactions.length,
+          success: true,
+          timestamp: new Date().toISOString()
+        }
       });
     } catch (err) {
-      handleError(err, res);
+      console.error("Error processing PDF uploads:", err);
+      
+      // Send error notification to user via WebSocket if we have userId
+      if (userId) {
+        sendNotificationToUser(userId, {
+          type: 'pdf_processing_error',
+          message: 'An error occurred while processing your PDF files',
+          data: {
+            error: err instanceof Error ? err.message : 'Unknown error',
+            fileCount: uploadedFiles.length,
+            success: false,
+            timestamp: new Date().toISOString()
+          }
+        });
+      }
     }
   });
   
@@ -541,5 +623,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   const httpServer = createServer(app);
+  
+  // Set up WebSocket server for real-time notifications
+  const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
+  
+  wss.on('connection', (ws: WSWebSocket, req) => {
+    console.log('WebSocket client connected');
+    
+    // Extract userId from the session
+    const sessionId = req.url?.split('sessionId=')[1];
+    if (!sessionId) {
+      console.warn('WebSocket connection without valid session ID');
+      return;
+    }
+    
+    // Store the WebSocket connection for this user
+    let userId: number | undefined;
+    
+    // Send initial message
+    ws.send(JSON.stringify({ type: 'connected', message: 'Connected to financial tracker notifications' }));
+    
+    // Handle authentication message from client
+    ws.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        
+        // Handle authentication
+        if (data.type === 'auth' && data.userId) {
+          userId = parseInt(data.userId);
+          if (!isNaN(userId)) {
+            // Add this connection to the user's set of connections
+            if (!connectedClients.has(userId)) {
+              connectedClients.set(userId, new Set());
+            }
+            
+            const existingSet = connectedClients.get(userId);
+            if (existingSet) {
+              existingSet.add(ws);
+            }
+            
+            console.log(`WebSocket authenticated for user ${userId}`);
+            ws.send(JSON.stringify({ 
+              type: 'auth_success',
+              message: 'Authentication successful'
+            }));
+          }
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
+    });
+    
+    // Handle disconnection
+    ws.on('close', () => {
+      if (userId) {
+        const userClients = connectedClients.get(userId);
+        if (userClients) {
+          userClients.delete(ws);
+          if (userClients.size === 0) {
+            connectedClients.delete(userId);
+          }
+        }
+      }
+      console.log('WebSocket client disconnected');
+    });
+  });
+  
   return httpServer;
 }

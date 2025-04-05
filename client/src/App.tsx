@@ -10,6 +10,7 @@ import Insights from "@/pages/Insights";
 import Privacy from "@/pages/Privacy";
 import AuthPage from "@/pages/auth-page";
 import { FinanceProvider } from "./context/FinanceContext";
+import { WebSocketProvider } from "./context/WebSocketContext";
 import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Sidebar from "./components/Sidebar";
@@ -87,10 +88,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <FinanceProvider>
-          <Router />
-          <Toaster />
-        </FinanceProvider>
+        <WebSocketProvider>
+          <FinanceProvider>
+            <Router />
+            <Toaster />
+          </FinanceProvider>
+        </WebSocketProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

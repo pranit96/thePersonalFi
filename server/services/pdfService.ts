@@ -2,18 +2,16 @@ import fs from 'fs';
 import path from 'path';
 import { promisify } from 'util';
 import { InsertTransaction } from '@shared/schema';
+import { Groq } from 'groq-sdk';
+import pdfParse from 'pdf-parse';
 
-// Mock pdf-parse to avoid the error until we actually need it
-const pdfParse = async (buffer: Buffer) => {
-  return {
-    text: "",
-    numpages: 0,
-    numrender: 0,
-    info: {},
-    metadata: {},
-    version: "0"
-  };
-};
+// Initialize Groq client using official SDK (reuse from aiService)
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY,
+});
+
+// Models to use
+const PDF_MODEL = 'llama3-70b-8192';  // High-performance model for PDF processing
 
 // Convert fs functions to promise-based
 const readFile = promisify(fs.readFile);
@@ -28,7 +26,7 @@ if (!fs.existsSync(UPLOAD_DIR)) {
 }
 
 /**
- * Parses a PDF file to extract financial transaction information
+ * Parses a bank statement PDF file to extract financial transaction information using AI
  * @param filePath Path to the uploaded PDF file
  * @param userId The ID of the user uploading the file
  * @returns An array of extracted transactions or null if parsing failed
@@ -44,7 +42,30 @@ export async function extractTransactionsFromPDF(filePath: string, userId: numbe
     // Extract the text content from the PDF
     const text = pdfData.text;
     
-    // Parse transactions using different strategies based on content patterns
+    // First perform validation to confirm this seems like a bank statement
+    if (!validateBankStatement(text)) {
+      console.warn('File does not appear to be a valid bank statement');
+      await unlink(filePath);
+      return null;
+    }
+    
+    // Try AI parsing first (if GROQ_API_KEY is available)
+    if (process.env.GROQ_API_KEY) {
+      try {
+        const aiTransactions = await parseTransactionsWithAI(text, userId);
+        
+        // Only return AI results if we got some valid transactions
+        if (aiTransactions && aiTransactions.length > 0) {
+          // Delete the temporary file after processing
+          await unlink(filePath);
+          return aiTransactions;
+        }
+      } catch (aiError) {
+        console.error('AI parsing failed, falling back to pattern matching:', aiError);
+      }
+    }
+    
+    // Fallback to pattern-based parsing
     const transactions = parseTransactionsFromText(text, userId);
     
     // Delete the temporary file after processing
@@ -62,6 +83,127 @@ export async function extractTransactionsFromPDF(filePath: string, userId: numbe
     }
     
     return null;
+  }
+}
+
+/**
+ * Uses AI to parse transaction data from bank statements
+ * @param text The text content from the PDF
+ * @param userId The ID of the user uploading the PDF
+ * @returns Parsed transactions
+ */
+async function parseTransactionsWithAI(text: string, userId: number): Promise<InsertTransaction[]> {
+  // Create a sample of the text content (first 3000 chars) to analyze
+  const textSample = text.substring(0, 3000);
+  
+  // Create prompt for the AI to identify the bank statement format
+  const formatPrompt = `
+  Analyze this bank statement text and determine the format and structure:
+  
+  ${textSample}
+  
+  Identify:
+  1. Which bank or financial institution issued this statement
+  2. The date format used in transactions
+  3. The general structure of transaction entries
+  4. Where transaction amounts appear and if they use special formatting
+  5. How the statement distinguishes between deposits and withdrawals
+  
+  Return your analysis in JSON format:
+  {
+    "bankName": "Name of bank",
+    "dateFormat": "Description of date format (e.g., MM/DD/YYYY)",
+    "structure": "Description of how transactions are structured",
+    "amountFormat": "Description of how amounts are formatted",
+    "transactionType": "How deposits vs withdrawals are indicated"
+  }
+  `;
+  
+  // Get AI analysis of the statement format
+  const formatResponse = await groq.chat.completions.create({
+    messages: [{ role: "user", content: formatPrompt }],
+    model: PDF_MODEL,
+    temperature: 0.1,
+    max_tokens: 1000,
+    response_format: { type: "json_object" }
+  });
+  
+  const formatAnalysis = JSON.parse(formatResponse.choices[0]?.message?.content || '{}');
+  
+  // Now create a more specific prompt to extract the actual transactions
+  const extractPrompt = `
+  You are an expert financial data processor. Extract all financial transactions from this bank statement.
+  
+  Bank: ${formatAnalysis.bankName || "Unknown bank"}
+  Date format: ${formatAnalysis.dateFormat || "Various formats"}
+  Transaction structure: ${formatAnalysis.structure || "Standard format"}
+  
+  BANK STATEMENT TEXT:
+  ${text}
+  
+  For each transaction, extract:
+  1. Date (in the original format from the statement)
+  2. Description/Merchant name
+  3. Amount (as a positive number)
+  4. Whether it's a deposit (income) or withdrawal (expense)
+  
+  Format your response as a valid JSON array of transactions:
+  [
+    {
+      "date": "The transaction date",
+      "merchant": "The merchant name or description",
+      "amount": 123.45,
+      "isDeposit": true/false,
+      "category": "Best guess at transaction category"
+    }
+  ]
+  
+  Categories to use (choose the most appropriate one):
+  - Food & Dining
+  - Transportation
+  - Housing & Utilities
+  - Entertainment
+  - Shopping
+  - Health & Fitness
+  - Income
+  - Miscellaneous
+  
+  Important:
+  - Only extract ACTUAL transactions, not summaries or balances
+  - Ensure amounts are formatted as numbers without currency symbols
+  - If you're unsure about a transaction, skip it
+  - Extract at least 5 transactions and at most 30 transactions
+  - Focus on the most recent transactions if there are many
+  `;
+  
+  const transactionResponse = await groq.chat.completions.create({
+    messages: [{ role: "user", content: extractPrompt }],
+    model: PDF_MODEL,
+    temperature: 0.1,
+    max_tokens: 2500,
+    response_format: { type: "json_object" }
+  });
+  
+  try {
+    const content = transactionResponse.choices[0]?.message?.content || '[]';
+    const transactions = JSON.parse(content);
+    
+    if (!Array.isArray(transactions)) {
+      throw new Error('AI did not return an array of transactions');
+    }
+    
+    // Convert to our application's transaction format
+    return transactions.map(t => ({
+      merchant: t.merchant,
+      // For deposits (income), store as negative amount to match app conventions if needed
+      amount: t.isDeposit ? -Math.abs(t.amount) : Math.abs(t.amount),
+      category: t.category || 'Miscellaneous',
+      description: t.merchant,
+      userId
+    }));
+  } catch (error) {
+    console.error('Failed to parse AI response for transactions:', error);
+    return [];
   }
 }
 
@@ -248,6 +390,70 @@ function extractMerchantAndCategory(description: string): { merchant: string, ca
   }
   
   return { merchant, category };
+}
+
+/**
+ * Validates if a document appears to be a bank statement
+ * @param text The text content of the PDF
+ * @returns Whether the document appears to be a bank statement
+ */
+function validateBankStatement(text: string): boolean {
+  if (!text || text.length < 100) {
+    return false;
+  }
+  
+  // Keywords that suggest this is a bank statement
+  const bankStatementKeywords = [
+    'statement', 'account', 'balance', 'transaction', 'deposit',
+    'withdrawal', 'payment', 'transfer', 'credit', 'debit',
+    'beginning balance', 'ending balance', 'date', 'description', 'amount'
+  ];
+  
+  // Check if several keywords exist in the document
+  const lowerText = text.toLowerCase();
+  const matchCount = bankStatementKeywords.reduce((count, keyword) => {
+    return lowerText.includes(keyword.toLowerCase()) ? count + 1 : count;
+  }, 0);
+  
+  // If we match at least 3 keywords, it's likely a bank statement
+  return matchCount >= 3;
+}
+
+/**
+ * Processes multiple PDF files and extracts transactions from all of them
+ * @param filePaths Array of paths to the uploaded PDF files
+ * @param userId The ID of the user uploading the files
+ * @returns An array of extracted transactions from all files
+ */
+export async function processMultiplePDFs(filePaths: string[], userId: number): Promise<InsertTransaction[]> {
+  const allTransactions: InsertTransaction[] = [];
+  const errors: string[] = [];
+  
+  // Process each file and collect results
+  await Promise.all(filePaths.map(async (filePath) => {
+    try {
+      const transactions = await extractTransactionsFromPDF(filePath, userId);
+      if (transactions && transactions.length > 0) {
+        allTransactions.push(...transactions);
+      }
+    } catch (error) {
+      console.error(`Error processing file ${filePath}:`, error);
+      errors.push(path.basename(filePath));
+      
+      // Clean up the file even on error
+      try {
+        await unlink(filePath);
+      } catch (unlinkError) {
+        console.error(`Failed to delete file ${filePath} after error:`, unlinkError);
+      }
+    }
+  }));
+  
+  if (errors.length > 0) {
+    console.warn(`Failed to process ${errors.length} files: ${errors.join(', ')}`);
+  }
+  
+  return allTransactions;
 }
 
 /**
