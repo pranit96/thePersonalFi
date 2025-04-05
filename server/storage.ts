@@ -8,7 +8,7 @@ import {
   aiInsights, type AiInsight
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, max } from "drizzle-orm";
 import { 
   encrypt, decrypt, hash, secureCompare,
   encryptFinancialData, decryptFinancialData, 
