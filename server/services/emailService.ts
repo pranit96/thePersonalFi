@@ -1,72 +1,76 @@
 import nodemailer from 'nodemailer';
 import { User } from '@shared/schema';
 
-// Check if required environment variables are set
-const SMTP_USER = process.env.SMTP_USER;
-const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
-
-// Create a transport configuration for Google's SMTP service
-const transportConfig = {
-  service: 'gmail',
-  auth: {
-    user: SMTP_USER || '',
-    pass: SMTP_PASSWORD || ''
-  }
-};
+// Configure email transport with provided SMTP credentials
+const transporter = createTransport();
 
 /**
  * Initializes the email transport - only successful if credentials are provided
  */
 function createTransport() {
-  if (!SMTP_USER || !SMTP_PASSWORD) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
     console.warn('Email service not configured: Missing SMTP credentials');
     return null;
   }
-  
-  try {
-    return nodemailer.createTransport(transportConfig);
-  } catch (error) {
-    console.error('Failed to create email transport:', error);
-    return null;
-  }
-}
 
-// Create the transport (will be null if credentials aren't available)
-const transporter = createTransport();
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD
+    }
+  });
+}
 
 /**
  * Sends a welcome email to a newly registered user
  */
 export async function sendWelcomeEmail(user: User): Promise<boolean> {
-  if (!transporter) {
-    console.warn('Skipping welcome email: Email service not configured');
-    return false;
-  }
-  
+  if (!transporter) return false;
+
   try {
-    const info = await transporter.sendMail({
-      from: `"FinanceTracker" <${SMTP_USER}>`,
-      to: user.email || '',
-      subject: 'Welcome to FinanceTracker!',
+    await transporter.sendMail({
+      from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
+      to: user.email || user.username,
+      subject: 'Welcome to your Financial Journey!',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #6366F1;">Welcome to FinanceTracker, ${user.username}!</h2>
-          <p>Thank you for registering with our secure financial management application. Your journey to better financial health starts now!</p>
-          <p>Here are some tips to get started:</p>
-          <ul>
-            <li>Set up your monthly salary</li>
-            <li>Track your expenses by category</li>
-            <li>Create savings goals</li>
-            <li>Check out AI-powered insights</li>
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          <div style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white;">
+            <h1 style="margin: 0; font-size: 24px;">Welcome to Finance Tracker!</h1>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Thank you for joining Finance Tracker! We're excited to help you take control of your financial journey.</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Here's what you can do with your new account:</p>
+          
+          <ul style="font-size: 16px; line-height: 1.5;">
+            <li>Track your monthly salary and weekly transactions</li>
+            <li>Set and monitor savings goals</li>
+            <li>Get AI-powered insights about your spending habits</li>
+            <li>Upload financial documents for automated parsing</li>
+            <li>Visualize your financial data with advanced analytics</li>
           </ul>
-          <p>All your financial data is encrypted and secure. You can manage your privacy settings in your account dashboard.</p>
-          <p>If you have any questions, feel free to reply to this email.</p>
-          <p>Best regards,<br>The FinanceTracker Team</p>
+          
+          <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #6366F1;">
+            <p style="margin: 0; font-size: 16px;">Your data is fully encrypted and secure. You have complete control over your information at all times.</p>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.5;">If you have any questions or need assistance, just reply to this email.</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Happy tracking!</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">The Finance Tracker Team</p>
+          
+          <div style="border-top: 1px solid #eaeaea; margin-top: 20px; padding-top: 20px; font-size: 12px; color: #666;">
+            <p>This is an automated message. Please do not reply directly to this email.</p>
+          </div>
         </div>
       `
     });
     
-    console.log('Welcome email sent:', info.messageId);
+    console.log(`Welcome email sent to ${user.username}`);
     return true;
   } catch (error) {
     console.error('Failed to send welcome email:', error);
@@ -78,40 +82,97 @@ export async function sendWelcomeEmail(user: User): Promise<boolean> {
  * Sends a financial report email with summary information
  */
 export async function sendFinancialReportEmail(user: User, report: { 
-  totalIncome: number, 
-  totalExpenses: number, 
-  biggestCategory: string,
-  savingsGoalProgress: number 
+  totalIncome: number,
+  totalExpenses: number,
+  topCategories: {category: string, amount: number}[],
+  savingsRate: number,
+  goalProgress: {name: string, progress: number}[]
 }): Promise<boolean> {
-  if (!transporter || !user.email) {
-    console.warn('Skipping report email: Email service not configured or user has no email');
-    return false;
-  }
+  if (!transporter) return false;
   
   try {
-    const info = await transporter.sendMail({
-      from: `"FinanceTracker" <${SMTP_USER}>`,
-      to: user.email,
-      subject: 'Your Financial Summary Report',
+    // Calculate savings amount
+    const savingsAmount = report.totalIncome - report.totalExpenses;
+    
+    await transporter.sendMail({
+      from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
+      to: user.email || user.username,
+      subject: 'Your Monthly Financial Summary',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #6366F1;">Financial Summary for ${user.username}</h2>
-          <p>Here's a summary of your current financial situation:</p>
-          
-          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin: 15px 0;">
-            <p><strong>Total Income:</strong> $${report.totalIncome.toFixed(2)}</p>
-            <p><strong>Total Expenses:</strong> $${report.totalExpenses.toFixed(2)}</p>
-            <p><strong>Biggest Spending Category:</strong> ${report.biggestCategory}</p>
-            <p><strong>Savings Goal Progress:</strong> ${report.savingsGoalProgress}%</p>
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          <div style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white;">
+            <h1 style="margin: 0; font-size: 24px;">Your Monthly Financial Summary</h1>
           </div>
           
-          <p>Log in to your account to see detailed analytics and personalized insights.</p>
-          <p>This is an automated message. Please do not reply to this email.</p>
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Here's your financial summary for the month:</p>
+          
+          <div style="margin: 25px 0; background-color: #f9fafb; border-radius: 8px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+              <div style="flex: 1;">
+                <p style="margin: 0; color: #6B7280; font-size: 14px;">Total Income</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 600; color: #10B981;">$${report.totalIncome.toFixed(2)}</p>
+              </div>
+              <div style="flex: 1;">
+                <p style="margin: 0; color: #6B7280; font-size: 14px;">Total Expenses</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 600; color: #EF4444;">$${report.totalExpenses.toFixed(2)}</p>
+              </div>
+              <div style="flex: 1;">
+                <p style="margin: 0; color: #6B7280; font-size: 14px;">Savings</p>
+                <p style="margin: 5px 0 0; font-size: 20px; font-weight: 600; color: ${savingsAmount >= 0 ? '#10B981' : '#EF4444'};">
+                  $${savingsAmount.toFixed(2)}
+                </p>
+              </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+              <p style="margin: 0 0 10px; color: #6B7280; font-size: 14px;">Savings Rate: ${report.savingsRate.toFixed(1)}%</p>
+              <div style="height: 8px; background-color: #E5E7EB; border-radius: 4px; overflow: hidden;">
+                <div style="height: 100%; width: ${Math.min(report.savingsRate, 100)}%; background-color: #10B981;"></div>
+              </div>
+            </div>
+          </div>
+          
+          <h2 style="font-size: 18px; margin: 25px 0 15px;">Top Spending Categories</h2>
+          
+          <div style="margin-bottom: 25px;">
+            ${report.topCategories.map(cat => `
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="font-size: 16px;">${cat.category}</span>
+                <span style="font-size: 16px; font-weight: 600;">$${cat.amount.toFixed(2)}</span>
+              </div>
+            `).join('')}
+          </div>
+          
+          <h2 style="font-size: 18px; margin: 25px 0 15px;">Goal Progress</h2>
+          
+          <div>
+            ${report.goalProgress.map(goal => `
+              <div style="margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                  <span style="font-size: 16px;">${goal.name}</span>
+                  <span style="font-size: 16px;">${goal.progress.toFixed(1)}%</span>
+                </div>
+                <div style="height: 8px; background-color: #E5E7EB; border-radius: 4px; overflow: hidden;">
+                  <div style="height: 100%; width: ${Math.min(goal.progress, 100)}%; background-color: #6366F1;"></div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          
+          <div style="margin-top: 30px; text-align: center;">
+            <a href="${process.env.APP_URL || 'https://finance-tracker.app'}" style="display: inline-block; background-color: #6366F1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">View Full Dashboard</a>
+          </div>
+          
+          <div style="border-top: 1px solid #eaeaea; margin-top: 30px; padding-top: 20px; font-size: 12px; color: #666;">
+            <p>This is an automated message from Finance Tracker. Your data is encrypted and secure.</p>
+          </div>
         </div>
       `
     });
     
-    console.log('Financial report email sent:', info.messageId);
+    console.log(`Financial report email sent to ${user.username}`);
     return true;
   } catch (error) {
     console.error('Failed to send financial report email:', error);
@@ -123,37 +184,45 @@ export async function sendFinancialReportEmail(user: User, report: {
  * Sends a password reset email with a token link
  */
 export async function sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
-  if (!transporter) {
-    console.warn('Skipping password reset email: Email service not configured');
-    return false;
-  }
+  if (!transporter) return false;
   
-  // In production, this would be a link to the frontend with the token as a parameter
-  const resetLink = `https://app.financetracker.com/reset-password?token=${resetToken}`;
+  const resetUrl = `${process.env.APP_URL || 'https://finance-tracker.app'}/reset-password?token=${resetToken}`;
   
   try {
-    const info = await transporter.sendMail({
-      from: `"FinanceTracker" <${SMTP_USER}>`,
+    await transporter.sendMail({
+      from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
       to: email,
       subject: 'Reset Your Password',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #6366F1;">Password Reset Request</h2>
-          <p>We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
-          <p>To reset your password, click the button below:</p>
-          
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${resetLink}" style="background-color: #6366F1; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Reset Password</a>
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          <div style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white;">
+            <h1 style="margin: 0; font-size: 24px;">Reset Your Password</h1>
           </div>
           
-          <p>This link will expire in 1 hour for security reasons.</p>
-          <p>If you're having trouble with the button above, copy and paste the URL below into your web browser:</p>
-          <p style="word-break: break-all; color: #666;">${resetLink}</p>
+          <p style="font-size: 16px; line-height: 1.5;">We received a request to reset your password. If you didn't make this request, you can safely ignore this email.</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">To reset your password, click the button below:</p>
+          
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${resetUrl}" style="display: inline-block; background-color: #6366F1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Reset Password</a>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.5;">If the button doesn't work, copy and paste this link into your browser:</p>
+          
+          <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin: 20px 0; word-break: break-all;">
+            <a href="${resetUrl}" style="color: #6366F1; text-decoration: none;">${resetUrl}</a>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.5;">This link will expire in 1 hour for security reasons.</p>
+          
+          <div style="border-top: 1px solid #eaeaea; margin-top: 30px; padding-top: 20px; font-size: 12px; color: #666;">
+            <p>If you didn't request a password reset, please contact support immediately.</p>
+          </div>
         </div>
       `
     });
     
-    console.log('Password reset email sent:', info.messageId);
+    console.log(`Password reset email sent to ${email}`);
     return true;
   } catch (error) {
     console.error('Failed to send password reset email:', error);
@@ -165,35 +234,42 @@ export async function sendPasswordResetEmail(email: string, resetToken: string):
  * Sends a data export notification email
  */
 export async function sendDataExportEmail(user: User, downloadLink: string): Promise<boolean> {
-  if (!transporter || !user.email) {
-    console.warn('Skipping data export email: Email service not configured or user has no email');
-    return false;
-  }
-  
+  if (!transporter) return false;
+
   try {
-    const info = await transporter.sendMail({
-      from: `"FinanceTracker" <${SMTP_USER}>`,
-      to: user.email,
-      subject: 'Your Data Export is Ready',
+    await transporter.sendMail({
+      from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
+      to: user.email || user.username,
+      subject: 'Your Financial Data Export',
       html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #6366F1;">Your Data Export is Ready</h2>
-          <p>Hello ${user.username},</p>
-          <p>Your requested data export is now ready. You can download your data by clicking the button below:</p>
-          
-          <div style="text-align: center; margin: 25px 0;">
-            <a href="${downloadLink}" style="background-color: #6366F1; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; font-weight: bold;">Download Your Data</a>
+        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+          <div style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%); padding: 20px; border-radius: 8px; margin-bottom: 20px; color: white;">
+            <h1 style="margin: 0; font-size: 24px;">Your Data Export is Ready</h1>
           </div>
           
-          <p>For security reasons, this download link will expire in 24 hours.</p>
-          <p>If you're having trouble with the button above, copy and paste the URL below into your web browser:</p>
-          <p style="word-break: break-all; color: #666;">${downloadLink}</p>
-          <p>If you did not request this data export, please contact our support team immediately.</p>
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Your requested data export is now ready. You can download your financial data using the link below:</p>
+          
+          <div style="margin: 30px 0; text-align: center;">
+            <a href="${downloadLink}" style="display: inline-block; background-color: #6366F1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600;">Download Your Data</a>
+          </div>
+          
+          <div style="background-color: #f9fafb; padding: 15px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #f59e0b;">
+            <p style="margin: 0; font-size: 16px; font-weight: 500;">Security Notice</p>
+            <p style="margin: 10px 0 0; font-size: 14px;">This link will expire in 24 hours for security reasons. Your data is exported in an encrypted format for your protection.</p>
+          </div>
+          
+          <p style="font-size: 16px; line-height: 1.5;">Thank you for using Finance Tracker. We prioritize your data privacy and security.</p>
+          
+          <div style="border-top: 1px solid #eaeaea; margin-top: 30px; padding-top: 20px; font-size: 12px; color: #666;">
+            <p>If you didn't request this data export, please contact support immediately as someone may have unauthorized access to your account.</p>
+          </div>
         </div>
       `
     });
     
-    console.log('Data export email sent:', info.messageId);
+    console.log(`Data export email sent to ${user.username}`);
     return true;
   } catch (error) {
     console.error('Failed to send data export email:', error);
@@ -205,5 +281,5 @@ export async function sendDataExportEmail(user: User, downloadLink: string): Pro
  * Checks if the email service is configured and ready to send emails
  */
 export function isEmailServiceConfigured(): boolean {
-  return transporter !== null;
+  return !!transporter;
 }
