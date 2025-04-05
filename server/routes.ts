@@ -1,6 +1,8 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { db } from "./db";
+import { sql } from "drizzle-orm";
 import { insertTransactionSchema, insertSalaryRecordSchema, insertGoalSchema, insertSavingsRecordSchema } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
@@ -65,6 +67,38 @@ function sendNotificationToUser(userId: number, message: any): void {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up authentication
   setupAuth(app);
+  
+  // Health check endpoint for API and Database connectivity
+  app.get("/api/health/check", async (_req: Request, res: Response) => {
+    try {
+      // Check database connection by executing a simple query
+      await db.execute(sql`SELECT 1 AS health_check`);
+      
+      return res.status(200).json({
+        status: "healthy",
+        database: "connected",
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        environment: process.env.NODE_ENV || 'development',
+        encryption: process.env.ENCRYPTION_KEY ? "configured" : "missing",
+        session: process.env.SESSION_SECRET ? "configured" : "missing",
+        dbConfig: {
+          configured: !!process.env.DATABASE_URL,
+          host: process.env.PGHOST ? "configured" : "missing",
+          user: process.env.PGUSER ? "configured" : "missing",
+          database: process.env.PGDATABASE ? "configured" : "missing"
+        }
+      });
+    } catch (error) {
+      console.error("Health check failed:", error);
+      return res.status(500).json({
+        status: "unhealthy",
+        database: "disconnected",
+        error: error.message,
+        timestamp: new Date().toISOString()
+      });
+    }
+  });
   
   // Authentication middleware for protected routes
   const requireAuth = (req: Request, res: Response, next: NextFunction) => {

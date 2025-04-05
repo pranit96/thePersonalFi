@@ -14,8 +14,15 @@ declare global {
 }
 
 export function setupAuth(app: Express) {
-  const sessionSecret = process.env.SESSION_SECRET || 
-    crypto.randomBytes(32).toString('hex'); // Fallback for dev environments only
+  // Get or generate a strong session secret
+  let sessionSecret = process.env.SESSION_SECRET;
+  
+  if (!sessionSecret) {
+    console.warn('⚠️ SESSION_SECRET not provided in environment variables. Generating a random one for this session...');
+    sessionSecret = crypto.randomBytes(32).toString('hex'); 
+  } else {
+    console.log('✓ SESSION_SECRET is properly configured');
+  }
   
   const sessionSettings: session.SessionOptions = {
     secret: sessionSecret,
@@ -24,8 +31,12 @@ export function setupAuth(app: Express) {
     store: storage.sessionStore,
     cookie: {
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      maxAge: 1000 * 60 * 60 * 24 // 24 hours
-    }
+      httpOnly: true,            // Prevent client-side JS from reading the cookie
+      maxAge: 1000 * 60 * 60 * 8, // 8 hours - shorter sessions for security
+      sameSite: 'strict'         // Protection against CSRF
+    },
+    name: 'fin_session_id',     // Custom name for the session cookie
+    rolling: true,              // Reset expiration countdown on activity
   };
 
   app.set("trust proxy", 1);
