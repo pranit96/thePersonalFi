@@ -31,6 +31,8 @@ const registerSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
+  currency: z.string().min(1, "Currency is required"),
+  defaultSalary: z.number().nonnegative("Salary must be a positive number"),
   dataEncryptionEnabled: z.boolean().default(true),
   dataSharingEnabled: z.boolean().default(false),
   anonymizedAnalytics: z.boolean().default(true),
@@ -57,6 +59,8 @@ export default function AuthPage() {
       password: "",
       firstName: "",
       lastName: "",
+      currency: "USD",
+      defaultSalary: 0,
       dataEncryptionEnabled: true,
       dataSharingEnabled: false,
       anonymizedAnalytics: true,
@@ -227,6 +231,46 @@ export default function AuthPage() {
                         <p className="text-sm text-red-500">{registerForm.formState.errors.password.message}</p>
                       )}
                     </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="register-currency" className="text-gray-200">Currency</Label>
+                        <select
+                          id="register-currency"
+                          className="w-full rounded-md text-white bg-gray-800 border-gray-700 p-2"
+                          {...registerForm.register("currency")}
+                        >
+                          <option value="USD">USD ($)</option>
+                          <option value="EUR">EUR (€)</option>
+                          <option value="GBP">GBP (£)</option>
+                          <option value="JPY">JPY (¥)</option>
+                          <option value="CAD">CAD ($)</option>
+                          <option value="AUD">AUD ($)</option>
+                          <option value="CNY">CNY (¥)</option>
+                          <option value="INR">INR (₹)</option>
+                        </select>
+                        {registerForm.formState.errors.currency && (
+                          <p className="text-sm text-red-500">{registerForm.formState.errors.currency.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="register-salary" className="text-gray-200">Monthly Salary</Label>
+                        <Input
+                          id="register-salary"
+                          type="number"
+                          placeholder="0.00"
+                          className="text-white bg-gray-800 border-gray-700"
+                          {...registerForm.register("defaultSalary", { 
+                            valueAsNumber: true,
+                            required: "Please enter your monthly salary" 
+                          })}
+                        />
+                        {registerForm.formState.errors.defaultSalary && (
+                          <p className="text-sm text-red-500">{registerForm.formState.errors.defaultSalary.message}</p>
+                        )}
+                      </div>
+                    </div>
+
                     <div className="space-y-3 pt-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox 

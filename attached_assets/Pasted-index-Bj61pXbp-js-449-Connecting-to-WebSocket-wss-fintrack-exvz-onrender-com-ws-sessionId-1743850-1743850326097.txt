@@ -1,0 +1,319 @@
+index-Bj61pXbp.js:449 Connecting to WebSocket: wss://fintrack-exvz.onrender.com/ws?sessionId=1743850287587
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/insights 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/salary 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:328 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/goals?advice=true 500 (Internal Server Error)
+queryFn @ index-Bj61pXbp.js:328
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/categories 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/savings 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:449 WebSocket connection established
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'connected', message: 'Connected to financial tracker notifications'}
+index-Bj61pXbp.js:449 Successfully connected to notification server
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/transactions 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:48
+u @ index-Bj61pXbp.js:48
+Promise.then
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'auth_success', message: 'Authentication successful'}
+index-Bj61pXbp.js:449 WebSocket authentication successful
+index-Bj61pXbp.js:449 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ index-Bj61pXbp.js:449
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/transactions 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+refetchQueries @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+invalidateQueries @ index-Bj61pXbp.js:48
+onSettled @ index-Bj61pXbp.js:449
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+d @ index-Bj61pXbp.js:449
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'pdf_processing_error', message: 'Could not extract any transactions from the uploaded PDFs', data: {…}}

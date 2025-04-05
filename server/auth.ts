@@ -90,7 +90,17 @@ export function setupAuth(app: Express) {
   // Register route
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { email, password, firstName, lastName } = req.body;
+      const { 
+        email, 
+        password, 
+        firstName, 
+        lastName, 
+        currency, 
+        defaultSalary,
+        dataEncryptionEnabled,
+        dataSharingEnabled,
+        anonymizedAnalytics
+      } = req.body;
       
       // Check if email already exists
       const existingUser = await storage.getUserByEmail(email);
@@ -104,8 +114,28 @@ export function setupAuth(app: Express) {
         password,
         firstName: firstName || null,
         lastName: lastName || null,
-        profilePicture: null
+        profilePicture: null,
+        currency: currency || "USD",
+        defaultSalary: defaultSalary || 0,
+        dataEncryptionEnabled: dataEncryptionEnabled ?? true,
+        dataSharingEnabled: dataSharingEnabled ?? false,
+        anonymizedAnalytics: anonymizedAnalytics ?? true
       });
+      
+      // Create initial salary record if defaultSalary is provided
+      if (defaultSalary && defaultSalary > 0) {
+        try {
+          await storage.createSalaryRecord({
+            amount: defaultSalary,
+            source: "Primary Income",
+            userId: user.id,
+            encryptedData: null
+          });
+        } catch (salaryError) {
+          console.error("Failed to create initial salary record:", salaryError);
+          // Continue with registration even if salary record creation fails
+        }
+      }
       
       // Log the user in
       req.login(user, (err) => {
@@ -115,7 +145,10 @@ export function setupAuth(app: Express) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          profilePicture: user.profilePicture
+          profilePicture: user.profilePicture,
+          currency: user.currency,
+          defaultSalary: user.defaultSalary,
+          dataEncryptionEnabled: user.dataEncryptionEnabled
         });
       });
     } catch (err) {
@@ -137,7 +170,10 @@ export function setupAuth(app: Express) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
-          profilePicture: user.profilePicture
+          profilePicture: user.profilePicture,
+          currency: user.currency,
+          defaultSalary: user.defaultSalary,
+          dataEncryptionEnabled: user.dataEncryptionEnabled
         });
       });
     })(req, res, next);
@@ -165,7 +201,10 @@ export function setupAuth(app: Express) {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      profilePicture: user.profilePicture
+      profilePicture: user.profilePicture,
+      currency: user.currency,
+      defaultSalary: user.defaultSalary,
+      dataEncryptionEnabled: user.dataEncryptionEnabled
     });
   });
 
@@ -183,7 +222,10 @@ export function setupAuth(app: Express) {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      profilePicture: user.profilePicture
+      profilePicture: user.profilePicture,
+      currency: user.currency,
+      defaultSalary: user.defaultSalary,
+      dataEncryptionEnabled: user.dataEncryptionEnabled
     });
   });
 }

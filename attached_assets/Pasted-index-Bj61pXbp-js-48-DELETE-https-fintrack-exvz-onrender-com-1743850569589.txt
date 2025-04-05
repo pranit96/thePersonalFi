@@ -1,0 +1,70 @@
+index-Bj61pXbp.js:48 
+            
+            
+           DELETE https://fintrack-exvz.onrender.com/api/user/data 500 (Internal Server Error)
+Zt @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:48
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:455 Failed to delete data: Error: 500: {"message":"column \"name\" does not exist"}
+    at gN (index-Bj61pXbp.js:48:42890)
+    at async Zt (index-Bj61pXbp.js:48:43091)
+    at async l (index-Bj61pXbp.js:455:2254)
+l @ index-Bj61pXbp.js:455
+await in l
+(anonymous) @ index-Bj61pXbp.js:48
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/user/export 500 (Internal Server Error)
+Zt @ index-Bj61pXbp.js:48
+c @ index-Bj61pXbp.js:455
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:455 Failed to export data: Error: 500: {"message":"column \"date\" does not exist"}
+    at gN (index-Bj61pXbp.js:48:42890)
+    at async Zt (index-Bj61pXbp.js:48:43091)
+    at async c (index-Bj61pXbp.js:455:2458)
+c @ index-Bj61pXbp.js:455
+await in c
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37

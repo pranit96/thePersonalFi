@@ -1,0 +1,587 @@
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/user 401 (Unauthorized)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+onSubscribe @ index-Bj61pXbp.js:48
+subscribe @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+tT @ index-Bj61pXbp.js:38
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+$T @ index-Bj61pXbp.js:40
+w @ index-Bj61pXbp.js:25
+E @ index-Bj61pXbp.js:25
+index-Bj61pXbp.js:449 Connecting to WebSocket: wss://fintrack-exvz.onrender.com/ws?sessionId=1743850199719
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/salary 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:328 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/goals?advice=true 500 (Internal Server Error)
+queryFn @ index-Bj61pXbp.js:328
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:449 WebSocket connection established
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'connected', message: 'Connected to financial tracker notifications'}
+index-Bj61pXbp.js:449 Successfully connected to notification server
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'auth_success', message: 'Authentication successful'}
+index-Bj61pXbp.js:449 WebSocket authentication successful
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/transactions 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/insights 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/savings 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/categories 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+iu @ index-Bj61pXbp.js:48
+setOptions @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+Wm @ index-Bj61pXbp.js:40
+qs @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+setTimeout
+i @ index-Bj61pXbp.js:48
+o @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+gi @ index-Bj61pXbp.js:48
+setData @ index-Bj61pXbp.js:48
+setQueryData @ index-Bj61pXbp.js:48
+onSuccess @ index-Bj61pXbp.js:328
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+l @ index-Bj61pXbp.js:455
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28622
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:29037
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28833
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28622
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:29037
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28833
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28622
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:29037
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28833
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28622
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:29037
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:40 TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28833
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+x0 @ index-Bj61pXbp.js:40
+r.callback @ index-Bj61pXbp.js:40
+B_ @ index-Bj61pXbp.js:38
+rj @ index-Bj61pXbp.js:40
+NT @ index-Bj61pXbp.js:40
+r5 @ index-Bj61pXbp.js:40
+s5 @ index-Bj61pXbp.js:40
+uo @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:449 Uncaught TypeError: Cannot destructure property 'getFieldState' of 'dy(...)' as it is null.
+    at hy (index-Bj61pXbp.js:449:28068)
+    at index-Bj61pXbp.js:449:28622
+    at Ow (index-Bj61pXbp.js:38:16998)
+    at q_ (index-Bj61pXbp.js:40:1571)
+    at FT (index-Bj61pXbp.js:40:46001)
+    at DT (index-Bj61pXbp.js:40:39766)
+    at a5 (index-Bj61pXbp.js:40:39694)
+    at ip (index-Bj61pXbp.js:40:39547)
+    at T0 (index-Bj61pXbp.js:40:35914)
+    at aj (index-Bj61pXbp.js:40:36717)
+hy @ index-Bj61pXbp.js:449
+(anonymous) @ index-Bj61pXbp.js:449
+Ow @ index-Bj61pXbp.js:38
+q_ @ index-Bj61pXbp.js:40
+FT @ index-Bj61pXbp.js:40
+DT @ index-Bj61pXbp.js:40
+a5 @ index-Bj61pXbp.js:40
+ip @ index-Bj61pXbp.js:40
+T0 @ index-Bj61pXbp.js:40
+aj @ index-Bj61pXbp.js:40
+Xa @ index-Bj61pXbp.js:38
+(anonymous) @ index-Bj61pXbp.js:40
+index-Bj61pXbp.js:449 WebSocket connection closed

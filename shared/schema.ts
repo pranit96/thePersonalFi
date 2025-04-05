@@ -123,6 +123,11 @@ export const users = pgTable("users", {
   mfaEnabled: boolean("mfa_enabled").default(false),
   mfaSecret: text("mfa_secret"),
   profilePicture: text("profile_picture"),
+  currency: text("currency").default("USD"),
+  defaultSalary: real("default_salary").default(0),
+  dataEncryptionEnabled: boolean("data_encryption_enabled").default(true),
+  dataSharingEnabled: boolean("data_sharing_enabled").default(false),
+  anonymizedAnalytics: boolean("anonymized_analytics").default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at"),
   // Custom security features added as virtual properties in TypeScript types
@@ -134,6 +139,11 @@ export const insertUserSchema = createInsertSchema(users).pick({
   lastName: true,
   password: true,
   profilePicture: true,
+  currency: true,
+  defaultSalary: true,
+  dataEncryptionEnabled: true,
+  dataSharingEnabled: true,
+  anonymizedAnalytics: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
