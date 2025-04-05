@@ -28,7 +28,7 @@ export default function SpendingCategoriesChart({ categories }: SpendingCategori
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-dark/95 backdrop-blur-xl border border-border shadow-lg rounded-lg p-2 text-foreground">
+        <div className="bg-background-dark/95 backdrop-blur-xl border border-border shadow-lg rounded-lg p-2 text-foreground dark:bg-background-dark dark:text-foreground">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-sm">{formatCurrency(payload[0].value)}</p>
           <p className="text-xs">{payload[0].payload.percentage}% of total</p>
@@ -69,7 +69,7 @@ export default function SpendingCategoriesChart({ categories }: SpendingCategori
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="h-[240px] relative">
           <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
+            <PieChart className="fill-foreground [&_.recharts-default-tooltip]:!bg-background-dark [&_.recharts-tooltip-cursor]:!fill-background-dark">
               <Pie
                 data={chartData}
                 cx="50%"
@@ -79,12 +79,13 @@ export default function SpendingCategoriesChart({ categories }: SpendingCategori
                 fill="#8884d8"
                 paddingAngle={2}
                 dataKey="value"
+                stroke="transparent"
               >
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: 'transparent' }} />
             </PieChart>
           </ResponsiveContainer>
         </div>

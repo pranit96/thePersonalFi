@@ -85,6 +85,7 @@ export default function WeeklySpendingChart({ transactions }: WeeklySpendingChar
           <BarChart
             data={chartData}
             margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+            className="[&_.recharts-tooltip-cursor]:!fill-background-dark [&_.recharts-default-tooltip]:!bg-background-dark"
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(248, 250, 252, 0.05)" />
             <XAxis 
@@ -99,11 +100,12 @@ export default function WeeklySpendingChart({ transactions }: WeeklySpendingChar
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                backgroundColor: 'var(--background)',
                 border: '1px solid var(--border)',
                 borderRadius: '8px', 
                 color: 'var(--foreground)'
               }}
+              cursor={{ fill: 'rgba(100, 100, 100, 0.1)' }}
               formatter={(value) => [`$${value.toFixed(2)}`, undefined]}
             />
             <Bar 
@@ -114,6 +116,8 @@ export default function WeeklySpendingChart({ transactions }: WeeklySpendingChar
                 return isPeak ? "#EC4899" : "#6366F1";
               }}
               opacity={0.8}
+              stroke="transparent"
+              activeDot={{ stroke: 'transparent' }}
             />
             <Line 
               type="monotone" 
