@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -43,6 +44,18 @@ import { Loader2, Download, Trash2, ShieldAlert, Bot, Brain, Key } from "lucide-
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "../lib/queryClient";
 import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+// Define schema for form validation
+const formSchema = z.object({
+  fontScale: z.number().min(80).max(150),
+  highContrast: z.boolean(),
+  reducedMotion: z.boolean(),
+  darkMode: z.boolean(),
+  groqApiKey: z.string().optional(),
+});
 
 export default function Settings() {
   const { toast } = useToast();
@@ -55,6 +68,7 @@ export default function Settings() {
   const [groqApiKey, setGroqApiKey] = useState("");
   
   const form = useForm({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       fontScale: 100,
       highContrast: false,
@@ -380,7 +394,6 @@ export default function Settings() {
           </Card>
         </TabsContent>
 
-        {/* Account Settings */}
         {/* AI Settings */}
         <TabsContent value="ai">
           <Card>
@@ -404,7 +417,7 @@ export default function Settings() {
                   </h3>
                   
                   <div className="space-y-2">
-                    {aiServiceMeta.apiKeyMissing ? (
+                    {aiServiceMeta?.apiKeyMissing ? (
                       <div className="flex items-center text-yellow-400 bg-yellow-500/10 px-3 py-2 rounded-md">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                           <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
@@ -424,7 +437,7 @@ export default function Settings() {
                     )}
                     
                     {/* Quota Information */}
-                    {!aiServiceMeta.apiKeyMissing && aiServiceMeta.remaining !== undefined && (
+                    {!aiServiceMeta?.apiKeyMissing && aiServiceMeta?.remaining !== undefined && (
                       <div className="mt-3">
                         <div className="flex justify-between items-center text-sm">
                           <span>Current Quota Usage</span>
@@ -443,7 +456,7 @@ export default function Settings() {
                     )}
                     
                     {/* Error Message */}
-                    {aiServiceMeta.error && (
+                    {aiServiceMeta?.error && (
                       <div className="flex items-center text-red-400 bg-red-500/10 px-3 py-2 rounded-md mt-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                           <path d="M12 8v4"></path>
