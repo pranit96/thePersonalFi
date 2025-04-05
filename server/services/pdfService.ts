@@ -11,8 +11,8 @@ const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// Models to use - using a smaller model for PDF processing to save quota
-const PDF_MODEL = 'llama3-8b-8192';  // Smaller model for PDF processing to conserve quota
+// Models to use
+const PDF_MODEL = 'deepseek-r1-distill-llama-70b';  // Model for PDF parsing with high accuracy
 
 // Convert fs functions to promise-based
 const readFile = promisify(fs.readFile);

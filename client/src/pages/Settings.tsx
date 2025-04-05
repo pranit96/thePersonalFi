@@ -388,7 +388,8 @@ export default function Settings() {
                 <div className="rounded-lg border p-4 space-y-3">
                   <h3 className="text-lg font-medium flex items-center">
                     <Bot className="mr-2 h-4 w-4" />
-                    Groq API Status
+                    Groq API Status 
+                    <span className="ml-2 text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">DeepSeek-R1-Distill-LLama-70B</span>
                   </h3>
                   
                   <div className="space-y-2">

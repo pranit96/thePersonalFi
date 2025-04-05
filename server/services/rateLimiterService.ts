@@ -18,10 +18,10 @@ class RateLimiter {
    * Check if a particular operation is rate limited
    * @param key - Unique identifier for the operation type
    * @param limit - Maximum number of calls allowed in the time window
-   * @param windowMs - Time window in milliseconds (default: 1 hour)
+   * @param windowMs - Time window in milliseconds (default: 1 minute)
    * @returns Whether the operation is allowed or should be limited
    */
-  canProceed(key: string, limit: number, windowMs: number = 3600000): boolean {
+  canProceed(key: string, limit: number, windowMs: number = 60000): boolean {
     const now = Date.now();
     
     // Initialize the counter if it doesn't exist
@@ -77,10 +77,10 @@ class RateLimiter {
 }
 
 // Define rate limits for different operations
-// These limits should be adjusted based on the specific Groq API tier
+// These limits are based on the DeepSeek-R1-Distill-LLama-70B model
 const RATE_LIMITS = {
-  // PDF processing is expensive, limit to 10 per hour
-  PDF_PROCESSING: 10,
+  // PDF processing using DeepSeek model (30 req/min, 1,000 req/day)
+  PDF_PROCESSING: 30,
   
   // General insights are less expensive, allow more
   GENERAL_INSIGHTS: 20,

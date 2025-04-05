@@ -158,7 +158,10 @@ export default function Insights() {
         {!aiServiceMeta.apiKeyMissing && aiServiceMeta.remaining !== undefined && (
           <div className="mb-4 p-3 bg-primary/10 border border-primary/20 text-primary-foreground rounded-lg">
             <div className="flex justify-between items-center">
-              <span className="text-sm">AI Quota</span>
+              <div className="flex items-center gap-2">
+                <span className="text-sm">AI Quota</span>
+                <span className="text-xs px-1.5 py-0.5 bg-primary/20 rounded-full">DeepSeek-R1-Distill-LLama-70B</span>
+              </div>
               <span className="text-sm font-medium">{aiServiceMeta.remaining} / {aiServiceMeta.total} remaining</span>
             </div>
             <div className="mt-1 w-full bg-background-dark/50 rounded-full h-2">
