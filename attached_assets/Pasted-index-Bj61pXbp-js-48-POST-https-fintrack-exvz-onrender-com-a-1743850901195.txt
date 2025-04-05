@@ -1,0 +1,79 @@
+index-Bj61pXbp.js:48 
+            
+            
+           POST https://fintrack-exvz.onrender.com/api/goals 500 (Internal Server Error)
+Zt @ index-Bj61pXbp.js:48
+mutationFn @ index-Bj61pXbp.js:328
+fn @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+addGoal @ index-Bj61pXbp.js:328
+a @ index-Bj61pXbp.js:449
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:449 Failed to add goal: Error: 500: {"message":"column \"date\" of relation \"goals\" does not exist"}
+    at gN (index-Bj61pXbp.js:48:42890)
+    at async Zt (index-Bj61pXbp.js:48:43091)
+a @ index-Bj61pXbp.js:449
+await in a
+(anonymous) @ index-Bj61pXbp.js:449
+await in (anonymous)
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:48 
+            
+            
+           GET https://fintrack-exvz.onrender.com/api/transactions 500 (Internal Server Error)
+(anonymous) @ index-Bj61pXbp.js:48
+a @ index-Bj61pXbp.js:48
+v @ index-Bj61pXbp.js:48
+start @ index-Bj61pXbp.js:48
+fetch @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+refetchQueries @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+batch @ index-Bj61pXbp.js:48
+invalidateQueries @ index-Bj61pXbp.js:48
+onSettled @ index-Bj61pXbp.js:449
+execute @ index-Bj61pXbp.js:48
+await in execute
+mutate @ index-Bj61pXbp.js:48
+(anonymous) @ index-Bj61pXbp.js:48
+d @ index-Bj61pXbp.js:449
+PF @ index-Bj61pXbp.js:37
+EF @ index-Bj61pXbp.js:37
+kF @ index-Bj61pXbp.js:37
+k_ @ index-Bj61pXbp.js:37
+FC @ index-Bj61pXbp.js:37
+(anonymous) @ index-Bj61pXbp.js:37
+$w @ index-Bj61pXbp.js:40
+cC @ index-Bj61pXbp.js:37
+Dy @ index-Bj61pXbp.js:37
+sw @ index-Bj61pXbp.js:37
+HF @ index-Bj61pXbp.js:37
+index-Bj61pXbp.js:449 WebSocket message received: {type: 'pdf_processing_error', message: 'Could not extract any transactions from the uploaded PDFs', data: {…}}

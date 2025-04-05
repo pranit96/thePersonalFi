@@ -227,18 +227,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const data = { ...req.body, userId };
       const validatedData = insertSalaryRecordSchema.parse(data);
       
-      // If data encryption is enabled, encrypt sensitive details
-      const user = req.user as any;
-      if (user.dataEncryptionEnabled) {
-        // Store sensitive details in encrypted format
-        const sensitiveData = {
-          source: validatedData.source,
-          notes: req.body.notes,
-          bonusDetails: req.body.bonusDetails
-        };
-        validatedData.encryptedData = encryptFinancialData(sensitiveData);
-      }
-      
+      // Create salary record without encryption
       const salaryRecord = await storage.createSalaryRecord(validatedData);
       res.status(201).json(salaryRecord);
     } catch (err) {
@@ -321,21 +310,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "User ID not available" });
       }
       
-      // Add userId to the validated data
-      const data = { ...req.body, userId };
-      const validatedData = insertGoalSchema.parse(data);
-      
-      // If data encryption is enabled, encrypt sensitive details
-      const user = req.user as any;
-      if (user.dataEncryptionEnabled) {
-        // Store sensitive details in encrypted format
-        const sensitiveData = {
-          notes: req.body.notes,
-          strategies: req.body.strategies,
-          purpose: req.body.purpose
-        };
-        validatedData.encryptedData = encryptFinancialData(sensitiveData);
+      // Handle targetDate conversion explicitly
+      let data = { ...req.body, userId };
+      if (data.targetDate && typeof data.targetDate === 'string') {
+        data.targetDate = new Date(data.targetDate);
       }
+      
+      // Now validate the data
+      const validatedData = insertGoalSchema.parse(data);
       
       const goal = await storage.createGoal(validatedData);
       res.status(201).json(goal);

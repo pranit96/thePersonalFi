@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, real } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, real, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -10,7 +10,7 @@ export const transactions = pgTable("transactions", {
   userId: integer("user_id").notNull().default(1),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at"),
-  metaData: text("meta_data"),
+  metaData: jsonb("meta_data"),
   categoryId: integer("category_id"),
   isReconciled: boolean("is_reconciled").default(false),
   isPending: boolean("is_pending").default(false),
@@ -20,7 +20,6 @@ export const transactions = pgTable("transactions", {
   description: text("description"),
   payee: text("payee"),
   memo: text("memo"),
-  encryptedData: text("encrypted_data"), // For encrypted version of sensitive data
 });
 
 export const insertTransactionSchema = createInsertSchema(transactions).pick({
@@ -31,7 +30,6 @@ export const insertTransactionSchema = createInsertSchema(transactions).pick({
   payee: true,
   memo: true,
   categoryId: true,
-  encryptedData: true,
   transactionDate: true,
 });
 
@@ -61,24 +59,32 @@ export type SalaryRecord = typeof salaryRecords.$inferSelect;
 // Goals
 export const goals = pgTable("goals", {
   id: serial("id").primaryKey(),
-  date: timestamp("date").defaultNow().notNull(),
   name: text("name").notNull(),
   amount: real("amount").notNull(), // Target amount
   currentAmount: real("current_amount").default(0),
   userId: integer("user_id").notNull().default(1),
   targetDate: timestamp("target_date"),
-  encryptedData: text("encrypted_data"), // For encrypted goal data
-  isPrivate: boolean("is_private").default(true), // Privacy control
+  date: timestamp("date").defaultNow().notNull(),
 });
 
-export const insertGoalSchema = createInsertSchema(goals).pick({
-  name: true,
-  amount: true, // Target amount
-  userId: true,
-  targetDate: true,
-  encryptedData: true,
-  isPrivate: true,
-});
+export const insertGoalSchema = createInsertSchema(goals)
+  .pick({
+    name: true,
+    amount: true, // Target amount
+    userId: true,
+    targetDate: true,
+    date: true,
+  })
+  .transform((data) => {
+    // Convert targetDate from string to Date if needed
+    if (data.targetDate && typeof data.targetDate === 'string') {
+      return {
+        ...data,
+        targetDate: new Date(data.targetDate)
+      };
+    }
+    return data;
+  });
 
 export type InsertGoal = z.infer<typeof insertGoalSchema>;
 export type Goal = typeof goals.$inferSelect;

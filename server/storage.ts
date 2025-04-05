@@ -126,18 +126,7 @@ export class DatabaseStorage implements IStorage {
       .from(transactions)
       .orderBy(desc(transactions.date));
     
-    // Decrypt sensitive data if present
-    return transactionsList.map(t => {
-      if (t.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(t.encryptedData);
-          return { ...t, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting transaction ${t.id}:`, err);
-        }
-      }
-      return t;
-    });
+    return transactionsList;
   }
   
   async getTransaction(id: number): Promise<Transaction | undefined> {
@@ -146,15 +135,6 @@ export class DatabaseStorage implements IStorage {
       .from(transactions)
       .where(eq(transactions.id, id));
     
-    if (transaction && transaction.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(transaction.encryptedData);
-        return { ...transaction, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting transaction ${id}:`, err);
-      }
-    }
-    
     return transaction;
   }
   
@@ -162,26 +142,22 @@ export class DatabaseStorage implements IStorage {
     // Prepare transaction data for insertion
     const transactionDate = insertTransaction.transactionDate || new Date();
     
-    // If there's sensitive data to encrypt
-    let encryptedData = insertTransaction.encryptedData;
-    if (insertTransaction.description || insertTransaction.payee) {
-      const sensitiveData = {
-        description: insertTransaction.description,
-        payee: insertTransaction.payee,
-        memo: insertTransaction.memo,
-        amount: insertTransaction.amount
-      };
-      encryptedData = encryptFinancialData(sensitiveData);
-    }
+    // Prepare metadata
+    const metaData = {
+      description: insertTransaction.description,
+      payee: insertTransaction.payee,
+      memo: insertTransaction.memo
+    };
     
     // Insert transaction with data
     const [transaction] = await db
       .insert(transactions)
       .values({
         ...insertTransaction,
-        encryptedData,
+        metaData,
         transactionDate,
-        date: new Date() // Set current date
+        date: new Date(), // Set current date
+        currency: insertTransaction.currency || 'USD'
       })
       .returning();
     
@@ -212,18 +188,7 @@ export class DatabaseStorage implements IStorage {
       .from(salaryRecords)
       .orderBy(desc(salaryRecords.date));
     
-    // Decrypt sensitive data if present
-    return records.map(r => {
-      if (r.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(r.encryptedData);
-          return { ...r, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting salary record ${r.id}:`, err);
-        }
-      }
-      return r;
-    });
+    return records;
   }
   
   async getSalaryRecord(id: number): Promise<SalaryRecord | undefined> {
@@ -232,32 +197,21 @@ export class DatabaseStorage implements IStorage {
       .from(salaryRecords)
       .where(eq(salaryRecords.id, id));
     
-    if (record && record.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(record.encryptedData);
-        return { ...record, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting salary record ${id}:`, err);
-      }
-    }
-    
     return record;
   }
   
   async createSalaryRecord(insertSalaryRecord: InsertSalaryRecord): Promise<SalaryRecord> {
-    // Extract data to encrypt
-    const { amount, source } = insertSalaryRecord;
-    const sensitiveData = { amount, source };
+    // Extract data from the insert salary record
+    const { amount, source, userId } = insertSalaryRecord;
     
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Insert record with encrypted data
+    // Insert record with data
     const [record] = await db
       .insert(salaryRecords)
       .values({
-        ...insertSalaryRecord,
-        encryptedData
+        amount,
+        source,
+        userId,
+        date: new Date()
       })
       .returning();
     
@@ -275,25 +229,10 @@ export class DatabaseStorage implements IStorage {
       throw new Error(`Salary record with ID ${id} not found`);
     }
     
-    // Get the current data and update amount
-    let sensitiveData: Record<string, any> = { amount };
-    
-    if (existingRecord.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(existingRecord.encryptedData);
-        sensitiveData = { ...decryptedData, amount };
-      } catch (err) {
-        console.error(`Error decrypting salary record for update ${id}:`, err);
-      }
-    }
-    
-    // Re-encrypt with updated amount
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
     // Update record
     const [updatedRecord] = await db
       .update(salaryRecords)
-      .set({ amount, encryptedData })
+      .set({ amount })
       .where(eq(salaryRecords.id, id))
       .returning();
     
@@ -307,18 +246,7 @@ export class DatabaseStorage implements IStorage {
       .from(goals)
       .orderBy(desc(goals.date));
     
-    // Decrypt sensitive data if present
-    return goalsList.map(g => {
-      if (g.encryptedData) {
-        try {
-          const decryptedData = decryptFinancialData(g.encryptedData);
-          return { ...g, ...decryptedData };
-        } catch (err) {
-          console.error(`Error decrypting goal ${g.id}:`, err);
-        }
-      }
-      return g;
-    });
+    return goalsList;
   }
   
   async getGoal(id: number): Promise<Goal | undefined> {
@@ -327,32 +255,15 @@ export class DatabaseStorage implements IStorage {
       .from(goals)
       .where(eq(goals.id, id));
     
-    if (goal && goal.encryptedData) {
-      try {
-        const decryptedData = decryptFinancialData(goal.encryptedData);
-        return { ...goal, ...decryptedData };
-      } catch (err) {
-        console.error(`Error decrypting goal ${id}:`, err);
-      }
-    }
-    
     return goal;
   }
   
   async createGoal(insertGoal: InsertGoal): Promise<Goal> {
-    // Extract data to encrypt
-    const { name, amount, userId, isPrivate } = insertGoal;
-    const sensitiveData = { name, amount, isPrivate };
-    
-    // Encrypt sensitive data
-    const encryptedData = encryptFinancialData(sensitiveData);
-    
-    // Insert goal with encrypted data and default values
+    // Insert goal with default values
     const [goal] = await db
       .insert(goals)
       .values({
         ...insertGoal,
-        encryptedData,
         currentAmount: 0,
         date: new Date()
       })
@@ -644,14 +555,27 @@ export class MemStorage implements IStorage {
   
   async createTransaction(insertTransaction: InsertTransaction): Promise<Transaction> {
     const id = this.currentTransactionId++;
+    
+    // Create metaData object
+    const metaData = {
+      description: insertTransaction.description,
+      payee: insertTransaction.payee,
+      memo: insertTransaction.memo
+    };
+    
     const transaction: Transaction = {
       ...insertTransaction,
       id,
       date: new Date(),
       description: insertTransaction.description ?? null,
-      encryptedData: insertTransaction.encryptedData ?? null,
-      userId: insertTransaction.userId ?? 1
+      metaData,
+      userId: insertTransaction.userId ?? 1,
+      createdAt: new Date(),
+      updatedAt: null,
+      isReconciled: false,
+      isPending: false
     };
+    
     this.transactionsList.set(id, transaction);
     
     // Update category spending based on new transaction
@@ -682,7 +606,6 @@ export class MemStorage implements IStorage {
       ...insertSalaryRecord,
       id,
       date: new Date(),
-      encryptedData: insertSalaryRecord.encryptedData ?? null,
       userId: insertSalaryRecord.userId ?? 1,
       source: insertSalaryRecord.source ?? null
     };
@@ -717,9 +640,7 @@ export class MemStorage implements IStorage {
       id,
       date: new Date(),
       currentAmount: 0,
-      encryptedData: insertGoal.encryptedData ?? null,
       userId: insertGoal.userId ?? 1,
-      isPrivate: insertGoal.isPrivate ?? true,
       targetDate: insertGoal.targetDate ?? null
     };
     this.goalsList.set(id, goal);
