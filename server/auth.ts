@@ -45,27 +45,33 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        if (!user) {
-          return done(null, false, { message: "Incorrect username" });
+    new LocalStrategy(
+      {
+        usernameField: 'email',    // Use email field as the username
+        passwordField: 'password'   // Keep the password field the same
+      },
+      async (email, password, done) => {
+        try {
+          const user = await storage.getUserByEmail(email);
+          if (!user) {
+            return done(null, false, { message: "Incorrect email address" });
+          }
+          
+          // Verify password using our secure implementation
+          const isValid = verifyPassword(password, user.password);
+          if (!isValid) {
+            return done(null, false, { message: "Incorrect password" });
+          }
+          
+          // Update last login time
+          // Note: In a full implementation, you'd update the user record here
+          
+          return done(null, user);
+        } catch (err) {
+          return done(err);
         }
-        
-        // Verify password using our secure implementation
-        const isValid = verifyPassword(password, user.password);
-        if (!isValid) {
-          return done(null, false, { message: "Incorrect password" });
-        }
-        
-        // Update last login time
-        // Note: In a full implementation, you'd update the user record here
-        
-        return done(null, user);
-      } catch (err) {
-        return done(err);
       }
-    }),
+    ),
   );
 
   passport.serializeUser((user, done) => {
@@ -84,22 +90,21 @@ export function setupAuth(app: Express) {
   // Register route
   app.post("/api/register", async (req, res, next) => {
     try {
-      const { username, password, email } = req.body;
+      const { email, password, firstName, lastName } = req.body;
       
-      // Check if username already exists
-      const existingUser = await storage.getUserByUsername(username);
+      // Check if email already exists
+      const existingUser = await storage.getUserByEmail(email);
       if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
+        return res.status(400).json({ message: "Email address already exists" });
       }
       
       // Create new user
       const user = await storage.createUser({
-        username,
-        password,
         email,
-        dataEncryptionEnabled: true,
-        dataSharingEnabled: false,
-        anonymizedAnalytics: true
+        password,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        profilePicture: null
       });
       
       // Log the user in
@@ -107,11 +112,10 @@ export function setupAuth(app: Express) {
         if (err) return next(err);
         return res.status(201).json({ 
           id: user.id,
-          username: user.username,
           email: user.email,
-          dataEncryptionEnabled: user.dataEncryptionEnabled,
-          dataSharingEnabled: user.dataSharingEnabled,
-          anonymizedAnalytics: user.anonymizedAnalytics
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profilePicture: user.profilePicture
         });
       });
     } catch (err) {
@@ -130,11 +134,10 @@ export function setupAuth(app: Express) {
         if (err) return next(err);
         return res.json({ 
           id: user.id,
-          username: user.username,
           email: user.email,
-          dataEncryptionEnabled: user.dataEncryptionEnabled,
-          dataSharingEnabled: user.dataSharingEnabled,
-          anonymizedAnalytics: user.anonymizedAnalytics
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profilePicture: user.profilePicture
         });
       });
     })(req, res, next);
@@ -159,11 +162,10 @@ export function setupAuth(app: Express) {
     const user = req.user as SelectUser;
     return res.json({ 
       id: user.id,
-      username: user.username, 
       email: user.email,
-      dataEncryptionEnabled: user.dataEncryptionEnabled,
-      dataSharingEnabled: user.dataSharingEnabled,
-      anonymizedAnalytics: user.anonymizedAnalytics
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: user.profilePicture
     });
   });
 
@@ -178,11 +180,10 @@ export function setupAuth(app: Express) {
     const user = req.user as SelectUser;
     return res.json({ 
       id: user.id,
-      username: user.username, 
       email: user.email,
-      dataEncryptionEnabled: user.dataEncryptionEnabled,
-      dataSharingEnabled: user.dataSharingEnabled,
-      anonymizedAnalytics: user.anonymizedAnalytics
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: user.profilePicture
     });
   });
 }

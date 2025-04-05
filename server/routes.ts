@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { db } from "./db";
 import { sql } from "drizzle-orm";
-import { insertTransactionSchema, insertSalaryRecordSchema, insertGoalSchema, insertSavingsRecordSchema } from "@shared/schema";
+import { insertTransactionSchema, insertSalaryRecordSchema, insertGoalSchema, insertSavingsRecordSchema, users } from "@shared/schema";
 import { z } from "zod";
 import { fromZodError } from "zod-validation-error";
 import { encrypt, decrypt, encryptFinancialData, decryptFinancialData } from "./utils/encryption";
@@ -74,6 +74,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Check database connection by executing a simple query
       await db.execute(sql`SELECT 1 AS health_check`);
       
+      // Check user schema structure
+      let userSchemaStatus = "unknown";
+      let authSystem = "unknown";
+      try {
+        await db.select().from(users).limit(1);
+        userSchemaStatus = "verified";
+        authSystem = "email-based"; // Using email instead of username for authentication
+      } catch (schemaError) {
+        console.error("Schema check failed:", schemaError);
+        userSchemaStatus = "error";
+      }
+      
       return res.status(200).json({
         status: "healthy",
         database: "connected",
@@ -87,7 +99,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           host: process.env.PGHOST ? "configured" : "missing",
           user: process.env.PGUSER ? "configured" : "missing",
           database: process.env.PGDATABASE ? "configured" : "missing"
-        }
+        },
+        schema: {
+          version: "v2", // Updated schema version
+          usersTable: userSchemaStatus
+        },
+        authSystem: authSystem
       });
     } catch (error) {
       console.error("Health check failed:", error);

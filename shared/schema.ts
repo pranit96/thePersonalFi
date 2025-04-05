@@ -114,23 +114,26 @@ export type AiInsight = typeof aiInsights.$inferSelect;
 // Users
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
-  password: text("password").notNull(), // Will store hashed password
   email: text("email"),
-  dataEncryptionEnabled: boolean("data_encryption_enabled").default(true).notNull(),
-  dataSharingEnabled: boolean("data_sharing_enabled").default(false).notNull(),
-  anonymizedAnalytics: boolean("anonymized_analytics").default(false).notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  password: text("password").notNull(), // Will store hashed password
+  oauthProvider: text("oauth_provider"),
+  oauthId: text("oauth_id"),
+  mfaEnabled: boolean("mfa_enabled").default(false),
+  mfaSecret: text("mfa_secret"),
+  profilePicture: text("profile_picture"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  lastLogin: timestamp("last_login"),
+  updatedAt: timestamp("updated_at"),
+  // Custom security features added as virtual properties in TypeScript types
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
   email: true,
-  dataEncryptionEnabled: true,
-  dataSharingEnabled: true,
-  anonymizedAnalytics: true,
+  firstName: true,
+  lastName: true,
+  password: true,
+  profilePicture: true,
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
