@@ -1,8 +1,8 @@
+
 import { useMemo, useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
 import Header from "@/components/layout/Header";
 import AiInsightCard from "@/components/insights/AiInsightCard";
-import { CategorySpending } from "@shared/schema";
 import { 
   PieChart, 
   Pie, 
@@ -20,7 +20,6 @@ import { formatCurrency } from "@/lib/utils";
 
 const COLORS = ["#6366F1", "#10B981", "#EC4899", "#F59E0B", "#3B82F6", "#EF4444"];
 
-import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 
@@ -125,7 +124,7 @@ export default function Insights() {
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
       return (
-        <div className="bg-background-light border border-white/10 shadow-lg rounded-lg p-2 text-text">
+        <div className="bg-background-light border border-white/10 shadow-lg rounded-lg p-3 text-text">
           <p className="font-medium">{payload[0].name}</p>
           <p className="text-sm">{formatCurrency(payload[0].value)}</p>
           <p className="text-xs">{payload[0].payload.percentage}% of total</p>
@@ -163,77 +162,72 @@ export default function Insights() {
   }
   
   return (
-    <>
+    <div className="max-w-7xl mx-auto px-4 py-6">
       <Header title="Financial Insights" subtitle="Smart analysis of your spending and saving habits" />
       
       {/* AI Insights Section */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
-        <div className="flex items-center mb-6">
-          <h3 className="font-display font-bold flex-1">AI Financial Insights</h3>
-          <div className="flex items-center gap-2">
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-display text-xl font-bold">AI Financial Insights</h3>
+          <div className="flex items-center gap-3">
             <button 
               onClick={handleGenerateInsights}
               disabled={isGeneratingInsights || aiServiceMeta.apiKeyMissing}
-              className="text-xs bg-primary hover:bg-primary/80 text-primary-foreground py-1 px-3 rounded-md flex items-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="text-sm bg-primary hover:bg-primary/80 text-primary-foreground py-2 px-4 rounded-md flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {isGeneratingInsights ? (
                 <>
-                  <div className="w-3 h-3 border-2 border-white/30 border-t-white/90 rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white/90 rounded-full animate-spin"></div>
                   Generating...
                 </>
               ) : (
                 <>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v3"></path><path d="M18.42 6.5 16.3 8.62"></path><path d="M21 12h-3"></path><path d="M18.42 17.5 16.3 15.38"></path><path d="M12 21v-3"></path><path d="M7.58 17.5 9.7 15.38"></path><path d="M3 12h3"></path><path d="M7.58 6.5 9.7 8.62"></path></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v3"></path><path d="M18.42 6.5 16.3 8.62"></path><path d="M21 12h-3"></path><path d="M18.42 17.5 16.3 15.38"></path><path d="M12 21v-3"></path><path d="M7.58 17.5 9.7 15.38"></path><path d="M3 12h3"></path><path d="M7.58 6.5 9.7 8.62"></path></svg>
                   Generate Insights
                 </>
               )}
             </button>
-            <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center animate-pulse">
-              <div className="text-accent">🤖</div>
+            <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center">
+              <div className="text-accent text-lg">🤖</div>
             </div>
           </div>
         </div>
         
         {/* API Key Status Banner */}
         {aiServiceMeta.apiKeyMissing && (
-          <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="mb-6 p-4 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
               <path d="M12 9v4"></path>
               <path d="M12 17h.01"></path>
             </svg>
-            <span>AI features are limited. Contact your administrator to set up the Groq API key.</span>
-          </div>
-        )}
-        
-        {/* AI Status Info - Simplified */}
-        {aiServiceMeta.apiKeyMissing && (
-          <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
-              <path d="M12 9v4"></path>
-              <path d="M12 17h.01"></path>
-            </svg>
-            <span>AI features are limited. Contact your administrator to set up the AI API key.</span>
+            <span className="font-medium">AI features are limited. Contact your administrator to set up the Groq API key.</span>
           </div>
         )}
         
         {/* Error Message */}
         {aiServiceMeta.error && (
-          <div className="mb-4 p-3 bg-destructive/20 border border-destructive/30 text-destructive-foreground rounded-lg flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <div className="mb-6 p-4 bg-destructive/20 border border-destructive/30 text-destructive-foreground rounded-lg flex items-center gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
               <path d="m9 9 6 6"></path>
               <path d="m15 9-6 6"></path>
             </svg>
-            <span>{aiServiceMeta.error}</span>
+            <span className="font-medium">{aiServiceMeta.error}</span>
           </div>
         )}
         
         {aiInsights.length === 0 ? (
-          <div className="text-center py-8 text-text/70">
-            <p>No insights available yet.</p>
-            <p className="text-sm mt-2">
+          <div className="text-center py-12 bg-background-dark/30 rounded-xl">
+            <div className="w-16 h-16 bg-background-light/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+            </div>
+            <p className="text-text/80 text-lg font-medium">No insights available yet</p>
+            <p className="text-sm mt-2 text-text/60 max-w-md mx-auto">
               {aiServiceMeta.apiKeyMissing 
                 ? "AI features require a Groq API key to function properly." 
                 : "Add more financial data to get personalized AI insights!"}
@@ -249,10 +243,10 @@ export default function Insights() {
       </div>
       
       {/* Monthly Trends Chart */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
-        <h3 className="font-display font-bold mb-6">Monthly Financial Trends</h3>
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
+        <h3 className="font-display text-xl font-bold mb-6">Monthly Financial Trends</h3>
         
-        <div className="h-[350px]">
+        <div className="h-[400px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={monthlySpendingData}
@@ -269,6 +263,8 @@ export default function Insights() {
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: 'rgba(248, 250, 252, 0.7)', fontSize: 12 }}
+                width={80}
+                tickFormatter={(value) => formatCurrency(value, false)}
               />
               <Tooltip content={<MonthlyTooltip />} />
               <Legend 
@@ -286,30 +282,43 @@ export default function Insights() {
       </div>
       
       {/* Spending Distribution */}
-      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 mb-8">
-        <h3 className="font-display font-bold mb-6">Spending Distribution</h3>
+      <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-6 mb-8">
+        <h3 className="font-display text-xl font-bold mb-6">Spending Distribution</h3>
         
         {categorySpending.length === 0 ? (
-          <div className="text-center py-8 text-text/70">
-            <p>No spending data available yet.</p>
-            <p className="text-sm mt-2">Add transactions to see your spending distribution!</p>
+          <div className="text-center py-12 bg-background-dark/30 rounded-xl">
+            <div className="w-16 h-16 bg-background-light/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-text/50">
+                <circle cx="12" cy="12" r="5"></circle>
+                <path d="M12 1v2"></path>
+                <path d="M12 21v2"></path>
+                <path d="M4.22 4.22l1.42 1.42"></path>
+                <path d="M18.36 18.36l1.42 1.42"></path>
+                <path d="M1 12h2"></path>
+                <path d="M21 12h2"></path>
+                <path d="M4.22 19.78l1.42-1.42"></path>
+                <path d="M18.36 5.64l1.42-1.42"></path>
+              </svg>
+            </div>
+            <p className="text-text/80 text-lg font-medium">No spending data available yet</p>
+            <p className="text-sm mt-2 text-text/60">Add transactions to see your spending distribution!</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-[300px]">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="h-[350px] flex items-center justify-center">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={categoryData}
                     cx="50%"
                     cy="50%"
-                    innerRadius={60}
-                    outerRadius={110}
+                    innerRadius={70}
+                    outerRadius={130}
                     fill="#8884d8"
-                    paddingAngle={2}
+                    paddingAngle={3}
                     dataKey="value"
                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                    labelLine={false}
+                    labelLine={{ stroke: 'rgba(255,255,255,0.3)', strokeWidth: 1 }}
                   >
                     {categoryData.map((entry, index) => (
                       <Cell 
@@ -323,31 +332,40 @@ export default function Insights() {
               </ResponsiveContainer>
             </div>
             
-            <div>
-              <h4 className="font-medium mb-4">Top Spending Categories</h4>
-              <div className="space-y-4">
+            <div className="flex flex-col">
+              <h4 className="font-medium text-lg mb-4">Top Spending Categories</h4>
+              <div className="space-y-5 mb-6">
                 {categorySpending.slice(0, 4).map((category, index) => (
                   <div key={category.id} className="flex items-center">
                     <div 
-                      className="w-3 h-3 rounded-full mr-2" 
+                      className="w-4 h-4 rounded-full mr-3" 
                       style={{ backgroundColor: COLORS[index % COLORS.length] }}
                     ></div>
                     <div className="flex-1">
-                      <div className="flex justify-between">
-                        <span className="text-sm">{category.name}</span>
-                        <span className="text-sm font-mono">{formatCurrency(category.amount)}</span>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">{category.name}</span>
+                        <span className="font-mono font-medium">{formatCurrency(category.amount)}</span>
                       </div>
-                      <div className="text-xs text-text/70">{category.percentage}% of total spending</div>
+                      <div className="w-full bg-background-dark/50 h-2 rounded-full mt-2">
+                        <div 
+                          className="h-full rounded-full" 
+                          style={{ 
+                            width: `${category.percentage}%`,
+                            backgroundColor: COLORS[index % COLORS.length] 
+                          }}
+                        ></div>
+                      </div>
+                      <div className="text-xs text-text/70 mt-1">{category.percentage}% of total spending</div>
                     </div>
                   </div>
                 ))}
               </div>
               
-              <div className="mt-6 p-4 bg-background-dark/30 rounded-lg">
-                <h4 className="font-medium mb-2">Spending Insights</h4>
-                <ul className="text-sm space-y-2 text-text/80">
+              <div className="mt-auto p-5 bg-background-dark/50 backdrop-blur-sm rounded-lg border border-white/5">
+                <h4 className="font-medium text-lg mb-3">Spending Insights</h4>
+                <ul className="space-y-3 text-text/90">
                   <li className="flex">
-                    <span className="mr-2">•</span>
+                    <span className="mr-2 text-primary">•</span>
                     <span>
                       {categorySpending[0]?.name} is your largest spending category at {formatCurrency(categorySpending[0]?.amount)}.
                     </span>
@@ -356,7 +374,7 @@ export default function Insights() {
                     const increasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage > 0);
                     return increasedCategory && (
                       <li className="flex">
-                        <span className="mr-2">•</span>
+                        <span className="mr-2 text-destructive">•</span>
                         <span>
                           {increasedCategory.name} spending increased by {increasedCategory.changePercentage || 0}% this month.
                         </span>
@@ -367,8 +385,8 @@ export default function Insights() {
                   {(() => {
                     const decreasedCategory = categorySpending.find(c => c.changePercentage !== null && c.changePercentage < 0);
                     return decreasedCategory && (
-                      <li className="flex text-secondary">
-                        <span className="mr-2">•</span>
+                      <li className="flex">
+                        <span className="mr-2 text-secondary">•</span>
                         <span>
                           Great job! You reduced {decreasedCategory.name} spending by {Math.abs(decreasedCategory.changePercentage || 0)}%.
                         </span>
@@ -381,6 +399,6 @@ export default function Insights() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
