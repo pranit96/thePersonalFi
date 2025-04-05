@@ -20,6 +20,15 @@ interface GoalAdvice {
   actionText: string;
 }
 
+// Type for AI service metadata
+interface AiServiceMeta {
+  apiKeyMissing: boolean;
+  remaining?: number;
+  total?: number;
+  resetsIn?: string;
+  error?: string;
+}
+
 interface FinanceContextType {
   // Transactions
   transactions: Transaction[];
@@ -48,6 +57,7 @@ interface FinanceContextType {
   
   // AI Insights
   aiInsights: AiInsight[];
+  aiServiceMeta: AiServiceMeta;
   
   // Loading states
   isLoading: boolean;
@@ -115,10 +125,11 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     enabled: !!user,
   });
   
+  // Updated query to handle the new response format with metadata
   const {
-    data: aiInsights = [] as AiInsight[],
+    data: insightsResponse = { insights: [] as AiInsight[], _meta: { aiLimits: { apiKeyMissing: false } } },
     isLoading: isLoadingInsights
-  } = useQuery<AiInsight[]>({
+  } = useQuery<{ insights: AiInsight[], _meta: { aiLimits: { apiKeyMissing: boolean, remaining?: number, total?: number, resetsIn?: string } } }>({
     queryKey: ['/api/insights'],
     enabled: !!user,
   });
@@ -249,7 +260,8 @@ export function FinanceProvider({ children }: { children: ReactNode }) {
     categorySpending: categorySpending as CategorySpending[],
     
     // AI Insights
-    aiInsights: aiInsights as AiInsight[],
+    aiInsights: insightsResponse.insights,
+    aiServiceMeta: insightsResponse._meta?.aiLimits || { apiKeyMissing: false },
     
     // Loading states
     isLoading

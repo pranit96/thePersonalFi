@@ -8,6 +8,7 @@ import Transactions from "@/pages/Transactions";
 import Goals from "@/pages/Goals";
 import Insights from "@/pages/Insights";
 import Privacy from "@/pages/Privacy";
+import Settings from "@/pages/Settings";
 import AuthPage from "@/pages/auth-page";
 import { FinanceProvider } from "./context/FinanceContext";
 import { WebSocketProvider } from "./context/WebSocketContext";
@@ -70,6 +71,14 @@ function PrivacyPage() {
   );
 }
 
+function SettingsPage() {
+  return (
+    <MainLayout>
+      <Settings />
+    </MainLayout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -78,6 +87,7 @@ function Router() {
       <ProtectedRoute path="/goals" component={GoalsPage} />
       <ProtectedRoute path="/insights" component={InsightsPage} />
       <ProtectedRoute path="/privacy" component={PrivacyPage} />
+      <ProtectedRoute path="/settings" component={SettingsPage} />
       <Route path="/auth" component={AuthPage} />
       <Route component={NotFound} />
     </Switch>

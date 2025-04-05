@@ -28,6 +28,7 @@ export default function Insights() {
     savingsRecords, 
     categorySpending, 
     aiInsights,
+    aiServiceMeta,
     isLoading
   } = useFinance();
   
@@ -141,10 +142,57 @@ export default function Insights() {
           </div>
         </div>
         
+        {/* API Key Status Banner */}
+        {aiServiceMeta.apiKeyMissing && (
+          <div className="mb-4 p-3 bg-yellow-500/20 border border-yellow-500/30 text-yellow-200 rounded-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <path d="M12 9v4"></path>
+              <path d="M12 17h.01"></path>
+            </svg>
+            <span>AI features are limited. Contact your administrator to set up the Groq API key.</span>
+          </div>
+        )}
+        
+        {/* Rate Limit Information */}
+        {!aiServiceMeta.apiKeyMissing && aiServiceMeta.remaining !== undefined && (
+          <div className="mb-4 p-3 bg-primary/10 border border-primary/20 text-primary-foreground rounded-lg">
+            <div className="flex justify-between items-center">
+              <span className="text-sm">AI Quota</span>
+              <span className="text-sm font-medium">{aiServiceMeta.remaining} / {aiServiceMeta.total} remaining</span>
+            </div>
+            <div className="mt-1 w-full bg-background-dark/50 rounded-full h-2">
+              <div 
+                className="bg-primary h-2 rounded-full" 
+                style={{ width: `${(aiServiceMeta.remaining / (aiServiceMeta.total || 1)) * 100}%` }}
+              ></div>
+            </div>
+            {aiServiceMeta.resetsIn && (
+              <div className="text-xs mt-1 text-primary-foreground/70">Resets in {aiServiceMeta.resetsIn}</div>
+            )}
+          </div>
+        )}
+        
+        {/* Error Message */}
+        {aiServiceMeta.error && (
+          <div className="mb-4 p-3 bg-destructive/20 border border-destructive/30 text-destructive-foreground rounded-lg flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path>
+              <path d="m9 9 6 6"></path>
+              <path d="m15 9-6 6"></path>
+            </svg>
+            <span>{aiServiceMeta.error}</span>
+          </div>
+        )}
+        
         {aiInsights.length === 0 ? (
           <div className="text-center py-8 text-text/70">
             <p>No insights available yet.</p>
-            <p className="text-sm mt-2">Add more financial data to get personalized AI insights!</p>
+            <p className="text-sm mt-2">
+              {aiServiceMeta.apiKeyMissing 
+                ? "AI features require a Groq API key to function properly." 
+                : "Add more financial data to get personalized AI insights!"}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

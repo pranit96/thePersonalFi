@@ -1,14 +1,16 @@
 import { Groq } from 'groq-sdk';
 import { Transaction, SalaryRecord, Goal, SavingsRecord } from '@shared/schema';
 import { decrypt } from '../utils/encryption';
+import { rateLimiter, RATE_LIMITS } from './rateLimiterService';
 
 // Initialize Groq client using official SDK
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// Models to use
+// Models to use - select based on task complexity and rate limits
 const FINANCIAL_MODEL = 'llama3-70b-8192';  // High-performance model for financial analysis
+const PDF_MODEL = 'llama3-8b-8192';         // Lower-tier model for PDF processing to save quota
 
 /**
  * Formats a financial data summary for AI processing
@@ -55,6 +57,11 @@ export async function generateSpendingInsights(
   savingsRecords: SavingsRecord[] = []
 ) {
   try {
+    // Check rate limit for general insights
+    if (!rateLimiter.canProceed('GENERAL_INSIGHTS', RATE_LIMITS.GENERAL_INSIGHTS)) {
+      console.warn('Rate limit exceeded for generating spending insights');
+      throw new Error('AI rate limit exceeded for generating insights. Please try again in an hour when the rate limit resets.');
+    }
     // Prepare data
     const financialData = formatFinancialData(transactions, salaryRecords, goals, savingsRecords);
     
@@ -147,6 +154,11 @@ export async function generatePersonalizedAdvice(
   salaryRecords: SalaryRecord[]
 ) {
   try {
+    // Check rate limit for goal advice
+    if (!rateLimiter.canProceed('GOAL_ADVICE', RATE_LIMITS.GOAL_ADVICE)) {
+      console.warn('Rate limit exceeded for generating goal advice');
+      throw new Error('AI rate limit exceeded for goal advice. Please try again in an hour when the rate limit resets.');
+    }
     // Calculate current financial situation
     const monthlyIncome = salaryRecords.length > 0 
       ? salaryRecords[salaryRecords.length - 1].amount 
@@ -246,6 +258,11 @@ export async function answerCustomFinancialQuestion(
   savingsRecords: SavingsRecord[]
 ) {
   try {
+    // Check rate limit for custom questions
+    if (!rateLimiter.canProceed('CUSTOM_QUESTIONS', RATE_LIMITS.CUSTOM_QUESTIONS)) {
+      console.warn('Rate limit exceeded for custom financial questions');
+      throw new Error('AI rate limit exceeded for custom questions. Please try again in an hour when the rate limit resets.');
+    }
     // Prepare financial context
     const financialSummary = {
       income: salaryRecords.reduce((sum, s) => sum + s.amount, 0),

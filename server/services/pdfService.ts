@@ -4,14 +4,15 @@ import { promisify } from 'util';
 import { InsertTransaction } from '@shared/schema';
 import { Groq } from 'groq-sdk';
 import pdfParse from 'pdf-parse';
+import { rateLimiter, RATE_LIMITS } from './rateLimiterService';
 
 // Initialize Groq client using official SDK (reuse from aiService)
 const groq = new Groq({
   apiKey: process.env.GROQ_API_KEY,
 });
 
-// Models to use
-const PDF_MODEL = 'llama3-70b-8192';  // High-performance model for PDF processing
+// Models to use - using a smaller model for PDF processing to save quota
+const PDF_MODEL = 'llama3-8b-8192';  // Smaller model for PDF processing to conserve quota
 
 // Convert fs functions to promise-based
 const readFile = promisify(fs.readFile);
@@ -93,6 +94,12 @@ export async function extractTransactionsFromPDF(filePath: string, userId: numbe
  * @returns Parsed transactions
  */
 async function parseTransactionsWithAI(text: string, userId: number): Promise<InsertTransaction[]> {
+  // Check rate limit for PDF processing
+  if (!rateLimiter.canProceed('PDF_PROCESSING', RATE_LIMITS.PDF_PROCESSING)) {
+    console.warn('Rate limit exceeded for PDF processing');
+    throw new Error('AI PDF processing rate limit reached. Please try again later or use manual transaction entry.');
+  }
+  
   // Create a sample of the text content (first 3000 chars) to analyze
   const textSample = text.substring(0, 3000);
   
@@ -426,6 +433,13 @@ function validateBankStatement(text: string): boolean {
  * @returns An array of extracted transactions from all files
  */
 export async function processMultiplePDFs(filePaths: string[], userId: number): Promise<InsertTransaction[]> {
+  // Check if there's sufficient rate limit left for the batch
+  // At least ensure we have quota for half the files to use AI processing
+  if (filePaths.length > 1 && !rateLimiter.canProceed('PDF_PROCESSING_CHECK', Math.ceil(filePaths.length / 2))) {
+    console.warn(`Rate limit insufficient for processing ${filePaths.length} PDF files`);
+    throw new Error(`Rate limit reached. You can only process up to ${rateLimiter.getRemainingQuota('PDF_PROCESSING', RATE_LIMITS.PDF_PROCESSING)} files currently. Please try again later with fewer files or when the rate limit resets.`);
+  }
+  
   const allTransactions: InsertTransaction[] = [];
   const errors: string[] = [];
   

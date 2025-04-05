@@ -127,10 +127,20 @@ export default function Privacy() {
           <div className="mt-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
             <div className="flex">
               <Key className="w-5 h-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
-              <p className="text-sm">
-                Your data is stored securely and encrypted with industry-standard AES-256 encryption. 
-                We never store your financial credentials, and your data is fully anonymized for internal processing.
-              </p>
+              <div className="space-y-2">
+                <p className="text-sm">
+                  Your data is stored securely and encrypted with industry-standard AES-256 encryption. 
+                  We never store your financial credentials, and your data is fully anonymized for internal processing.
+                </p>
+                <p className="text-sm font-medium mt-2">How we protect your data:</p>
+                <ul className="text-sm list-disc pl-5 space-y-1">
+                  <li>All sensitive financial information is encrypted using AES-256 encryption</li>
+                  <li>Your password is securely hashed and never stored in plain text</li>
+                  <li>We use HTTPS to encrypt all data transmission between your device and our servers</li>
+                  <li>PDF bank statements are processed locally and not stored permanently</li>
+                  <li>AI analysis is performed with strict rate limiting to protect your data</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -188,11 +198,35 @@ export default function Privacy() {
           </div>
           
           <div className="mt-6 p-4 bg-accent/10 border border-accent/20 rounded-lg">
-            <p className="text-sm">
-              <span className="font-medium">Privacy Notice:</span> We respect your right to privacy and data control. 
-              You can export or delete your data at any time. When you delete your data, it is permanently removed 
-              from our servers within 30 days, in accordance with data protection regulations.
-            </p>
+            <div className="space-y-4">
+              <p className="text-sm">
+                <span className="font-medium">Privacy Notice:</span> We respect your right to privacy and data control. 
+                You can export or delete your data at any time. When you delete your data, it is permanently removed 
+                from our servers within 30 days, in accordance with data protection regulations.
+              </p>
+              
+              <div>
+                <p className="text-sm font-medium">Data Deletion Process:</p>
+                <ul className="text-sm list-disc pl-5 space-y-1 mt-2">
+                  <li>When you request data deletion, all your personal and financial data is marked for removal</li>
+                  <li>Your data is immediately made inaccessible to any services or analytics</li>
+                  <li>Within 24 hours, your data is removed from our primary databases</li>
+                  <li>Within 30 days, all backups containing your data are permanently purged</li>
+                  <li>You will receive an email confirmation once the deletion process is complete</li>
+                </ul>
+              </div>
+              
+              <div>
+                <p className="text-sm font-medium">Data We Store:</p>
+                <ul className="text-sm list-disc pl-5 space-y-1 mt-2">
+                  <li>Account information (username, email, password hash)</li>
+                  <li>Financial data (transactions, salary records, goals, savings)</li>
+                  <li>PDF processing is temporary and bank statements are not permanently stored</li>
+                  <li>Application preferences and settings</li>
+                  <li>AI-generated insights that are created based on your financial data</li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </div>

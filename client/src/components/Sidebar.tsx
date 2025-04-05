@@ -23,6 +23,7 @@ export default function Sidebar() {
     { href: "/goals", icon: Target, label: "Goals" },
     { href: "/insights", icon: Lightbulb, label: "Insights" },
     { href: "/privacy", icon: ShieldCheck, label: "Privacy" },
+    { href: "/settings", icon: Settings, label: "Settings" },
   ];
   
   const handleLogout = () => {
@@ -107,14 +108,16 @@ export default function Sidebar() {
             >
               <LogOut className="h-4 w-4" />
             </Button>
-            <Button 
-              size="icon" 
-              variant="ghost" 
-              className="h-8 w-8 text-text/50 hover:text-text"
-              title="Settings"
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
+            <Link href="/settings">
+              <Button 
+                size="icon" 
+                variant="ghost" 
+                className="h-8 w-8 text-text/50 hover:text-text"
+                title="Settings"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

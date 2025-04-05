@@ -375,7 +375,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const GROQ_API_KEY = process.env.GROQ_API_KEY;
       if (!GROQ_API_KEY) {
         return res.status(503).json({ 
-          message: "AI insights are temporarily unavailable (API key not configured)" 
+          message: "AI insights are temporarily unavailable (API key not configured)",
+          _meta: {
+            aiLimits: {
+              remaining: 0,
+              total: 0,
+              resetsIn: 'N/A',
+              apiKeyMissing: true
+            }
+          }
         });
       }
       
@@ -405,16 +413,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
         savingsRecords
       );
       
-      // Return the AI-generated insights
+      // Import rate limiter to check remaining quota
+      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      const remainingQuota = rateLimiter.getRemainingQuota('CUSTOM_QUESTIONS', RATE_LIMITS.CUSTOM_QUESTIONS);
+      
+      // Return the AI-generated insights with rate limit information
       res.json({
         answer: response.answer,
         actionItems: response.actionItems,
         generatedAt: new Date().toISOString(),
-        question
+        question,
+        _meta: {
+          aiLimits: {
+            remaining: remainingQuota,
+            total: RATE_LIMITS.CUSTOM_QUESTIONS,
+            resetsIn: 'approximately 1 hour'
+          }
+        }
       });
     } catch (err) {
       console.error("AI insights error:", err);
-      handleError(err, res);
+      
+      // Get rate limit information
+      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      const remainingQuota = rateLimiter.getRemainingQuota('CUSTOM_QUESTIONS', RATE_LIMITS.CUSTOM_QUESTIONS);
+      
+      // Check if it's a rate limit error
+      const isRateLimitError = err instanceof Error && err.message.includes('rate limit');
+      
+      // Send an error response with metadata
+      res.status(isRateLimitError ? 429 : 500).json({
+        error: err instanceof Error ? err.message : 'Unknown error',
+        _meta: {
+          aiLimits: {
+            remaining: remainingQuota,
+            total: RATE_LIMITS.CUSTOM_QUESTIONS,
+            resetsIn: 'approximately 1 hour',
+            isRateLimitError
+          }
+        }
+      });
     }
   });
   
@@ -441,7 +479,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If we have enough saved insights or don't have Groq API key, return saved ones
       if (savedInsights.length >= 3 || !process.env.GROQ_API_KEY) {
-        return res.json(savedInsights);
+        // Return with appropriate metadata
+        return res.json({
+          insights: savedInsights,
+          _meta: {
+            aiLimits: process.env.GROQ_API_KEY 
+              ? { remaining: 0, total: 0, resetsIn: 'N/A', apiKeyMissing: false }
+              : { remaining: 0, total: 0, resetsIn: 'N/A', apiKeyMissing: true }
+          }
+        });
       }
       
       // Otherwise, generate new insights
@@ -462,12 +508,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
           savingsRecords
         );
         
-        // Return combined insights
-        res.json([...savedInsights, ...newInsights]);
+        // Get rate limit information
+        const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+        const remainingQuota = rateLimiter.getRemainingQuota('GENERAL_INSIGHTS', RATE_LIMITS.GENERAL_INSIGHTS);
+        
+        // Return combined insights with rate limit metadata
+        const insights = [...savedInsights, ...newInsights];
+        res.json({
+          insights,
+          _meta: {
+            aiLimits: {
+              remaining: remainingQuota,
+              total: RATE_LIMITS.GENERAL_INSIGHTS,
+              resetsIn: 'approximately 1 hour'
+            }
+          }
+        });
       } catch (aiError) {
         console.error("Error generating AI insights:", aiError);
-        // Still return saved insights on error
-        res.json(savedInsights);
+        // Still return saved insights on error with rate limit info
+        const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+        const remainingQuota = rateLimiter.getRemainingQuota('GENERAL_INSIGHTS', RATE_LIMITS.GENERAL_INSIGHTS);
+        
+        res.json({
+          insights: savedInsights,
+          _meta: {
+            aiLimits: {
+              remaining: remainingQuota,
+              total: RATE_LIMITS.GENERAL_INSIGHTS,
+              resetsIn: 'approximately 1 hour',
+              error: aiError instanceof Error ? aiError.message : 'Unknown error'
+            }
+          }
+        });
       }
     } catch (err) {
       handleError(err, res);
@@ -497,11 +570,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn("GROQ_API_KEY not available, will use pattern matching only for PDF parsing");
       }
       
+      // Get rate limit information for PDF processing
+      const { rateLimiter, RATE_LIMITS } = require('./services/rateLimiterService');
+      const remainingQuota = rateLimiter.getRemainingQuota('PDF_PROCESSING', RATE_LIMITS.PDF_PROCESSING);
+      
       // Send an initial response to let the client know processing has started
       res.status(202).json({ 
         message: "PDF processing started", 
         files: uploadedFiles.length,
-        status: "processing"
+        status: "processing",
+        _meta: {
+          aiLimits: {
+            remaining: remainingQuota,
+            total: RATE_LIMITS.PDF_PROCESSING,
+            resetsIn: 'approximately 1 hour',
+            apiKeyMissing: !process.env.GROQ_API_KEY
+          }
+        }
       });
       
       // Process all PDFs asynchronously after sending the response
@@ -565,7 +650,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
             error: err instanceof Error ? err.message : 'Unknown error',
             fileCount: uploadedFiles.length,
             success: false,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            // Add rate limit info if it's rate limit error
+            ...(err instanceof Error && err.message.includes('rate limit') ? {
+              rateLimit: {
+                isLimitError: true,
+                resetsIn: 'approximately 1 hour'
+              }
+            } : {})
           }
         });
       }
