@@ -16,8 +16,7 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ProtectedRoute } from "@/lib/protected-route";
 import Sidebar from "./components/Sidebar";
 import MobileNav from "./components/layout/MobileNav";
-import { useToast } from './hooks/use-toast'; // Added import
-import { Toast, ToastContainer } from './components/ui/toast'; // Added import
+import { useAuth } from './hooks/use-auth';
 
 
 function MainLayout({ children }: { children: React.ReactNode }) {
@@ -99,7 +98,6 @@ function Router() {
 
 function App() {
   const { user, loading } = useAuth();
-  const { toasts, dismiss } = useToast(); // Added useToast
 
   if (loading) {
     return (
@@ -118,18 +116,7 @@ function App() {
         <WebSocketProvider>
           <FinanceProvider>
             <Router />
-            <ToastContainer> {/* Added ToastContainer */}
-              {toasts.map((toast) => (
-                <Toast
-                  key={toast.id}
-                  id={toast.id}
-                  title={toast.title}
-                  description={toast.description}
-                  variant={toast.variant}
-                  onDismiss={dismiss}
-                />
-              ))}
-            </ToastContainer>
+            <Toaster />
           </FinanceProvider>
         </WebSocketProvider>
       </AuthProvider>
