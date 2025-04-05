@@ -80,8 +80,10 @@ export class DatabaseStorage implements IStorage {
         connectionString: process.env.DATABASE_URL,
         ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
       },
-      createTableIfMissing: true,
-      tableName: 'user_sessions',           // Custom table name
+      // Don't try to create the table as it already exists
+      createTableIfMissing: false,
+      // Use the existing session table name
+      tableName: 'session',  
       pruneSessionInterval: 60 * 15,        // Prune expired sessions every 15 minutes
       ttl: 60 * 60 * 8,                     // Session time-to-live (8 hours, matching cookie)
       errorLog: (err) => console.error('PostgreSQL session store error:', err),

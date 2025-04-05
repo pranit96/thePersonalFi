@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Redirect } from "wouter";
-import { ChevronRightIcon, Lock, User } from "lucide-react";
+import { ChevronRightIcon, Lock, Mail } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,15 +21,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // Login form validation schema
 const loginSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 // Registration form validation schema
 const registerSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  email: z.string().email("Please enter a valid email").optional().or(z.literal('')),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   dataEncryptionEnabled: z.boolean().default(true),
   dataSharingEnabled: z.boolean().default(false),
   anonymizedAnalytics: z.boolean().default(true),
@@ -43,7 +44,7 @@ export default function AuthPage() {
   const loginForm = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -52,9 +53,10 @@ export default function AuthPage() {
   const registerForm = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
-      password: "",
       email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
       dataEncryptionEnabled: true,
       dataSharingEnabled: false,
       anonymizedAnalytics: true,
@@ -92,30 +94,30 @@ export default function AuthPage() {
               <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-lg">
                 <CardHeader>
                   <CardTitle className="text-white">Welcome back</CardTitle>
-                  <CardDescription>Enter your credentials to access your account</CardDescription>
+                  <CardDescription className="text-gray-300">Enter your credentials to access your account</CardDescription>
                 </CardHeader>
                 <form onSubmit={loginForm.handleSubmit(handleLogin)}>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-username">Username</Label>
+                      <Label htmlFor="login-email" className="text-gray-200">Email</Label>
                       <div className="relative">
                         <span className="absolute left-3 top-3 text-gray-400">
-                          <User size={16} />
+                          <Mail size={16} />
                         </span>
                         <Input
-                          id="login-username"
+                          id="login-email"
                           type="text"
-                          placeholder="Enter your username"
-                          className="pl-10"
-                          {...loginForm.register("username")}
+                          placeholder="Enter your email"
+                          className="pl-10 text-white bg-gray-800 border-gray-700"
+                          {...loginForm.register("email")}
                         />
                       </div>
-                      {loginForm.formState.errors.username && (
-                        <p className="text-sm text-red-500">{loginForm.formState.errors.username.message}</p>
+                      {loginForm.formState.errors.email && (
+                        <p className="text-sm text-red-500">{loginForm.formState.errors.email.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="login-password">Password</Label>
+                      <Label htmlFor="login-password" className="text-gray-200">Password</Label>
                       <div className="relative">
                         <span className="absolute left-3 top-3 text-gray-400">
                           <Lock size={16} />
@@ -124,7 +126,7 @@ export default function AuthPage() {
                           id="login-password"
                           type="password"
                           placeholder="Enter your password"
-                          className="pl-10"
+                          className="pl-10 text-white bg-gray-800 border-gray-700"
                           {...loginForm.register("password")}
                         />
                       </div>
@@ -157,30 +159,58 @@ export default function AuthPage() {
               <Card className="border-gray-800 bg-gray-900/50 backdrop-blur-lg">
                 <CardHeader>
                   <CardTitle className="text-white">Create an account</CardTitle>
-                  <CardDescription>Enter your details to sign up</CardDescription>
+                  <CardDescription className="text-gray-300">Enter your details to sign up</CardDescription>
                 </CardHeader>
                 <form onSubmit={registerForm.handleSubmit(handleRegister)}>
                   <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="register-firstname" className="text-gray-200">First Name</Label>
+                        <Input
+                          id="register-firstname"
+                          type="text"
+                          placeholder="First name"
+                          className="text-white bg-gray-800 border-gray-700"
+                          {...registerForm.register("firstName")}
+                        />
+                        {registerForm.formState.errors.firstName && (
+                          <p className="text-sm text-red-500">{registerForm.formState.errors.firstName.message}</p>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="register-lastname" className="text-gray-200">Last Name</Label>
+                        <Input
+                          id="register-lastname"
+                          type="text"
+                          placeholder="Last name"
+                          className="text-white bg-gray-800 border-gray-700"
+                          {...registerForm.register("lastName")}
+                        />
+                        {registerForm.formState.errors.lastName && (
+                          <p className="text-sm text-red-500">{registerForm.formState.errors.lastName.message}</p>
+                        )}
+                      </div>
+                    </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-username">Username</Label>
+                      <Label htmlFor="register-email" className="text-gray-200">Email</Label>
                       <div className="relative">
                         <span className="absolute left-3 top-3 text-gray-400">
-                          <User size={16} />
+                          <Mail size={16} />
                         </span>
                         <Input
-                          id="register-username"
-                          type="text"
-                          placeholder="Choose a username"
-                          className="pl-10"
-                          {...registerForm.register("username")}
+                          id="register-email"
+                          type="email"
+                          placeholder="Enter your email"
+                          className="pl-10 text-white bg-gray-800 border-gray-700"
+                          {...registerForm.register("email")}
                         />
                       </div>
-                      {registerForm.formState.errors.username && (
-                        <p className="text-sm text-red-500">{registerForm.formState.errors.username.message}</p>
+                      {registerForm.formState.errors.email && (
+                        <p className="text-sm text-red-500">{registerForm.formState.errors.email.message}</p>
                       )}
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="register-password">Password</Label>
+                      <Label htmlFor="register-password" className="text-gray-200">Password</Label>
                       <div className="relative">
                         <span className="absolute left-3 top-3 text-gray-400">
                           <Lock size={16} />
@@ -189,24 +219,12 @@ export default function AuthPage() {
                           id="register-password"
                           type="password"
                           placeholder="Create a password"
-                          className="pl-10"
+                          className="pl-10 text-white bg-gray-800 border-gray-700"
                           {...registerForm.register("password")}
                         />
                       </div>
                       {registerForm.formState.errors.password && (
                         <p className="text-sm text-red-500">{registerForm.formState.errors.password.message}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-email">Email (optional)</Label>
-                      <Input
-                        id="register-email"
-                        type="email"
-                        placeholder="your@email.com"
-                        {...registerForm.register("email")}
-                      />
-                      {registerForm.formState.errors.email && (
-                        <p className="text-sm text-red-500">{registerForm.formState.errors.email.message}</p>
                       )}
                     </div>
                     <div className="space-y-3 pt-2">
@@ -216,14 +234,14 @@ export default function AuthPage() {
                           defaultChecked
                           {...registerForm.register("dataEncryptionEnabled")}
                         />
-                        <Label htmlFor="data-encryption" className="text-sm">Enable data encryption for sensitive information</Label>
+                        <Label htmlFor="data-encryption" className="text-sm text-gray-200">Enable data encryption for sensitive information</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
                           id="data-sharing" 
                           {...registerForm.register("dataSharingEnabled")}
                         />
-                        <Label htmlFor="data-sharing" className="text-sm">Allow data sharing for improved services</Label>
+                        <Label htmlFor="data-sharing" className="text-sm text-gray-200">Allow data sharing for improved services</Label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <Checkbox 
@@ -231,7 +249,7 @@ export default function AuthPage() {
                           defaultChecked
                           {...registerForm.register("anonymizedAnalytics")}
                         />
-                        <Label htmlFor="analytics" className="text-sm">Enable anonymized analytics</Label>
+                        <Label htmlFor="analytics" className="text-sm text-gray-200">Enable anonymized analytics</Label>
                       </div>
                     </div>
                   </CardContent>

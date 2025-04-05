@@ -18,14 +18,15 @@ type AuthContextType = {
 };
 
 type LoginData = {
-  username: string;
+  email: string;
   password: string;
 };
 
 type RegisterData = {
-  username: string;
+  email: string;
   password: string;
-  email?: string;
+  firstName: string;
+  lastName: string;
   dataEncryptionEnabled?: boolean;
   dataSharingEnabled?: boolean;
   anonymizedAnalytics?: boolean;
@@ -52,9 +53,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
+      const displayName = user.firstName ? user.firstName : user.email;
       toast({
         title: "Logged in successfully",
-        description: `Welcome back, ${user.username}!`,
+        description: `Welcome back, ${displayName}!`,
       });
     },
     onError: (error: Error) => {
@@ -73,9 +75,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     },
     onSuccess: (user: User) => {
       queryClient.setQueryData(["/api/user"], user);
+      const displayName = user.firstName ? user.firstName : user.email;
       toast({
         title: "Registration successful",
-        description: `Welcome to FinTrack, ${user.username}!`,
+        description: `Welcome to FinTrack, ${displayName}!`,
       });
     },
     onError: (error: Error) => {

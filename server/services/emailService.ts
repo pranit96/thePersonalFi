@@ -27,11 +27,14 @@ function createTransport() {
  */
 export async function sendWelcomeEmail(user: User): Promise<boolean> {
   if (!transporter) return false;
+  if (!user.email) return false;
 
   try {
+    const name = user.firstName ? `${user.firstName}` : 'there';
+    
     await transporter.sendMail({
       from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
-      to: user.email || user.username,
+      to: user.email,
       subject: 'Welcome to your Financial Journey!',
       html: `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -39,7 +42,7 @@ export async function sendWelcomeEmail(user: User): Promise<boolean> {
             <h1 style="margin: 0; font-size: 24px;">Welcome to Finance Tracker!</h1>
           </div>
           
-          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${name},</p>
           
           <p style="font-size: 16px; line-height: 1.5;">Thank you for joining Finance Tracker! We're excited to help you take control of your financial journey.</p>
           
@@ -70,7 +73,7 @@ export async function sendWelcomeEmail(user: User): Promise<boolean> {
       `
     });
     
-    console.log(`Welcome email sent to ${user.username}`);
+    console.log(`Welcome email sent to ${user.email}`);
     return true;
   } catch (error) {
     console.error('Failed to send welcome email:', error);
@@ -89,14 +92,16 @@ export async function sendFinancialReportEmail(user: User, report: {
   goalProgress: {name: string, progress: number}[]
 }): Promise<boolean> {
   if (!transporter) return false;
+  if (!user.email) return false;
   
   try {
     // Calculate savings amount
     const savingsAmount = report.totalIncome - report.totalExpenses;
+    const name = user.firstName ? `${user.firstName}` : 'there';
     
     await transporter.sendMail({
       from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
-      to: user.email || user.username,
+      to: user.email,
       subject: 'Your Monthly Financial Summary',
       html: `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -104,7 +109,7 @@ export async function sendFinancialReportEmail(user: User, report: {
             <h1 style="margin: 0; font-size: 24px;">Your Monthly Financial Summary</h1>
           </div>
           
-          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${name},</p>
           
           <p style="font-size: 16px; line-height: 1.5;">Here's your financial summary for the month:</p>
           
@@ -172,7 +177,7 @@ export async function sendFinancialReportEmail(user: User, report: {
       `
     });
     
-    console.log(`Financial report email sent to ${user.username}`);
+    console.log(`Financial report email sent to ${user.email}`);
     return true;
   } catch (error) {
     console.error('Failed to send financial report email:', error);
@@ -235,11 +240,14 @@ export async function sendPasswordResetEmail(email: string, resetToken: string):
  */
 export async function sendDataExportEmail(user: User, downloadLink: string): Promise<boolean> {
   if (!transporter) return false;
+  if (!user.email) return false;
 
   try {
+    const name = user.firstName ? `${user.firstName}` : 'there';
+    
     await transporter.sendMail({
       from: `"Finance Tracker" <${process.env.SMTP_USER}>`,
-      to: user.email || user.username,
+      to: user.email,
       subject: 'Your Financial Data Export',
       html: `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
@@ -247,7 +255,7 @@ export async function sendDataExportEmail(user: User, downloadLink: string): Pro
             <h1 style="margin: 0; font-size: 24px;">Your Data Export is Ready</h1>
           </div>
           
-          <p style="font-size: 16px; line-height: 1.5;">Hello ${user.username},</p>
+          <p style="font-size: 16px; line-height: 1.5;">Hello ${name},</p>
           
           <p style="font-size: 16px; line-height: 1.5;">Your requested data export is now ready. You can download your financial data using the link below:</p>
           
@@ -269,7 +277,7 @@ export async function sendDataExportEmail(user: User, downloadLink: string): Pro
       `
     });
     
-    console.log(`Data export email sent to ${user.username}`);
+    console.log(`Data export email sent to ${user.email}`);
     return true;
   } catch (error) {
     console.error('Failed to send data export email:', error);
