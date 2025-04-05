@@ -88,7 +88,7 @@ export async function extractTransactionsFromPDF(filePath: string, userId: numbe
 }
 
 /**
- * Uses AI to parse transaction data from bank statements
+ * Uses AI to parse transaction data from bank statements with chunking to handle rate limits
  * @param text The text content from the PDF
  * @param userId The ID of the user uploading the PDF
  * @returns Parsed transactions
@@ -137,81 +137,141 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
   
   const formatAnalysis = JSON.parse(formatResponse.choices[0]?.message?.content || '{}');
   
-  // Now create a more specific prompt to extract the actual transactions
-  const extractPrompt = `
-  You are an expert financial data processor. Extract all financial transactions from this bank statement.
+  // Split text into chunks to avoid hitting token limits
+  const MAX_CHUNK_SIZE = 5000; // Characters per chunk
+  const chunks = [];
   
-  Bank: ${formatAnalysis.bankName || "Unknown bank"}
-  Date format: ${formatAnalysis.dateFormat || "Various formats"}
-  Transaction structure: ${formatAnalysis.structure || "Standard format"}
+  // Create chunks of appropriate size
+  for (let i = 0; i < text.length; i += MAX_CHUNK_SIZE) {
+    chunks.push(text.substring(i, i + MAX_CHUNK_SIZE));
+  }
   
-  BANK STATEMENT TEXT:
-  ${text}
+  console.log(`Split PDF text into ${chunks.length} chunks for processing`);
   
-  For each transaction, extract:
-  1. Date (in the original format from the statement)
-  2. Description/Merchant name
-  3. Amount (as a positive number)
-  4. Whether it's a deposit (income) or withdrawal (expense)
+  // Process each chunk with delay between calls to respect rate limits
+  let allTransactions: any[] = [];
   
-  Format your response as a valid JSON array of transactions:
-  [
-    {
-      "date": "The transaction date",
-      "merchant": "The merchant name or description",
-      "amount": 123.45,
-      "isDeposit": true/false,
-      "category": "Best guess at transaction category"
+  for (let i = 0; i < chunks.length; i++) {
+    try {
+      // If not the first chunk, add a delay to respect rate limits
+      if (i > 0) {
+        console.log(`Waiting 10 seconds before processing chunk ${i+1}/${chunks.length}...`);
+        await new Promise(resolve => setTimeout(resolve, 10000)); // 10-second delay between chunks
+      }
+      
+      // Create a processing prompt for this chunk
+      const chunkPrompt = `
+      You are an expert financial data processor. Extract all financial transactions from this CHUNK of a bank statement.
+      
+      Bank: ${formatAnalysis.bankName || "Unknown bank"}
+      Date format: ${formatAnalysis.dateFormat || "Various formats"}
+      Transaction structure: ${formatAnalysis.structure || "Standard format"}
+      
+      IMPORTANT: This is chunk ${i+1} of ${chunks.length} from a larger statement.
+      
+      BANK STATEMENT TEXT (CHUNK ${i+1}/${chunks.length}):
+      ${chunks[i]}
+      
+      For each transaction, extract:
+      1. Date (in the original format from the statement)
+      2. Description/Merchant name
+      3. Amount (as a positive number)
+      4. Whether it's a deposit (income) or withdrawal (expense)
+      
+      Format your response as a valid JSON array of transactions:
+      [
+        {
+          "date": "The transaction date",
+          "merchant": "The merchant name or description",
+          "amount": 123.45,
+          "isDeposit": true/false,
+          "category": "Best guess at transaction category"
+        }
+      ]
+      
+      Categories to use (choose the most appropriate one):
+      - Food & Dining
+      - Transportation
+      - Housing & Utilities
+      - Entertainment
+      - Shopping
+      - Health & Fitness
+      - Income
+      - Miscellaneous
+      
+      Important:
+      - Only extract ACTUAL transactions, not summaries or balances
+      - Ensure amounts are formatted as numbers without currency symbols
+      - If you're unsure about a transaction, skip it
+      - Only include complete transactions visible in this chunk
+      - If a transaction appears to be cut off, ignore it
+      `;
+      
+      console.log(`Processing chunk ${i+1}/${chunks.length}`);
+      
+      const chunkResponse = await groq.chat.completions.create({
+        messages: [{ role: "user", content: chunkPrompt }],
+        model: PDF_MODEL,
+        temperature: 0.1,
+        max_tokens: 2500,
+        response_format: { type: "json_object" }
+      });
+      
+      try {
+        const content = chunkResponse.choices[0]?.message?.content || '[]';
+        const transactions = JSON.parse(content);
+        
+        if (Array.isArray(transactions) && transactions.length > 0) {
+          console.log(`Found ${transactions.length} transactions in chunk ${i+1}`);
+          allTransactions = [...allTransactions, ...transactions];
+        }
+      } catch (chunkError) {
+        console.error(`Error processing chunk ${i+1}:`, chunkError);
+      }
+    } catch (aiError) {
+      console.error(`AI rate limit or error on chunk ${i+1}:`, aiError);
+      // Continue with other chunks if possible
     }
-  ]
+  }
   
-  Categories to use (choose the most appropriate one):
-  - Food & Dining
-  - Transportation
-  - Housing & Utilities
-  - Entertainment
-  - Shopping
-  - Health & Fitness
-  - Income
-  - Miscellaneous
-  
-  Important:
-  - Only extract ACTUAL transactions, not summaries or balances
-  - Ensure amounts are formatted as numbers without currency symbols
-  - If you're unsure about a transaction, skip it
-  - Extract at least 5 transactions and at most 30 transactions
-  - Focus on the most recent transactions if there are many
-  `;
-  
-  const transactionResponse = await groq.chat.completions.create({
-    messages: [{ role: "user", content: extractPrompt }],
-    model: PDF_MODEL,
-    temperature: 0.1,
-    max_tokens: 2500,
-    response_format: { type: "json_object" }
+  // Remove potential duplicates (based on date + amount + merchant)
+  const seen = new Set();
+  const uniqueTransactions = allTransactions.filter(t => {
+    const key = `${t.date}-${t.amount}-${t.merchant}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
   });
   
-  try {
-    const content = transactionResponse.choices[0]?.message?.content || '[]';
-    const transactions = JSON.parse(content);
-    
-    if (!Array.isArray(transactions)) {
-      throw new Error('AI did not return an array of transactions');
-    }
-    
-    // Convert to our application's transaction format
-    return transactions.map(t => ({
-      merchant: t.merchant,
-      // For deposits (income), store as negative amount to match app conventions if needed
-      amount: t.isDeposit ? -Math.abs(t.amount) : Math.abs(t.amount),
-      category: t.category || 'Miscellaneous',
-      description: t.merchant,
-      userId
-    }));
-  } catch (error) {
-    console.error('Failed to parse AI response for transactions:', error);
-    return [];
-  }
+  console.log(`Extracted ${uniqueTransactions.length} unique transactions from all chunks`);
+  
+  // Convert to our application's transaction format
+  return uniqueTransactions.map(t => ({
+    merchant: t.merchant,
+    // For deposits (income), use positive amount, for expenses use negative
+    amount: t.isDeposit ? Math.abs(t.amount) : -Math.abs(t.amount), 
+    categoryId: getCategoryIdFromName(t.category), // Convert category name to ID
+    description: t.merchant,
+    userId
+  }));
+}
+
+/**
+ * Helper function to map category names to IDs
+ */
+function getCategoryIdFromName(categoryName: string): number {
+  const categoryMap: {[key: string]: number} = {
+    'Food & Dining': 1,
+    'Transportation': 2,
+    'Housing & Utilities': 3,
+    'Entertainment': 4,
+    'Shopping': 5,
+    'Health & Fitness': 6,
+    'Income': 7,
+    'Miscellaneous': 8
+  };
+  
+  return categoryMap[categoryName] || 8; // Default to Miscellaneous (8)
 }
 
 /**
@@ -252,12 +312,15 @@ function parseTransactionsFromText(text: string, userId: number): InsertTransact
           // Determine merchant and category from description
           const { merchant, category } = extractMerchantAndCategory(description);
           
+          // Get the correct category ID using our helper function
+          const categoryId = getCategoryIdFromName(category);
+          
           transactions.push({
-            merchant,
             amount,
-            category,
             description,
-            userId
+            userId,
+            categoryId,
+            payee: merchant,
           });
         } else if (pattern === patterns[1]) {
           // Credit card pattern
@@ -272,12 +335,15 @@ function parseTransactionsFromText(text: string, userId: number): InsertTransact
           // Determine merchant and category from description
           const { merchant, category } = extractMerchantAndCategory(description);
           
+          // Get the correct category ID using our helper function
+          const categoryId = getCategoryIdFromName(category);
+          
           transactions.push({
-            merchant,
             amount,
-            category,
             description,
-            userId
+            userId,
+            categoryId,
+            payee: merchant,
           });
         }
       }

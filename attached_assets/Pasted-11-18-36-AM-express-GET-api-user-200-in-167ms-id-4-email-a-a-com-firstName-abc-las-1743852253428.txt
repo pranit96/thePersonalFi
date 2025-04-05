@@ -1,0 +1,319 @@
+11:18:36 AM [express] GET /api/user 200 in 167ms :: {"id":4,"email":"a@a.com","firstName":"abc","last…
+API Error: NeonDbError: column "description" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1708:31 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '32',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+11:18:37 AM [express] GET /api/savings 500 in 392ms :: {"message":"column \"description\" does not ex…
+WebSocket client connected
+11:18:37 AM [express] GET /api/salary 200 in 644ms :: [{"id":1,"date":null,"amount":5000,"source":"Jo…
+Error generating personalized advice: TypeError: Cannot read properties of undefined (reading 'toFixed')
+    at file:///opt/render/project/src/dist/index.js:658:96
+    at Array.map (<anonymous>)
+    at generatePersonalizedAdvice (file:///opt/render/project/src/dist/index.js:658:22)
+    at file:///opt/render/project/src/dist/index.js:1635:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+11:18:37 AM [express] GET /api/goals 200 in 748ms :: {"goals":[{"id":2,"name":"Vacation Savings","amo…
+API Error: NeonDbError: column "title" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1810:29 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '30',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+11:18:37 AM [express] GET /api/transactions 200 in 791ms :: [{"id":2,"date":"2025-04-05T11:12:40.534Z…
+11:18:37 AM [express] GET /api/insights 500 in 804ms :: {"message":"column \"title\" does not exist"}
+11:18:37 AM [express] GET /api/categories 200 in 839ms :: []
+WebSocket authenticated for user 4
+11:19:11 AM [express] POST /api/transactions 201 in 733ms :: {"id":3,"date":"2025-04-05T11:19:10.860Z…
+API Error: NeonDbError: column "title" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1810:29 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '30',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+11:19:11 AM [express] GET /api/insights 500 in 208ms :: {"message":"column \"title\" does not exist"}
+11:19:11 AM [express] GET /api/categories 304 in 524ms :: []
+11:19:12 AM [express] GET /api/transactions 200 in 608ms :: [{"id":3,"date":"2025-04-05T11:19:10.860Z…
+11:19:28 AM [express] POST /api/transactions 201 in 729ms :: {"id":4,"date":"2025-04-05T11:19:28.145Z…
+API Error: NeonDbError: column "title" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1810:29 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '30',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+11:19:28 AM [express] GET /api/insights 500 in 204ms :: {"message":"column \"title\" does not exist"}
+11:19:29 AM [express] GET /api/transactions 200 in 511ms :: [{"id":4,"date":"2025-04-05T11:19:28.145Z…
+11:19:29 AM [express] GET /api/categories 304 in 604ms :: []
+11:19:43 AM [express] POST /api/upload/pdf 202 in 3170ms :: {"message":"PDF processing started","file…
+11:19:45 AM [express] GET /api/transactions 304 in 350ms :: [{"id":4,"date":"2025-04-05T11:19:28.145Z…
+AI parsing failed, falling back to pattern matching: APIError: 413 {"error":{"message":"Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 13479, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.","type":"tokens","code":"rate_limit_exceeded"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:59:16)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:283:31)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:478:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:476:3)
+    at async file:///opt/render/project/src/dist/index.js:1893:29 {
+  status: 413,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8a708f872ff15-PDX',
+    connection: 'keep-alive',
+    'content-length': '377',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:19:47 GMT',
+    'retry-after': '115',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=OxmphSzdg9vx23DnyCKgJtGj0gfTVI641ARlV_fn7F8-1743851987-1.0.1.1-aGdhJ31NuciPdQsw78tDQ9jMjXQYIBFHmMQx49x12SFeCmAtD_Tdx8vwMIwTq567pRuUVhjVCbqhglW5UdTcz7HXUrPcAJEje6LB6j0Drr0; path=/; expires=Sat, 05-Apr-25 11:49:47 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '998',
+    'x-ratelimit-remaining-tokens': '2043',
+    'x-ratelimit-reset-requests': '2m50.194s',
+    'x-ratelimit-reset-tokens': '39.567s',
+    'x-request-id': 'req_01jr2tv8dcf3zvcnc0k39cxzv8',
+    'x-should-retry': 'false'
+  },
+  error: {
+    error: {
+      message: 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 13479, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.',
+      type: 'tokens',
+      code: 'rate_limit_exceeded'
+    }
+  }
+}
+AI parsing failed, falling back to pattern matching: APIError: 413 {"error":{"message":"Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.","type":"tokens","code":"rate_limit_exceeded"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:59:16)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:283:31)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:478:29
+    at async Promise.all (index 1)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:476:3)
+    at async file:///opt/render/project/src/dist/index.js:1893:29 {
+  status: 413,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8a708bdbb28b9-PDX',
+    connection: 'keep-alive',
+    'content-length': '376',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:19:47 GMT',
+    'retry-after': '73',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=0OgRQVifWJ4aHic22o0.qE0tyaB55znFSmoPR3QaFrE-1743851987-1.0.1.1-HVanf9C_uwpm3vcE9m5ERnUYeRWijS1usIf3Ac3mriDpZv2YwIxOErFiBwbwT_g_7pjQ6KyaryNr4KcfqTp8C1TjuIZyVVLvvsbwDPb9vyI; path=/; expires=Sat, 05-Apr-25 11:49:47 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '998',
+    'x-ratelimit-remaining-tokens': '2043',
+    'x-ratelimit-reset-requests': '2m50.194s',
+    'x-ratelimit-reset-tokens': '39.567s',
+    'x-request-id': 'req_01jr2tv8c5ezpbmdkrfvty6wfe',
+    'x-should-retry': 'false'
+  },
+  error: {
+    error: {
+      message: 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9302, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.',
+      type: 'tokens',
+      code: 'rate_limit_exceeded'
+    }
+  }
+}
+Could not extract any transactions from the uploaded PDFs
+WebSocket client disconnected
+11:21:23 AM [express] GET /api/user 304 in 154ms :: {"id":4,"email":"a@a.com","firstName":"abc","last…
+11:21:23 AM [express] GET /api/salary 304 in 356ms :: [{"id":1,"date":null,"amount":5000,"source":"Jo…
+11:21:23 AM [express] GET /api/transactions 304 in 357ms :: [{"id":4,"date":"2025-04-05T11:19:28.145Z…
+API Error: NeonDbError: column "description" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1708:31 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '32',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+API Error: NeonDbError: column "title" does not exist
+    at execute (file:///opt/render/project/src/node_modules/@neondatabase/serverless/index.mjs:1556:55)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async NeonHttpPreparedQuery.execute (file:///opt/render/project/src/node_modules/drizzle-orm/neon-http/session.js:40:20)
+    at async file:///opt/render/project/src/dist/index.js:1810:29 {
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '30',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_relation.c',
+  line: '3716',
+  routine: 'errorMissingColumn',
+  sourceError: undefined
+}
+11:21:23 AM [express] GET /api/savings 500 in 553ms :: {"message":"column \"description\" does not ex…
+11:21:23 AM [express] GET /api/insights 500 in 557ms :: {"message":"column \"title\" does not exist"}
+WebSocket client connected
+Error generating personalized advice: TypeError: Cannot read properties of undefined (reading 'toFixed')
+    at file:///opt/render/project/src/dist/index.js:658:96
+    at Array.map (<anonymous>)
+    at generatePersonalizedAdvice (file:///opt/render/project/src/dist/index.js:658:22)
+    at file:///opt/render/project/src/dist/index.js:1635:32
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+11:21:24 AM [express] GET /api/categories 304 in 204ms :: []
+11:21:24 AM [express] GET /api/goals 304 in 763ms :: {"goals":[{"id":2,"name":"Vacation Savings","amo…
+WebSocket authenticated for user 4
+==> Detected service running on port 5000
+==> Docs on specifying a port: https://render.com/docs/web-services#port-binding
+11:22:42 AM [express] POST /api/upload/pdf 202 in 1013ms :: {"message":"PDF processing started","file…
+11:22:42 AM [express] GET /api/transactions 304 in 313ms :: [{"id":4,"date":"2025-04-05T11:19:28.145Z…
+AI parsing failed, falling back to pattern matching: APIError: 413 {"error":{"message":"Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9320, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.","type":"tokens","code":"rate_limit_exceeded"}}
+    at APIError.generate (file:///opt/render/project/src/node_modules/groq-sdk/error.mjs:59:16)
+    at Groq.makeStatusError (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:284:25)
+    at Groq.makeRequest (file:///opt/render/project/src/node_modules/groq-sdk/core.mjs:328:30)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async parseTransactionsWithAI (file:///opt/render/project/src/dist/index.js:283:31)
+    at async extractTransactionsFromPDF (file:///opt/render/project/src/dist/index.js:182:32)
+    at async file:///opt/render/project/src/dist/index.js:478:29
+    at async Promise.all (index 0)
+    at async processMultiplePDFs (file:///opt/render/project/src/dist/index.js:476:3)
+    at async file:///opt/render/project/src/dist/index.js:1893:29 {
+  status: 413,
+  headers: {
+    'alt-svc': 'h3=":443"; ma=86400',
+    'cache-control': 'private, max-age=0, no-store, no-cache, must-revalidate',
+    'cf-cache-status': 'DYNAMIC',
+    'cf-ray': '92b8ab5cb93f4b01-PDX',
+    connection: 'keep-alive',
+    'content-length': '376',
+    'content-type': 'application/json',
+    date: 'Sat, 05 Apr 2025 11:22:44 GMT',
+    'retry-after': '55',
+    server: 'cloudflare',
+    'set-cookie': '__cf_bm=vVIin.8C1FQd3Lqlbbx.XqEOyh5WB.sz2f6jDu4v1nE-1743852164-1.0.1.1-Xbdh77Z7Hre7O69l6UeNb1sgP_oJaCKMHAfXSXVXovTrlFi0_rLcpSjFnoWCy7olQ11HNOLJgtEAEsmANeLdOpaymU.7nQZCNL0mLEj4U4Q; path=/; expires=Sat, 05-Apr-25 11:52:44 GMT; domain=.groq.com; HttpOnly; Secure; SameSite=None',
+    vary: 'Origin, Accept-Encoding',
+    via: '1.1 google',
+    'x-groq-region': 'us-west-1',
+    'x-ratelimit-limit-requests': '1000',
+    'x-ratelimit-limit-tokens': '6000',
+    'x-ratelimit-remaining-requests': '999',
+    'x-ratelimit-remaining-tokens': '3905',
+    'x-ratelimit-reset-requests': '1m23.932s',
+    'x-ratelimit-reset-tokens': '20.941s',
+    'x-request-id': 'req_01jr2v0ng7fdb8z2eb5sp41sqm'
+  },
+  error: {
+    error: {
+      message: 'Request too large for model `deepseek-r1-distill-llama-70b` in organization `org_01jp0sdenafbt861cg1mxvyqvy` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Requested 9320, please reduce your message size and try again. Visit https://console.groq.com/docs/rate-limits for more information.',
+      type: 'tokens',
+      code: 'rate_limit_exceeded'
+    }
+  }
+}
+Could not extract any transactions from the uploaded PDFs
+You can also use theRender CLIto explore logs in your command line.
+
+Looking for more logs? Try Log Streams.

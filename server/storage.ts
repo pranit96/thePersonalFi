@@ -458,19 +458,24 @@ export class MemStorage implements IStorage {
   // Helper to initialize categories for the demo
   private initializeCategories() {
     const categories = [
-      { name: "Housing & Utilities", amount: 1250, percentage: 35, changePercentage: -2 },
-      { name: "Food & Dining", amount: 640.50, percentage: 22, changePercentage: 5 },
-      { name: "Entertainment", amount: 320.25, percentage: 18, changePercentage: 0 },
-      { name: "Transportation", amount: 230, percentage: 15, changePercentage: -1 }
+      { name: "Housing & Utilities", amount: 1250 },
+      { name: "Food & Dining", amount: 640.50 },
+      { name: "Entertainment", amount: 320.25 },
+      { name: "Transportation", amount: 230 }
     ];
+    
+    const currentMonth = new Date().getMonth() + 1;
+    const currentYear = new Date().getFullYear();
     
     categories.forEach(cat => {
       const category: CategorySpending = {
         id: this.currentCategoryId++,
         name: cat.name,
         amount: cat.amount,
-        percentage: cat.percentage,
-        changePercentage: cat.changePercentage
+        userId: 1,
+        month: currentMonth,
+        year: currentYear,
+        category: null
       };
       this.categorySpendingList.set(category.id, category);
     });
@@ -481,21 +486,18 @@ export class MemStorage implements IStorage {
     const insights = [
       { 
         type: "spending_pattern", 
-        title: "Spending Pattern Detected", 
-        description: "Your dining expenses have increased by 25% this month compared to your 6-month average.",
-        actionText: "Get Budget Tips"
+        userId: 1,
+        content: "Your dining expenses have increased by 25% this month compared to your 6-month average."
       },
       { 
         type: "saving_opportunity", 
-        title: "Saving Opportunity", 
-        description: "You could save $45/month by consolidating your streaming subscriptions.",
-        actionText: "View Analysis"
+        userId: 1,
+        content: "You could save $45/month by consolidating your streaming subscriptions."
       },
       { 
         type: "goal_achievement", 
-        title: "Goal Achievement", 
-        description: "At your current saving rate, you'll reach your \"Home Down Payment\" goal 2 months ahead of schedule.",
-        actionText: "Adjust Goals"
+        userId: 1,
+        content: "At your current saving rate, you'll reach your Home Down Payment goal 2 months ahead of schedule."
       }
     ];
     
@@ -504,9 +506,8 @@ export class MemStorage implements IStorage {
         id: this.currentInsightId++,
         date: new Date(),
         type: insight.type,
-        title: insight.title,
-        description: insight.description,
-        actionText: insight.actionText
+        userId: insight.userId,
+        content: insight.content
       };
       this.aiInsightsList.set(aiInsight.id, aiInsight);
     });
@@ -534,11 +535,17 @@ export class MemStorage implements IStorage {
       email: insertUser.email ?? null,
       firstName: insertUser.firstName ?? null,
       lastName: insertUser.lastName ?? null,
+      password: insertUser.password, // This is required
       oauthProvider: null,
       oauthId: null,
       mfaEnabled: false,
       mfaSecret: null,
-      profilePicture: insertUser.profilePicture ?? null
+      profilePicture: insertUser.profilePicture ?? null,
+      currency: insertUser.currency ?? "USD",
+      defaultSalary: insertUser.defaultSalary ?? 0,
+      dataEncryptionEnabled: insertUser.dataEncryptionEnabled ?? true,
+      dataSharingEnabled: insertUser.dataSharingEnabled ?? false,
+      anonymizedAnalytics: insertUser.anonymizedAnalytics ?? true
     };
     this.users.set(id, user);
     return user;
@@ -566,14 +573,20 @@ export class MemStorage implements IStorage {
     const transaction: Transaction = {
       ...insertTransaction,
       id,
-      date: new Date(),
+      date: insertTransaction.transactionDate ?? new Date(),
       description: insertTransaction.description ?? null,
       metaData,
       userId: insertTransaction.userId ?? 1,
       createdAt: new Date(),
       updatedAt: null,
       isReconciled: false,
-      isPending: false
+      isPending: false,
+      statementId: null,
+      currency: insertTransaction.currency ?? "USD",
+      payee: insertTransaction.payee ?? null,
+      memo: insertTransaction.memo ?? null,
+      categoryId: insertTransaction.categoryId ?? null,
+      transactionDate: insertTransaction.transactionDate ?? new Date()
     };
     
     this.transactionsList.set(id, transaction);
@@ -607,7 +620,8 @@ export class MemStorage implements IStorage {
       id,
       date: new Date(),
       userId: insertSalaryRecord.userId ?? 1,
-      source: insertSalaryRecord.source ?? null
+      source: insertSalaryRecord.source ?? null,
+      encryptedData: null
     };
     this.salaryRecordsList.set(id, salaryRecord);
     return salaryRecord;
@@ -678,19 +692,13 @@ export class MemStorage implements IStorage {
       ...insertSavingsRecord,
       id,
       date: new Date(),
-      description: insertSavingsRecord.description ?? null,
-      goalId: insertSavingsRecord.goalId ?? null
+      userId: insertSavingsRecord.userId ?? 1,
+      amount: insertSavingsRecord.amount
     };
     this.savingsRecordsList.set(id, savingsRecord);
     
-    // If this saving is associated with a goal, update the goal's current amount
-    if (savingsRecord.goalId) {
-      const goal = this.goalsList.get(savingsRecord.goalId);
-      if (goal) {
-        const currentAmount = (goal.currentAmount || 0) + savingsRecord.amount;
-        this.updateGoal(savingsRecord.goalId, currentAmount);
-      }
-    }
+    // Note: The schema doesn't support goal relationships directly,
+    // but we can still update goals separately if needed in the business logic layer
     
     return savingsRecord;
   }
@@ -714,8 +722,6 @@ export class MemStorage implements IStorage {
     // Keep categories but reset amounts
     Array.from(this.categorySpendingList.values()).forEach(category => {
       category.amount = 0;
-      category.percentage = 0;
-      category.changePercentage = 0;
     });
     // Reset AI insights but keep some basic ones
     this.aiInsightsList.clear();
@@ -745,47 +751,56 @@ export class MemStorage implements IStorage {
     if (transaction.amount >= 0) return; // Skip income transactions
     
     const amount = Math.abs(transaction.amount);
-    let category = Array.from(this.categorySpendingList.values())
-      .find(c => c.name.toLowerCase() === transaction.category.toLowerCase());
     
+    // Find category by ID if available
+    let category = transaction.categoryId 
+      ? Array.from(this.categorySpendingList.values()).find(c => c.id === transaction.categoryId)
+      : null;
+    
+    // If no category found, get or create one
     if (!category) {
-      // Create new category if it doesn't exist
-      category = {
-        id: this.currentCategoryId++,
-        name: transaction.category,
-        amount: 0,
-        percentage: 0,
-        changePercentage: 0
-      };
-      this.categorySpendingList.set(category.id, category);
+      // Extract category name from meta data if available
+      const categoryName = transaction.description || "Uncategorized";
+      
+      // Try to find by name
+      category = Array.from(this.categorySpendingList.values())
+        .find(c => c.name?.toLowerCase() === categoryName.toLowerCase());
+      
+      if (!category) {
+        // Create new category if it doesn't exist
+        const newCategory: CategorySpending = {
+          id: this.currentCategoryId++,
+          name: categoryName,
+          amount: 0,
+          userId: transaction.userId,
+          month: new Date().getMonth() + 1,
+          year: new Date().getFullYear(),
+          category: null
+        };
+        this.categorySpendingList.set(newCategory.id, newCategory);
+        category = newCategory;
+      }
     }
     
-    // Update category amount
-    category.amount += amount;
+    // Update category amount (safely)
+    if (category) {
+      category.amount += amount;
+    }
     
-    // Recalculate percentages for all categories
-    const totalSpending = Array.from(this.categorySpendingList.values())
-      .reduce((sum, cat) => sum + cat.amount, 0);
-    
-    Array.from(this.categorySpendingList.values()).forEach(cat => {
-      if (totalSpending > 0) {
-        cat.percentage = Math.round((cat.amount / totalSpending) * 100);
-      } else {
-        cat.percentage = 0;
-      }
-    });
+    // No percentage calculations as the schema doesn't support it
+    // Just use the raw amounts for calculations in the frontend
   }
   
   private generateTransactionInsights(transaction: Transaction): void {
     // Only generate insights for expenses
     if (transaction.amount >= 0) return;
     
-    const category = transaction.category;
+    const categoryId = transaction.categoryId;
     const amount = Math.abs(transaction.amount);
     
     // Get all transactions in this category
     const categoryTransactions = Array.from(this.transactionsList.values())
-      .filter(t => t.category === category && t.amount < 0);
+      .filter(t => t.categoryId === categoryId && t.amount < 0);
     
     // If we have multiple transactions in this category, analyze patterns
     if (categoryTransactions.length >= 3) {
@@ -794,13 +809,18 @@ export class MemStorage implements IStorage {
       
       // If this transaction is significantly higher than average
       if (amount > avgSpending * 1.5) {
+        // Find the category name from the category list
+        const category = Array.from(this.categorySpendingList.values())
+          .find(cat => cat.id === categoryId);
+          
+        const categoryName = category?.name || "unknown";
+          
         const insight: AiInsight = {
           id: this.currentInsightId++,
           date: new Date(),
           type: "spending_pattern",
-          title: `High ${category} Spending Detected`,
-          description: `Your recent ${category} expense of $${amount.toFixed(2)} is ${Math.round((amount / avgSpending - 1) * 100)}% higher than your average.`,
-          actionText: "View Spending Tips"
+          userId: transaction.userId,
+          content: `Your recent ${categoryName} expense of $${amount.toFixed(2)} is ${Math.round((amount / avgSpending - 1) * 100)}% higher than your average.`
         };
         this.aiInsightsList.set(insight.id, insight);
       }
@@ -808,26 +828,32 @@ export class MemStorage implements IStorage {
   }
   
   private generateGoalInsight(goal: Goal): void {
-    const percentComplete = Math.round((goal.currentAmount / goal.targetAmount) * 100);
+    // Safety check for null values
+    if (goal.currentAmount === null) {
+      return;
+    }
+    // Use goal's amount field instead of non-existent targetAmount
+    const percentComplete = Math.round((goal.currentAmount / goal.amount) * 100);
     
     let insight: AiInsight;
-    if (goal.completed) {
+    // Instead of using a non-existent completed property, check if goal is complete
+    const isCompleted = percentComplete >= 100;
+    
+    if (isCompleted) {
       insight = {
         id: this.currentInsightId++,
         date: new Date(),
         type: "goal_achievement",
-        title: "Goal Completed! 🎉",
-        description: `Congratulations! You've reached your "${goal.name}" goal of ${goal.targetAmount.toFixed(2)}.`,
-        actionText: "Set New Goal"
+        userId: goal.userId,
+        content: `Congratulations! You've reached your "${goal.name}" goal of $${goal.amount.toFixed(2)}.`
       };
     } else {
       insight = {
         id: this.currentInsightId++,
         date: new Date(),
-        type: "goal_achievement",
-        title: "Almost There!",
-        description: `You're ${percentComplete}% of the way to your "${goal.name}" goal.`,
-        actionText: "Review Goal"
+        type: "goal_progress",
+        userId: goal.userId,
+        content: `You're ${percentComplete}% of the way to your "${goal.name}" goal.`
       };
     }
     

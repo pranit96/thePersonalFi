@@ -94,14 +94,12 @@ export const savingsRecords = pgTable("savings_records", {
   id: serial("id").primaryKey(),
   date: timestamp("date").defaultNow().notNull(),
   amount: real("amount").notNull(),
-  description: text("description"),
-  goalId: integer("goal_id"),
+  userId: integer("user_id").notNull().default(1),
 });
 
 export const insertSavingsRecordSchema = createInsertSchema(savingsRecords).pick({
   amount: true,
-  description: true,
-  goalId: true,
+  userId: true,
 });
 
 export type InsertSavingsRecord = z.infer<typeof insertSavingsRecordSchema>;
@@ -123,11 +121,10 @@ export type CategorySpending = typeof categorySpending.$inferSelect;
 // AI Insights
 export const aiInsights = pgTable("ai_insights", {
   id: serial("id").primaryKey(),
-  date: timestamp("date").defaultNow().notNull(),
+  userId: integer("user_id").notNull(),
   type: text("type").notNull(), // spending_pattern, saving_opportunity, goal_achievement
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  actionText: text("action_text").notNull(),
+  content: text("content").notNull(),
+  date: timestamp("date").defaultNow().notNull(),
 });
 
 export type AiInsight = typeof aiInsights.$inferSelect;
