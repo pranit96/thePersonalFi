@@ -1,4 +1,3 @@
-
 import { AiInsight } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -78,7 +77,7 @@ export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
         </div>
         <h3 className="font-display text-lg font-bold line-clamp-1">{insightTitle}</h3>
       </div>
-      
+
       <div className="mt-3 flex-grow">
         <p className="text-sm text-text/90 leading-relaxed">{insightContent}</p>
       </div>

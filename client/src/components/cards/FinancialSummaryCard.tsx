@@ -5,7 +5,7 @@ interface FinancialSummaryCardProps {
   title: string;
   amount: number;
   icon: React.ReactNode;
-  change: number;
+  change: number | null;
   compareText?: string;
   iconBackground?: string;
 }
@@ -18,9 +18,9 @@ export default function FinancialSummaryCard({
   compareText = "vs last month",
   iconBackground = "bg-primary/20",
 }: FinancialSummaryCardProps) {
-  const isPositive = change > 0;
+  const isPositive = change !== null && change > 0;
   const changeColor = getChangeColor(change);
-  
+
   return (
     <div className="bg-background-light/60 backdrop-blur-xl border border-white/10 shadow-lg rounded-xl p-5 transform transition-transform hover:translate-y-[-5px] duration-300">
       <div className="flex justify-between mb-4">
@@ -33,13 +33,21 @@ export default function FinancialSummaryCard({
         </div>
       </div>
       <div className="flex items-center">
-        <span className={cn("flex items-center text-xs", changeColor)}>
-          {change !== 0 && (
-            isPositive ? <ArrowUp className="w-3 h-3 mr-1" /> : <ArrowDown className="w-3 h-3 mr-1" />
-          )}
-          {Math.abs(change)}%
-        </span>
-        <span className="text-xs text-text/50 ml-2">{compareText}</span>
+        {change !== null ? (
+          <>
+            <span className={cn("flex items-center text-xs", changeColor)}>
+              {isPositive ? (
+                <ArrowUp className="w-3 h-3 mr-1" />
+              ) : (
+                <ArrowDown className="w-3 h-3 mr-1" />
+              )}
+              {Math.abs(change)}%
+            </span>
+            <span className="text-xs text-text/50 ml-2">{compareText}</span>
+          </>
+        ) : (
+          <span className="text-xs text-text/50 ml-2">{compareText}</span>
+        )}
       </div>
     </div>
   );

@@ -31,15 +31,27 @@ export default function Dashboard() {
   // Calculate monthly income, expenses, savings, and investments
   const monthlyIncome = useMemo(() => {
     const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
     return transactions
-      .filter(t => new Date(t.date).getMonth() === currentMonth && t.amount > 0)
+      .filter(t => {
+        const transDate = new Date(t.date);
+        return transDate.getMonth() === currentMonth && 
+               transDate.getFullYear() === currentYear && 
+               t.amount > 0;
+      })
       .reduce((sum, t) => sum + t.amount, 0);
   }, [transactions]);
   
   const monthlyExpenses = useMemo(() => {
     const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
     return transactions
-      .filter(t => new Date(t.date).getMonth() === currentMonth && t.amount < 0)
+      .filter(t => {
+        const transDate = new Date(t.date);
+        return transDate.getMonth() === currentMonth && 
+               transDate.getFullYear() === currentYear && 
+               t.amount < 0;
+      })
       .reduce((sum, t) => sum + Math.abs(t.amount), 0);
   }, [transactions]);
   
@@ -51,8 +63,11 @@ export default function Dashboard() {
   }, [savingsRecords]);
   
   const totalInvestments = useMemo(() => {
-    return 12480.33; // Mock value for now
-  }, []);
+    // Calculate total investments from real data or return 0 if not available
+    return transactions
+      .filter(t => t.category === 'Investment' && t.amount < 0)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  }, [transactions]);
   
   if (isLoading) {
     return (
@@ -78,7 +93,7 @@ export default function Dashboard() {
           title="Monthly Income"
           amount={monthlyIncome}
           icon={<Wallet className="text-primary" />}
-          change={12}
+          change={null}
           iconBackground="bg-primary/20"
         />
         
@@ -86,7 +101,7 @@ export default function Dashboard() {
           title="Expenses"
           amount={monthlyExpenses}
           icon={<CreditCard className="text-accent" />}
-          change={8}
+          change={null}
           iconBackground="bg-accent/20"
         />
         
@@ -94,7 +109,7 @@ export default function Dashboard() {
           title="Savings"
           amount={monthlySavings}
           icon={<PiggyBank className="text-secondary" />}
-          change={4}
+          change={null}
           iconBackground="bg-secondary/20"
         />
         
@@ -102,8 +117,8 @@ export default function Dashboard() {
           title="Investments"
           amount={totalInvestments}
           icon={<TrendingUp className="text-primary" />}
-          change={7.2}
-          compareText="total growth"
+          change={null}
+          compareText="total"
           iconBackground="bg-primary/20"
         />
       </div>
