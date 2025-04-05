@@ -12,7 +12,7 @@ const groq = new Groq({
 });
 
 // Models to use
-const PDF_MODEL = 'deepseek-r1-distill-llama-70b';  // Model for PDF parsing with high accuracy
+const PDF_MODEL = 'llama3-70b-8192';  // Model for PDF parsing with high accuracy
 
 // Convert fs functions to promise-based
 const readFile = promisify(fs.readFile);
@@ -116,7 +116,7 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
   4. Where transaction amounts appear and if they use special formatting
   5. How the statement distinguishes between deposits and withdrawals
   
-  Return your analysis in JSON format:
+  Return your analysis in this exact JSON format:
   {
     "bankName": "Name of bank",
     "dateFormat": "Description of date format (e.g., MM/DD/YYYY)",
@@ -124,6 +124,8 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
     "amountFormat": "Description of how amounts are formatted",
     "transactionType": "How deposits vs withdrawals are indicated"
   }
+  
+  Important: Do not use markdown syntax or code blocks. Just return the raw JSON object.
   `;
   
   // Get AI analysis of the statement format
@@ -138,7 +140,7 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
   const formatAnalysis = JSON.parse(formatResponse.choices[0]?.message?.content || '{}');
   
   // Split text into chunks to avoid hitting token limits
-  const MAX_CHUNK_SIZE = 5000; // Characters per chunk
+  const MAX_CHUNK_SIZE = 3000; // Characters per chunk - reduced to avoid overwhelming the model
   const chunks = [];
   
   // Create chunks of appropriate size
@@ -178,16 +180,19 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
       3. Amount (as a positive number)
       4. Whether it's a deposit (income) or withdrawal (expense)
       
-      Format your response as a valid JSON array of transactions:
-      [
-        {
-          "date": "The transaction date",
-          "merchant": "The merchant name or description",
-          "amount": 123.45,
-          "isDeposit": true/false,
-          "category": "Best guess at transaction category"
-        }
-      ]
+      RESPONSE FORMAT: You must return a valid JSON object with a "transactions" array containing all transactions.
+      
+      {
+        "transactions": [
+          {
+            "date": "The transaction date",
+            "merchant": "The merchant name or description",
+            "amount": 123.45,
+            "isDeposit": true,
+            "category": "Best guess at transaction category"
+          }
+        ]
+      }
       
       Categories to use (choose the most appropriate one):
       - Food & Dining
@@ -205,6 +210,7 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
       - If you're unsure about a transaction, skip it
       - Only include complete transactions visible in this chunk
       - If a transaction appears to be cut off, ignore it
+      - DO NOT USE MARKDOWN SYNTAX, just return the raw JSON object
       `;
       
       console.log(`Processing chunk ${i+1}/${chunks.length}`);
@@ -218,8 +224,9 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
       });
       
       try {
-        const content = chunkResponse.choices[0]?.message?.content || '[]';
-        const transactions = JSON.parse(content);
+        const content = chunkResponse.choices[0]?.message?.content || '{"transactions":[]}';
+        const parsedContent = JSON.parse(content);
+        const transactions = parsedContent.transactions || [];
         
         if (Array.isArray(transactions) && transactions.length > 0) {
           console.log(`Found ${transactions.length} transactions in chunk ${i+1}`);
@@ -227,6 +234,7 @@ async function parseTransactionsWithAI(text: string, userId: number): Promise<In
         }
       } catch (chunkError) {
         console.error(`Error processing chunk ${i+1}:`, chunkError);
+        console.error(`Raw content: ${chunkResponse.choices[0]?.message?.content}`);
       }
     } catch (aiError) {
       console.error(`AI rate limit or error on chunk ${i+1}:`, aiError);
