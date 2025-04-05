@@ -235,9 +235,24 @@ export default function Insights() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {aiInsights.map(insight => (
-              <AiInsightCard key={insight.id} insight={insight} />
-            ))}
+            {isLoading ? (
+              // Loading skeleton placeholders
+              Array(3).fill(0).map((_, i) => (
+                <div key={i} className="rounded-lg border border-white/10 bg-background-light/60 shadow-lg p-6 animate-pulse">
+                  <div className="h-5 bg-white/10 rounded w-2/3 mb-4"></div>
+                  <div className="h-20 bg-white/5 rounded mb-4"></div>
+                  <div className="h-9 bg-white/10 rounded w-full mt-4"></div>
+                </div>
+              ))
+            ) : aiInsights.length === 0 ? (
+              <div className="col-span-3 text-center py-10">
+                <p className="text-text/60">No insights available yet. Try generating some!</p>
+              </div>
+            ) : (
+              aiInsights.map(insight => (
+                <AiInsightCard key={insight.id} insight={insight} />
+              ))
+            )}
           </div>
         )}
       </div>

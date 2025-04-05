@@ -1,4 +1,3 @@
-
 import { AiInsight } from "@shared/schema";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -7,101 +6,46 @@ interface AiInsightCardProps {
   insight: AiInsight;
 }
 
-const insightTypeToColor: Record<string, { border: string, bg: string, textButton: string, icon: string }> = {
-  "spending_pattern": {
-    border: "border-primary/40",
-    bg: "bg-primary/10",
-    textButton: "text-primary hover:bg-primary/20",
-    icon: "💰"
-  },
-  "saving_opportunity": {
-    border: "border-secondary/40",
-    bg: "bg-secondary/10",
-    textButton: "text-secondary hover:bg-secondary/20",
-    icon: "💹"
-  },
-  "goal_achievement": {
-    border: "border-accent/40",
-    bg: "bg-accent/10",
-    textButton: "text-accent hover:bg-accent/20",
-    icon: "🎯"
-  }
-};
+/**
+ * A card component to display AI-generated financial insights
+ */
+export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
+  // Determine the background color based on the insight type
+  const getTypeColor = (type: string): string => {
+    const typeMap: Record<string, string> = {
+      'spending_pattern': 'from-purple-600/20 to-purple-800/20 border-purple-400/30',
+      'saving_opportunity': 'from-blue-600/20 to-blue-800/20 border-blue-400/30',
+      'goal_achievement': 'from-green-600/20 to-green-800/20 border-green-400/30',
+      'goal_progress': 'from-emerald-600/20 to-emerald-800/20 border-emerald-400/30',
+      'warning': 'from-red-600/20 to-red-800/20 border-red-400/30'
+    };
 
-export default function AiInsightCard({ insight }: AiInsightCardProps) {
-  const colors = insightTypeToColor[insight.type] || insightTypeToColor.spending_pattern;
-  
-  // Format the insight content for better readability
-  const formatContent = (content: string) => {
-    // Check for bullet points
-    if (content.includes("•") || content.includes("*")) {
-      const lines = content.split(/\n/);
-      return (
-        <div>
-          {lines.map((line, i) => {
-            if (line.trim().startsWith("•") || line.trim().startsWith("*")) {
-              return (
-                <div key={i} className="flex items-start mb-2">
-                  <span className="mr-2 text-primary">{line.trim().startsWith("•") ? "•" : "•"}</span>
-                  <span className="text-text/80">{line.replace(/^[•*]\s*/, "")}</span>
-                </div>
-              );
-            }
-            
-            if (line.trim() === "") {
-              return <div key={i} className="h-2"></div>;
-            }
-            
-            return <p key={i} className="text-text/80 mb-2">{line}</p>;
-          })}
-        </div>
-      );
-    }
-    
-    // Split by paragraphs
-    if (content.includes("\n\n")) {
-      return content.split("\n\n").map((section, i) => (
-        <p key={i} className="text-sm text-text/80 mb-3">
-          {section}
-        </p>
-      ));
-    }
-    
-    return <p className="text-sm text-text/80">{content}</p>;
+    return typeMap[type] || 'from-slate-600/20 to-slate-800/20 border-slate-400/30';
   };
-  
+
+  // Get insight content from either description or content field
+  const insightContent = insight.description || insight.content || "No details available";
+
   return (
     <div className={cn(
-      "bg-background-dark/60 backdrop-blur-xl border shadow-lg rounded-lg overflow-hidden h-full flex flex-col transition-all duration-200 hover:shadow-xl hover:translate-y-[-2px]",
-      colors.border
+      "rounded-lg border bg-gradient-to-b p-6 shadow-lg transition-all duration-300 hover:shadow-xl",
+      getTypeColor(insight.type)
     )}>
-      {/* Card Header */}
-      <div className={cn("p-4", colors.bg)}>
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-            <span className="text-lg">{colors.icon}</span>
-          </div>
-          <h4 className="font-medium">{insight.title}</h4>
-        </div>
+      <div className="mb-4">
+        <h3 className="font-display text-lg font-bold">{insight.title}</h3>
+        <p className="mt-2 text-sm text-text/70">{insightContent}</p>
       </div>
-      
-      {/* Card Body */}
-      <div className="p-4 flex-1 flex flex-col">
-        <div className="prose prose-sm prose-invert max-w-none mb-4 flex-1">
-          {formatContent(insight.description)}
-        </div>
-        
+
+      {insight.actionText && (
         <Button 
-          variant="outline"
-          size="sm"
-          className={cn(
-            "mt-auto text-sm px-4 py-2 rounded-md h-auto border-0 transition-colors",
-            colors.textButton
-          )}
+          variant="outline" 
+          className="mt-4 w-full bg-background/30 hover:bg-background/50"
         >
-          {insight.actionText || "Take Action"}
+          {insight.actionText}
         </Button>
-      </div>
+      )}
     </div>
   );
-}
+};
+
+export default AiInsightCard;
