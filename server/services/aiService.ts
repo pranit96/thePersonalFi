@@ -21,12 +21,25 @@ function formatFinancialData(
   goals: Goal[],
   savingsRecords: SavingsRecord[]
 ) {
-  // Decrypt sensitive data where applicable
-  const processedTransactions = transactions.map(t => ({
-    ...t,
+  // Decrypt sensitive data where applicable and normalize transaction amounts
+  // Process transactions, ensuring expense/income semantics are clear to the AI
+  const processedTransactions = transactions.map(t => {
+    // Make a copy of the transaction
+    const processedT = { ...t };
+    
+    // Add a clear type field to help the AI understand the nature of the transaction
+    processedT.type = t.amount < 0 ? 'expense' : 'income';
+    
+    // Add absolute amount for easier analysis
+    processedT.absoluteAmount = Math.abs(t.amount);
+    
     // Include decrypted data if available
-    ...(t.encryptedData ? { decryptedData: JSON.parse(decrypt(t.encryptedData)) } : {})
-  }));
+    if (t.encryptedData) {
+      processedT.decryptedData = JSON.parse(decrypt(t.encryptedData));
+    }
+    
+    return processedT;
+  });
   
   const processedSalary = salaryRecords.map(s => ({
     ...s,
@@ -75,39 +88,71 @@ export async function generateSpendingInsights(
     const totalSpending = transactions.reduce((sum, t) => sum + t.amount, 0);
     const totalIncome = salaryRecords.reduce((sum, s) => sum + s.amount, 0);
     
-    // Format the prompt for the AI
+    // Calculate monthly averages for more context
+    const lastThreeMonthsTransactions = transactions.filter(t => {
+      const transDate = new Date(t.date);
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      return transDate >= threeMonthsAgo;
+    });
+    
+    // Get recurring merchants (appears more than once)
+    const merchantCounts = lastThreeMonthsTransactions.reduce((acc, t) => {
+      const merchant = t.merchant || t.payee || 'Unknown';
+      acc[merchant] = (acc[merchant] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const recurringMerchants = Object.entries(merchantCounts)
+      .filter(([_, count]) => count > 1)
+      .map(([merchant]) => merchant)
+      .slice(0, 5); // Top 5 recurring merchants
+    
+    // Format the prompt for the AI with more personalized context
     const prompt = `
-    As a financial analyst, review the following financial data and provide 3-5 actionable insights:
+    As a personal financial advisor, analyze this user's financial data and provide 3-5 highly personalized actionable insights:
 
     SUMMARY:
-    Total spending: $${totalSpending.toFixed(2)}
+    Total spending: $${Math.abs(totalSpending).toFixed(2)}
     Total income: $${totalIncome.toFixed(2)}
-    Savings rate: ${totalIncome > 0 ? ((totalIncome - totalSpending) / totalIncome * 100).toFixed(1) : 0}%
+    Savings rate: ${totalIncome > 0 ? ((totalIncome - Math.abs(totalSpending)) / totalIncome * 100).toFixed(1) : 0}%
     
     SPENDING BY CATEGORY:
     ${Object.entries(transactionsByCategory)
-      .map(([category, amount]) => `- ${category}: $${amount.toFixed(2)} (${(amount/totalSpending*100).toFixed(1)}%)`)
+      .map(([category, amount]) => `- ${category}: $${Math.abs(amount).toFixed(2)} (${(Math.abs(amount)/Math.abs(totalSpending)*100).toFixed(1)}%)`)
       .join('\n')}
     
-    Based on this information, provide:
-    1. Top spending categories and if they align with financial goals
-    2. Savings potential and opportunities to reduce spending
-    3. Specific, actionable recommendations for improving financial health
-    4. Unusual spending patterns or potential issues to address
+    FREQUENT MERCHANTS:
+    ${recurringMerchants.join(', ')}
+    
+    GOALS:
+    ${goals.map(g => `- ${g.name || 'Unnamed goal'}: $${g.currentAmount || 0}/$${g.amount || 0}`).join('\n')}
+    
+    Based on this information, please provide:
+    1. Personalized insights about spending patterns that are specific to this user's data
+    2. Targeted savings opportunities based on their specific spending categories
+    3. Actionable recommendations tied to their frequent merchants and spending habits
+    4. Goal-specific advice to help them reach their financial targets faster
+    5. If appropriate, identify potential subscription services they could optimize
     
     Format your response as a JSON object with these fields:
     {
       "insights": [
         {
-          "title": "Short, actionable title",
-          "description": "Detailed insight explanation",
-          "type": "spending|saving|goal|warning",
-          "actionText": "Specific action the user can take"
+          "title": "Short, personalized and actionable title",
+          "description": "Detailed insight explanation with specific numbers and percentages from their data",
+          "type": "spending_pattern|saving_opportunity|goal_progress|warning",
+          "actionText": "Specific, concrete action the user can take"
         }
       ]
     }
     
-    Only return valid JSON with no additional text or explanation.
+    IMPORTANT: 
+    - Do NOT treat negative transaction amounts as problematic - they are normal expenses
+    - Include specific numbers in your insights (e.g., "You spent $X on category Y")
+    - Make recommendations relevant to the user's actual spending patterns
+    - Do not include generic advice that could apply to anyone
+    - Only return valid JSON with no additional text or explanation
     `;
 
     // Call the AI model
@@ -159,64 +204,122 @@ export async function generatePersonalizedAdvice(
       console.warn('Rate limit exceeded for generating goal advice');
       throw new Error('AI rate limit exceeded for goal advice. Please try again in an hour when the rate limit resets.');
     }
-    // Calculate current financial situation
+    
+    // Calculate current financial situation with normalized values for expenses
     const monthlyIncome = salaryRecords.length > 0 
       ? salaryRecords[salaryRecords.length - 1].amount 
       : 0;
     
-    const monthlySpending = transactions
-      .filter(t => {
-        const date = new Date(t.date);
-        const now = new Date();
-        return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-      })
+    // Get current month's transactions
+    const currentMonthTransactions = transactions.filter(t => {
+      const date = new Date(t.date);
+      const now = new Date();
+      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    });
+    
+    // Calculate expenses (negative amounts) and income (positive amounts) separately
+    const monthlyExpenses = currentMonthTransactions
+      .filter(t => t.amount < 0)
+      .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+    
+    const monthlyIncomeFromTransactions = currentMonthTransactions
+      .filter(t => t.amount > 0)
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // Format goals for AI input
+    // Combine income sources
+    const totalMonthlyIncome = monthlyIncome + monthlyIncomeFromTransactions;
+    
+    // Calculate savings rate
+    const savingsRate = totalMonthlyIncome > 0 
+      ? ((totalMonthlyIncome - monthlyExpenses) / totalMonthlyIncome * 100).toFixed(1) 
+      : '0.0';
+    
+    // Break down spending by category for specific recommendations
+    const categorySpending = transactions
+      .filter(t => t.amount < 0)
+      .reduce((acc, t) => {
+        const category = t.category || 'Uncategorized';
+        if (!acc[category]) acc[category] = 0;
+        acc[category] += Math.abs(t.amount);
+        return acc;
+      }, {} as Record<string, number>);
+    
+    // Sort categories by spending amount
+    const topCategories = Object.entries(categorySpending)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+    
+    // Format goals for AI input with more context
     const formattedGoals = goals.map(g => {
       // Use the "amount" field as targetAmount and handle null values
       const targetAmount = g.amount || 0;
       const currentAmount = g.currentAmount || 0;
       const progress = targetAmount > 0 ? ((currentAmount / targetAmount) * 100).toFixed(1) + '%' : '0.0%';
       
+      // Calculate average monthly contribution needed
+      const remaining = targetAmount - currentAmount;
+      const monthsNeeded = remaining > 0 && totalMonthlyIncome > monthlyExpenses
+        ? Math.ceil(remaining / (totalMonthlyIncome - monthlyExpenses))
+        : 'Infinity';
+      
       return {
         name: g.name || 'Unnamed Goal',
         targetAmount: targetAmount,
         currentAmount: currentAmount,
-        progress: progress
+        progress: progress,
+        remaining: remaining.toFixed(2),
+        estimatedMonthsToCompletion: monthsNeeded,
+        priority: g.priority || 'Medium'
       };
     });
     
-    // Create the prompt
+    // Create the prompt with much more personalized context
     const prompt = `
-    As a financial advisor, provide personalized advice for someone with the following financial situation:
+    As a personal financial advisor, provide highly tailored advice for this specific individual with the following detailed financial situation:
 
-    Monthly income: $${monthlyIncome.toFixed(2)}
-    Monthly spending: $${monthlySpending.toFixed(2)}
+    MONTHLY FINANCES:
+    Monthly income: $${totalMonthlyIncome.toFixed(2)}
+    Monthly expenses: $${monthlyExpenses.toFixed(2)}
+    Monthly savings: $${(totalMonthlyIncome - monthlyExpenses).toFixed(2)}
+    Savings rate: ${savingsRate}%
     
-    Financial Goals:
-    ${formattedGoals.map(g => `- ${g.name}: $${g.currentAmount.toFixed(2)}/$${g.targetAmount.toFixed(2)} (${g.progress})`).join('\n')}
+    TOP SPENDING CATEGORIES:
+    ${topCategories.map(([category, amount]) => 
+      `- ${category}: $${amount.toFixed(2)} (${(amount/monthlyExpenses*100).toFixed(1)}% of expenses)`).join('\n')}
     
-    Based on this information, provide specific, personalized financial advice focused on helping them achieve their goals. Include:
+    FINANCIAL GOALS:
+    ${formattedGoals.map(g => 
+      `- ${g.name} (Priority: ${g.priority}): $${g.currentAmount.toFixed(2)}/$${g.targetAmount.toFixed(2)} (${g.progress})
+       Remaining: $${g.remaining}, Est. months to completion: ${g.estimatedMonthsToCompletion}`).join('\n')}
     
-    1. Realistic timeframes for achieving each goal based on current saving rate
-    2. Suggestions for optimizing spending to accelerate goal achievement
-    3. Prioritization advice if multiple goals exist
+    Based on this specific financial profile, provide highly personalized advice focused on:
+    
+    1. Realistic goal achievement timelines based on their actual savings rate
+    2. Specific spending categories where they can optimize to accelerate goal progress
+    3. Prioritization strategy for their specific goals based on importance and feasibility
+    4. Concrete monthly savings targets tied to specific goals
+    5. Customized strategies that account for their specific spending patterns
     
     Format your response as a JSON object with these fields:
     {
       "advice": [
         {
-          "title": "Short, specific advice title",
-          "description": "Detailed explanation of the advice",
-          "goalName": "The name of the relevant goal (or 'General' if not goal-specific)",
-          "timeframe": "Estimated timeframe to achieve the goal",
-          "actionText": "Specific action the user can take"
+          "title": "Concise, personalized advice title with specific numbers",
+          "description": "Detailed explanation incorporating their specific financial data",
+          "goalName": "The specific goal this advice pertains to (or 'Overall Strategy' if general)",
+          "timeframe": "Realistic estimated completion timeframe based on their data",
+          "actionText": "One specific, measurable action with a concrete number or percentage"
         }
       ]
     }
     
-    Only return valid JSON with no additional text or explanation.
+    IMPORTANT:
+    - Use their actual financial numbers in your advice
+    - Make specific recommendations tied to their top spending categories
+    - Calculate realistic timeframes based on their current savings rate
+    - Negative transaction amounts represent normal expenses, not problems
+    - Provide advice that is unique to their situation, not generic financial wisdom
+    - Only return valid JSON with no additional text or explanation
     `;
 
     // Call the AI model

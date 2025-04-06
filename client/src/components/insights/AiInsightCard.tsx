@@ -12,6 +12,16 @@ interface AiInsightCardProps {
 export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
   // Determine the background color based on the insight type
   const getTypeColor = (type: string): string => {
+    // Normalize type by converting any non-standard types to our supported types
+    const normalizedType = type.toLowerCase().replace(/[^a-z_]/g, '');
+    
+    // Map similar types to our standard types
+    let mappedType = normalizedType;
+    if (normalizedType.includes('spend')) mappedType = 'spending_pattern';
+    if (normalizedType.includes('save') || normalizedType.includes('opportunity')) mappedType = 'saving_opportunity';
+    if (normalizedType.includes('goal')) mappedType = 'goal_progress';
+    if (normalizedType.includes('warn') || normalizedType.includes('alert')) mappedType = 'warning';
+    
     const typeMap: Record<string, string> = {
       'spending_pattern': 'from-purple-600/20 to-purple-800/20 border-purple-400/30',
       'saving_opportunity': 'from-blue-600/20 to-blue-800/20 border-blue-400/30',
@@ -20,12 +30,21 @@ export const AiInsightCard = ({ insight }: AiInsightCardProps) => {
       'warning': 'from-red-600/20 to-red-800/20 border-red-400/30'
     };
 
-    return typeMap[type] || 'from-slate-600/20 to-slate-800/20 border-slate-400/30';
+    return typeMap[mappedType] || 'from-slate-600/20 to-slate-800/20 border-slate-400/30';
   };
 
   // Get an icon based on the insight type
   const getTypeIcon = (type: string): JSX.Element => {
-    switch (type) {
+    // Normalize and map the type as in getTypeColor
+    const normalizedType = type.toLowerCase().replace(/[^a-z_]/g, '');
+    
+    let mappedType = normalizedType;
+    if (normalizedType.includes('spend')) mappedType = 'spending_pattern';
+    if (normalizedType.includes('save') || normalizedType.includes('opportunity')) mappedType = 'saving_opportunity';
+    if (normalizedType.includes('goal')) mappedType = 'goal_progress';
+    if (normalizedType.includes('warn') || normalizedType.includes('alert')) mappedType = 'warning';
+    
+    switch (mappedType) {
       case 'spending_pattern':
         return (
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
